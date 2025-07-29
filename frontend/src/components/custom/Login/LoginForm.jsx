@@ -9,12 +9,6 @@ const LoginForm = () => {
     const [formError, setFormError] = useState({email: [], password: []})
 
 
-    const setError = (name, value) => {
-        setFormError((prev) => ({
-            ...prev, [name]: value
-        }))
-    }
-
     const handleLogin = async (e) => {
         e.preventDefault()
 
