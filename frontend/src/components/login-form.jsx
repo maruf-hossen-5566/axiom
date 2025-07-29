@@ -105,15 +105,6 @@ export function LoginForm({className, loading, data, setData, error, setError, h
                 <div className="grid gap-3">
                     <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
-                        {
-                            isLoginPage &&
-                            <a
-                                href="#"
-                                className="ml-auto text-sm underline-offset-4 hover:underline"
-                            >
-                                Forgot your password?
-                            </a>
-                        }
                     </div>
                     <Input
                         className={(error && error?.password?.length > 0) && "border-destructive"}

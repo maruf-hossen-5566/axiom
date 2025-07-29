@@ -18,6 +18,11 @@ const SignupForm = () => {
     const handleSignup = async (e) => {
         e.preventDefault()
 
+        if (Object.keys(formData).some(key => formData[key].trim() === "")) {
+            toast.warning("Please fill the form properly.")
+            return
+        }
+
         try {
             setLoading(true)
             const res = await signup(formData)
