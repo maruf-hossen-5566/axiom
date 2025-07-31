@@ -1,19 +1,16 @@
 import React from 'react';
 import {Button} from "@/components/ui/button.jsx";
-import {Sun} from "lucide-react";
+import {PenLine} from "lucide-react";
 
-const ThemeButton = () => {
+const NewPost = () => {
     return (
-
         <Button
             size={"icon"}
-            variant={"ghost"}
             className={"cursor-pointer rounded-full"}
         >
-            <Sun/>
+            <PenLine/>
         </Button>
-
     );
 };
 
-export default ThemeButton;
+export default NewPost;

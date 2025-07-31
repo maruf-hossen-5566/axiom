@@ -18,10 +18,9 @@ def signup(request):
 
     serializer = RegisterSerializer(data=data)
     if serializer.is_valid():
-        user = serializer.save()
-        serializer = UserSerializer(user, context={"request": request})
-        return Response({"detail": "Account created successfully.", "user": serializer.data},
-                        status=status.HTTP_201_CREATED)
+        serializer.save()
+        return Response({"detail": "Account has been created successfully. Please log in to continue."},
+                        status.HTTP_201_CREATED)
 
     return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -43,7 +42,7 @@ def login(request):
                 "refresh": str(refresh)
             }
         }
-        return Response(data, status_code)
+        return Response(data, status.HTTP_200_OK)
 
     return Response({"detail": "Invalid credentials. Please check the email and password."},
                     status.HTTP_400_BAD_REQUEST)

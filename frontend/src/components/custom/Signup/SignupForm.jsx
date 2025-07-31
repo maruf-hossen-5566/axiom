@@ -1,12 +1,15 @@
 import {LoginForm as SForm} from "@/components/login-form.jsx";
 import {useState} from "react";
 import {toast} from "sonner";
-import {signup} from "@/api/authApi.js";
+import {signupApi} from "@/api/authApi.js";
+import {clearForm, emptyForm} from "@/utils/form.js";
+import {useNavigate} from "react-router-dom";
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({full_name: "", username: "", email: "", password: "",})
     const [formError, setFormError] = useState({full_name: [], username: [], email: [], password: [],})
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
 
     const setError = (name, value) => {
         setFormError((prev) => ({
@@ -18,16 +21,17 @@ const SignupForm = () => {
     const handleSignup = async (e) => {
         e.preventDefault()
 
-        if (Object.keys(formData).some(key => formData[key].trim() === "")) {
+        if (emptyForm(formData)) {
             toast.warning("Please fill the form properly.")
             return
         }
 
         try {
             setLoading(true)
-            const res = await signup(formData)
+            const res = await signupApi(formData)
             toast.success(res?.data?.detail)
-            Object.keys(formData).map((key) => (setFormData(pre => ({...pre, [key]: ""}))))
+            clearForm(formData, setFormData)
+            navigate("/login")
         } catch (error) {
             Object.keys(error?.response?.data).map((key) => setError(key, error?.response?.data[key]))
         }

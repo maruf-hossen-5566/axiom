@@ -1,0 +1,82 @@
+import {
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu.jsx";
+import useUserStore from "@/store/userStore.js";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.jsx";
+import {ArrowRightFromLine, Bell, Bookmark, LayoutDashboard, PenLine, Settings} from "lucide-react";
+
+const ProfileDropdown = () => {
+    const user = useUserStore(state => state.user)
+
+    return (<DropdownMenuContent
+        className="w-56 z-[1000] font-inter"
+        align="end"
+        loop={true}
+    >
+        <DropdownMenuGroup>
+            <DropdownMenuItem className={"w-full flex items-center justify-start gap-y-0"}>
+                <Avatar>
+                    <AvatarImage src={user?.image || "https://github.com/shadcn.png"}/>
+                    <AvatarFallback className={"capitalize"}>{user?.full_name[0] || "A"}</AvatarFallback>
+                </Avatar>
+                <div className={"w-full flex flex-col items-start justify-start gap-y-0"}>
+                    <p className={"capitalize text-base font-bold text-ellipsis"}>{user && user?.full_name || "Anonymous"}</p>
+                    <p className={"text-ellipsis"}>@{user && user?.username || "anonymous"}</p>
+                </div>
+            </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator/>
+        <DropdownMenuGroup>
+            <DropdownMenuItem>
+                <>
+                    <PenLine/>
+                    Create Post
+                </>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+                <>
+                    <Bookmark/>
+                    Bookmarks
+                </>
+            </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator/>
+        <DropdownMenuGroup>
+            <DropdownMenuItem>
+                <>
+                    <LayoutDashboard/>
+                    Dashboard
+                </>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+                <>
+                    <Settings/>
+                    Settings
+                </>
+            </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator/>
+        <DropdownMenuGroup>
+            <DropdownMenuItem>
+                <>
+                    <Bell/>
+                    Notifications
+                </>
+            </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator/>
+        <DropdownMenuGroup>
+            <DropdownMenuItem variant={"destructive"}>
+                <>
+                    <ArrowRightFromLine/>
+                    Logout
+                </>
+            </DropdownMenuItem>
+        </DropdownMenuGroup>
+    </DropdownMenuContent>);
+};
+
+export default ProfileDropdown;
