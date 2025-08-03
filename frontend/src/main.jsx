@@ -6,29 +6,46 @@ import Layout from "@/Layout/Layout.jsx";
 import Home from "@/components/custom/Home/Home.jsx";
 import Login from "@/components/custom/Login/Login.jsx";
 import Signup from "@/components/custom/Signup/Signup.jsx";
+import NewPost from "@/components/custom/Post/New/NewPost.jsx";
+import EditorLayout from "@/Layout/EditorLayout.jsx";
+import BaseLayout from "@/Layout/BaseLayout.jsx";
 
 const router = createBrowserRouter(createRoutesFromElements(<Route
     path="/"
-    element={<Layout/>}
+    element={<BaseLayout/>}
 >
     <Route
-        index
-        element={<Home/>}
-    />
+        path=""
+        element={<Layout/>}
+    >
+        <Route
+            index
+            element={<Home/>}
+        />
+        <Route
+            path="login"
+            element={// <PublicOnlyRoute>
+                <Login/>
+                // </PublicOnlyRoute>
+            }
+        />
+        <Route
+            path="signup"
+            element={// <PublicOnlyRoute>
+                <Signup/>
+                // </PublicOnlyRoute>
+            }
+        />
+    </Route>
     <Route
-        path="login"
-        element={// <PublicOnlyRoute>
-            <Login/>
-            // </PublicOnlyRoute>
-        }
-    />
-    <Route
-        path="signup"
-        element={// <PublicOnlyRoute>
-            <Signup/>
-            // </PublicOnlyRoute>
-        }
-    />
+        path=""
+        element={<EditorLayout/>}
+    >
+        <Route
+            path="new"
+            element={<NewPost/>}
+        />
+    </Route>
 </Route>));
 
 createRoot(document.getElementById("root")).render(<StrictMode>

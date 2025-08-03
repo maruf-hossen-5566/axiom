@@ -2,9 +2,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@import './styles/_variables.scss';
+@import './styles/_keyframe-animations.scss';
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+    /*--breakpoint-xs: 30rem;*/
+    --breakpoint-xs: 30.063rem;
     --font-inter: "Inter", sans-serif;
     --font-poppins: "Poppins", sans-serif;
     --font-geist: "Geist", sans-serif;
@@ -55,7 +60,7 @@
     --popover-foreground: oklch(0.141 0.005 285.823);
     --primary: oklch(0.21 0.006 285.885);
     --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.967 0.001 286.375);
+     --secondary: oklch(0.967 0.001 286.375);
     --secondary-foreground: oklch(0.21 0.006 285.885);
     --muted: oklch(0.967 0.001 286.375);
     --muted-foreground: oklch(0.552 0.016 285.938);
@@ -124,5 +129,3 @@
     }
 
 }
-
-

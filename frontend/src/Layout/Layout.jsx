@@ -7,7 +7,6 @@ const Layout = () => {
     return (<>
         <Header/>
         <Outlet/>
-        <Toaster position="bottom-right" closeButton={true} richColors={true}/>
     </>);
 };
 

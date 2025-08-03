@@ -3,11 +3,13 @@ import {create} from "zustand/react";
 
 
 const useUserStore = create(persist((set) => ({
-    isAuthenticated: false, user: null,
+    isAuthenticated: false,
+    user: null,
 
     login: (userData) => set({
         isAuthenticated: true, user: userData
-    }), logout: () => set({
+    }),
+    logout: () => set({
         isAuthenticated: false, user: null
     }),
 }), {

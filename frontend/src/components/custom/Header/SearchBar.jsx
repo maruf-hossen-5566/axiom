@@ -3,7 +3,7 @@ import {Input} from "@/components/ui/input.jsx";
 
 const SearchBar = () => {
     return (<>
-            <Input type={"text"} placeholder={"Search..."}/>
+            <Input type={"text"} placeholder={"Search..."} className={"rounded-full"}/>
         </>);
 };
 

@@ -36,6 +36,7 @@ def login(request):
         refresh = RefreshToken.for_user(user)
         serializer = UserSerializer(user, context={"request": request})
         data = {
+            "detail": "Log in was successful.",
             "user": serializer.data,
             "tokens": {
                 "access": str(refresh.access_token),

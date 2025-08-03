@@ -26,7 +26,10 @@ const MultiplePost = () => {
         <div className={"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-3 gap-y-6 gap-x-4 items-start justify-center"}>
 
             {posts?.map((post) => (
-                <SinglePost post={post} key={post?.id}/>
+                <SinglePost
+                    post={post}
+                    key={post?.id}
+                />
             ))
             }
         </div>

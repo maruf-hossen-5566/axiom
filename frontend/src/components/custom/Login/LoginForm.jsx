@@ -5,12 +5,14 @@ import {loginApi} from "@/api/authApi.js";
 import useUserStore from "@/store/userStore.js";
 import {clearForm, emptyForm} from "@/utils/form.js";
 import {setTokens} from "@/utils/token.js";
+import {useNavigate} from "react-router-dom";
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({email: "", password: ""})
     const [formError, setFormError] = useState({email: [], password: []})
     const login = useUserStore(state => state.login)
+    const navigate = useNavigate()
 
 
     const handleLogin = async (e) => {
@@ -28,8 +30,9 @@ const LoginForm = () => {
             const tokens = res?.data?.tokens
             login(userData)
             setTokens(tokens)
-            toast.success(res?.data?.detail || "Login in was successful.")
+            toast.success(res?.data?.detail || "Log in was successful.")
             clearForm(formData, setFormData)
+            navigate("/")
         } catch (error) {
             toast.error(error?.response?.data?.detail || "Failed to login.")
         }

@@ -1,15 +1,19 @@
 import {
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuSeparator
+    DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu.jsx";
 import useUserStore from "@/store/userStore.js";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.jsx";
 import {ArrowRightFromLine, Bell, Bookmark, LayoutDashboard, PenLine, Settings} from "lucide-react";
+import {removeTokens} from "@/utils/token.js";
 
 const ProfileDropdown = () => {
     const user = useUserStore(state => state.user)
+    const logout = useUserStore(state => state.logout)
+
+    const handleLogout = () => {
+        logout()
+        removeTokens()
+    }
 
     return (<DropdownMenuContent
         className="w-56 z-[1000] font-inter"
@@ -22,9 +26,9 @@ const ProfileDropdown = () => {
                     <AvatarImage src={user?.image || "https://github.com/shadcn.png"}/>
                     <AvatarFallback className={"capitalize"}>{user?.full_name[0] || "A"}</AvatarFallback>
                 </Avatar>
-                <div className={"w-full flex flex-col items-start justify-start gap-y-0"}>
-                    <p className={"capitalize text-base font-bold text-ellipsis"}>{user && user?.full_name || "Anonymous"}</p>
-                    <p className={"text-ellipsis"}>@{user && user?.username || "anonymous"}</p>
+                <div className={"w-full flex flex-col items-start justify-start gap-y-0 overflow-x-hidden"}>
+                    <p className={"w-full capitalize truncate text-base font-bold"}>{user && user?.full_name || "Anonymous"}</p>
+                    <p className={"w-full truncate"}>@{user && user?.username || "anonymous"}</p>
                 </div>
             </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -69,7 +73,10 @@ const ProfileDropdown = () => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator/>
         <DropdownMenuGroup>
-            <DropdownMenuItem variant={"destructive"}>
+            <DropdownMenuItem
+                variant={"destructive"}
+                onClick={handleLogout}
+            >
                 <>
                     <ArrowRightFromLine/>
                     Logout
