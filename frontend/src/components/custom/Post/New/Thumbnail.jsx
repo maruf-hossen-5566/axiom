@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button} from "@/components/ui/button.jsx";
-import {ImagePlay, ImagePlus, LoaderCircle, RefreshCcw, Repeat, X} from "lucide-react";
+import {ImagePlus, LoaderCircle, RefreshCcw, X} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.jsx";
 import {Input} from "@/components/ui/input.jsx";
 import {Label} from "@/components/ui/label.jsx";
@@ -27,16 +27,14 @@ const Thumbnail = () => {
             return
         }
 
-        // const form = new Fo
-
         setLoading(true)
-        // await sleep(1000)
+
         try {
             const form = new FormData()
             form.append("image", file)
 
             if (thumbnail !== null) {
-                form.append("change", true)
+                form.append("prev_id", thumbnail?.id)
             }
 
             const res = await addThumbnail(form)
@@ -58,7 +56,9 @@ const Thumbnail = () => {
     const handleRemove = async () => {
         try {
             const res = await deleteThumbnail({"id": thumbnail?.id})
+            console.log("RES: ", res)
             setThumbnail(null)
+            inputRef.current.value = ""
         } catch (error) {
             console.error("ERROR: ", error)
             toast.error(error?.response?.data?.detail || "Failed to delete thumbnail.")

@@ -46,8 +46,13 @@ def add(request):
 @permission_classes([IsAuthenticated])
 def add_thumbnail(request):
     # post_id = request.data.get("post_id")
-
     img = request.FILES.get("image")
+    prev_id = request.data.get("prev_id")
+
+    if prev_id:
+        thumbnail = Thumbnail.objects.filter(id=prev_id)
+        if thumbnail and thumbnail.first():
+            thumbnail.first().delete()
 
     thumbnail = Thumbnail.objects.create(image=img)
     serializer = ThumbnailSerializer(thumbnail, context={"request": request})
@@ -62,9 +67,10 @@ def delete_thumbnail(request):
     if not thumbnail_id:
         return Response({"detail": "Thumbnail ID not provided."}, status.HTTP_400_BAD_REQUEST)
 
-    thumbnail = get_object_or_404(Thumbnail, id=thumbnail_id)
-    if thumbnail:
-        thumbnail.delete()
+    # thumbnail = get_object_or_404(Thumbnail, id=thumbnail_id)
+    thumbnail = Thumbnail.objects.filter(id=thumbnail_id)
+    if thumbnail and thumbnail.first():
+        thumbnail.first().delete()
     return Response(status.HTTP_204_NO_CONTENT)
 
 

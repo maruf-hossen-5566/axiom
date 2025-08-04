@@ -22,8 +22,7 @@ export const usePostStore = create(persist((set) => ({
         tags: value
     }),
 }), {
-    name: "post-storage", // storage: createJSONStorage(() => indexDBStorage),
-    getStorage: () => localStorage,
-
+    name: "post-storage",
+    storage: createJSONStorage(() => indexDBStorage),
 }))
 
