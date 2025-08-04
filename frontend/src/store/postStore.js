@@ -10,26 +10,20 @@ const indexDBStorage = {
 
 
 export const usePostStore = create(persist((set) => ({
-    thumbnail: {},
-    title: "",
-    content: "",
-    tags: [],
+    thumbnail: null, title: "", content: "", tags: [],
 
     setTitle: (value) => set({
         title: value
-    }),
-    // setContent: (newContent) => set({content: newContent}),
-    setContent: (content) => set({content}),
-    setThumbnail: (value) => set({
+    }), setContent: (newContent) => set({
+        content: newContent
+    }), setThumbnail: (value) => set({
         thumbnail: value
     }), setTags: (value) => set({
         tags: value
     }),
 }), {
-    name: "post-storage",
-    // storage: localStorage
-    // getStorage: () => localStorage
-    storage: createJSONStorage(() => indexDBStorage),
+    name: "post-storage", // storage: createJSONStorage(() => indexDBStorage),
+    getStorage: () => localStorage,
 
 }))
 

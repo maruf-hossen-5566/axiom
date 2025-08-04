@@ -2,6 +2,9 @@ import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from django.utils import timezone
+
+from .helper import validate_image, optimize_image
 
 User = get_user_model()
 
@@ -12,6 +15,7 @@ class Post(models.Model):
     title = models.CharField(max_length=399)
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()
+    published_at = models.DateTimeField(default=timezone.now)
 
     def generate_slug(self):
         base_slug = slugify(self.title)
@@ -22,3 +26,20 @@ class Post(models.Model):
         if not self.slug:
             self.generate_slug()
         super().save(*args, **kwargs)
+
+
+class Thumbnail(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="thumbnail", blank=True, null=True)
+    image = models.ImageField(upload_to="thumbnails/", validators=[validate_image])
+    create_at = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            self.image = optimize_image(self.image)
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*args, **kwargs)

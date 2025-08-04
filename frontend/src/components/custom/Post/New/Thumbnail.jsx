@@ -1,18 +1,20 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button} from "@/components/ui/button.jsx";
 import {ImagePlay, ImagePlus, LoaderCircle, RefreshCcw, Repeat, X} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.jsx";
 import {Input} from "@/components/ui/input.jsx";
 import {Label} from "@/components/ui/label.jsx";
 import {toast} from "sonner";
+import {addThumbnail, deleteThumbnail} from "@/api/postApi.js";
+import {usePostStore} from "@/store/postStore.js";
 
 const Thumbnail = () => {
-    const previewRef = useRef("");
-    const [preview, setPreview] = useState(null)
+    const previewRef = useRef(null);
     const inputRef = useRef(null)
     const [loading, setLoading] = useState(false)
+    const thumbnail = usePostStore(state => state?.thumbnail)
+    const setThumbnail = usePostStore(state => state?.setThumbnail)
 
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     const handleFileChange = async (e) => {
         const file = e?.target?.files[0]
@@ -21,35 +23,51 @@ const Thumbnail = () => {
         if (fileType !== "image") {
             toast.warning("Invalid file type")
             inputRef.current.value = ""
-            inputRef.current.files = []
             setLoading(false)
             return
         }
 
-        setLoading(true)
-        await sleep(1000)
+        // const form = new Fo
 
-        if (file) {
-            const reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onload = () => {
-                setPreview(reader.result)
-                setLoading(false)
+        setLoading(true)
+        // await sleep(1000)
+        try {
+            const form = new FormData()
+            form.append("image", file)
+
+            if (thumbnail !== null) {
+                form.append("change", true)
             }
 
+            const res = await addThumbnail(form)
+            setThumbnail(res?.data)
+
+        } catch (error) {
+            console.error("ERROR: ", error)
+            toast.error(error?.response?.data?.detail || "Failed to upload thumbnail.")
         }
+        setLoading(false)
     }
 
-    const handleRemove = () => {
-        setLoading(false)
-        setPreview(null)
-        inputRef.current.value = ""
-        inputRef.current.files = []
+    useEffect(() => {
+        if (previewRef.current && thumbnail) {
+            previewRef.current.src = thumbnail?.image
+        }
+    }, [thumbnail]);
+
+    const handleRemove = async () => {
+        try {
+            const res = await deleteThumbnail({"id": thumbnail?.id})
+            setThumbnail(null)
+        } catch (error) {
+            console.error("ERROR: ", error)
+            toast.error(error?.response?.data?.detail || "Failed to delete thumbnail.")
+        }
     }
 
 
     return (<div className={"max-w-screen-xl w-full mx-auto pt-6 xs:pt-12 lg:px-12 "}>
-        {!preview && !loading ? <div className={"max-w-screen-md w-full mx-auto px-3 xs:px-9 "}>
+        {!thumbnail && !loading ? <div className={"max-w-screen-md w-full mx-auto px-3 xs:px-9 "}>
                 <Button
                     variant={"ghost"}
                     className={"cursor-pointer rounded-full"}
@@ -96,7 +114,7 @@ const Thumbnail = () => {
                     </div>
                     <img
                         ref={previewRef}
-                        src={preview || "https://images.unsplash.com/photo-1508349937151-22b68b72d5b1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+                        src={thumbnail || "https://images.unsplash.com/photo-1508349937151-22b68b72d5b1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
                         alt="Thumbnail"
                         className={"size-full object-center object-cover lg:rounded-sm"}
                     />

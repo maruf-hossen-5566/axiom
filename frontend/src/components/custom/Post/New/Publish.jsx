@@ -1,5 +1,5 @@
-import React from 'react';
 import {Button} from "@/components/ui/button.jsx";
+import PublishButton from "@/components/custom/Post/New/PublishButton.jsx";
 
 const Publish = () => {
 
@@ -11,7 +11,7 @@ const Publish = () => {
                     variant={"ghost"}
                     className={"rounded-full"}
                 >Cancel</Button>
-                <Button className={"rounded-full"}>Publish</Button>
+                <PublishButton/>
             </div>
         </div>
     </>);
