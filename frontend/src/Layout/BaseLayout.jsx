@@ -13,7 +13,7 @@ const BaseLayout = () => {
         }
     }, []);
 
-    return <div className={"bg-background"}>
+    return <div className={"bg-background min-h-screen"}>
         <Outlet/>
         <Toaster
             position="bottom-right"

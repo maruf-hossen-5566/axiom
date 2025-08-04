@@ -1,19 +1,34 @@
-import React, {useState} from 'react';
-import {Input} from "@/components/ui/input.jsx";
+import React, {useEffect, useRef} from 'react';
+import {usePostStore} from "@/store/postStore.js";
 
 const Title = () => {
-    const [title, setTitle] = useState("")
+    // const [title, setTitle] = useState("")
+    const title = usePostStore(state => state?.title)
+    const setTitle = usePostStore(state => state?.setTitle)
+    const titleRef = useRef(null)
 
-    return (
-        <div className={"max-w-screen-md w-full mx-auto py-6 xs:py-8 px-6 xs:px-12 "}>
+    const adjustHeight = () => {
+        titleRef.current.style.height = 'auto';
+        titleRef.current.style.height = titleRef.current.scrollHeight + 'px';
+    }
+
+    useEffect(() => {
+        adjustHeight()
+    }, [title]);
+
+
+    return (<div className={"max-w-screen-md w-full mx-auto py-6 xs:py-8 px-6 xs:px-12 "}>
             <textarea
+                ref={titleRef}
                 spellCheck={false}
-                className={"w-full text-3xl pt-1.5 font-bold field-sizing-content border-none outline-none resize-none"}
+                rows="1"
+                className={"w-full text-3xl font-bold border-none outline-none resize-none"}
                 onChange={(e) => setTitle(e?.target.value)}
                 placeholder={"Title..."}
-            >{title}</textarea>
-        </div>
-    );
+                maxLength={299}
+                value={title}
+            ></textarea>
+    </div>);
 };
 
 export default Title;

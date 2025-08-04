@@ -1,4 +1,4 @@
-import {LoginForm as SForm} from "@/components/login-form.jsx";
+import {LoginForm as SForm} from "@/components/forms/login-form.jsx";
 import {useState} from "react";
 import {toast} from "sonner";
 import {signupApi} from "@/api/authApi.js";

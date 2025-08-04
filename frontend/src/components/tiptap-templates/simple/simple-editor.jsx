@@ -14,7 +14,6 @@ import {Placeholder, Selection} from "@tiptap/extensions"
 
 // --- UI Primitives ---
 import {Button} from "@/components/tiptap-ui-primitive/button"
-import {Button as BButton} from "@/components/ui/button"
 import {Spacer} from "@/components/tiptap-ui-primitive/spacer"
 import {Toolbar, ToolbarGroup, ToolbarSeparator,} from "@/components/tiptap-ui-primitive/toolbar"
 
@@ -65,14 +64,16 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 
 import BackToHomeButton from "@/components/custom/Post/New/BackToHomeButton.jsx";
-import {TableCell, TableKit} from "@tiptap/extension-table";
+import {TableKit} from "@tiptap/extension-table";
 import {
     BetweenHorizontalStart, BetweenVerticalStart, Grid2x2Plus, Grid2x2X, UnfoldHorizontal, X, Youtube as YoutubeIcon
 } from "lucide-react";
 import Title from "@/components/custom/Post/New/Title.jsx";
 import Youtube from '@tiptap/extension-youtube'
-import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.jsx";
 import Thumbnail from "@/components/custom/Post/New/Thumbnail.jsx";
+import Publish from "@/components/custom/Post/New/Publish.jsx";
+import {useEffect} from "react";
+import {usePostStore} from "@/store/postStore.js";
 
 
 const MainToolbarContent = ({onHighlighterClick, onLinkClick, isMobile, editor}) => {
@@ -259,6 +260,8 @@ export function SimpleEditor() {
     const windowSize = useWindowSize()
     const [mobileView, setMobileView] = React.useState("main")
     const toolbarRef = React.useRef(null)
+    const content = usePostStore(state => state?.content)
+    const setContent = usePostStore(state => state?.setContent)
 
     const editor = useEditor({
         immediatelyRender: false, shouldRerenderOnTransaction: false, editorProps: {
@@ -269,6 +272,9 @@ export function SimpleEditor() {
                 "aria-label": "Main content area, start typing to enter text.",
                 class: "simple-editor",
             },
+        }, content: content, onUpdate: ({editor}) => {
+            const json = editor.getJSON()
+            setContent(json)
         }, extensions: [StarterKit.configure({
             horizontalRule: false, link: {
                 openOnClick: false, enableClickSelection: true,
@@ -285,9 +291,9 @@ export function SimpleEditor() {
             controls: false, nocookie: true, width: 0, height: 0,
         }), TableKit.configure({
             table: {resizable: false,}
-        }), HorizontalRule
+        })
 
-        ], // content,
+        ],
     })
 
     const isScrolling = useScrolling()
@@ -295,11 +301,17 @@ export function SimpleEditor() {
         editor, overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
     })
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!isMobile && mobileView !== "main") {
             setMobileView("main")
         }
     }, [isMobile, mobileView])
+
+    useEffect(() => {
+        if (editor && content) {
+            editor?.commands?.setContent(content);
+        }
+    }, [editor, content]);
 
 
     return (<div className="simple-editor-wrapper">
@@ -334,6 +346,8 @@ export function SimpleEditor() {
                 role="presentation"
                 className="simple-editor-content min-h-screen !max-w-screen-md w-full"
             />
+            {/*--- Publish */}
+            <Publish/>
         </EditorContext.Provider>
     </div>);
 }

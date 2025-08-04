@@ -1,4 +1,4 @@
-import {LoginForm as LForm} from "@/components/login-form.jsx";
+import {LoginForm as LForm} from "@/components/forms/login-form.jsx";
 import {useState} from "react";
 import {toast} from "sonner";
 import {loginApi} from "@/api/authApi.js";
