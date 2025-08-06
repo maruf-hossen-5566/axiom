@@ -1,25 +1,24 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import SinglePost from "@/components/custom/Post/Single/SinglePost.jsx";
+import {toast} from "sonner";
+import {getPosts} from "@/api/postApi.js";
+import {useFeedStore} from "@/store/feedStore.js";
 
 const MultiplePost = () => {
-    const [posts, setPosts] = useState([])
+    const setPosts = useFeedStore(state => state?.setPosts)
+    const posts = useFeedStore(state => state?.posts)
 
     useEffect(() => {
-        // fetch("https://jsonplaceholder.typicode.com/posts")
-        // fetch("https://dummyjson.com/posts")
-        fetch("https://jsonfakery.com/blogs/paginated")
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! Status: ${res?.status}`)
-                }
-                return res?.json()
-            })
-            .then((data) => {
-                console.log(data)
-                setPosts(data?.data)
-            }).catch((error) => {
-            console.error("Fetch error: ", error)
-        })
+        const fetchPosts = async () => {
+            try {
+                const res = await getPosts()
+                setPosts(res?.data?.posts)
+            } catch (error) {
+                console.error("Post fetch error: ", error)
+                toast.error(error?.response?.data?.detail || "Failed to fetch posts.")
+            }
+        }
+        fetchPosts()
     }, []);
 
     return (

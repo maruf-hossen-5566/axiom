@@ -9,6 +9,7 @@ import Signup from "@/components/custom/Signup/Signup.jsx";
 import NewPost from "@/components/custom/Post/New/NewPost.jsx";
 import EditorLayout from "@/Layout/EditorLayout.jsx";
 import BaseLayout from "@/Layout/BaseLayout.jsx";
+import PostDetail from "@/components/custom/Post/Detail/PostDetail.jsx";
 
 const router = createBrowserRouter(createRoutesFromElements(<Route
     path="/"
@@ -21,6 +22,10 @@ const router = createBrowserRouter(createRoutesFromElements(<Route
         <Route
             index
             element={<Home/>}
+        />
+        <Route
+            path=":author/:slug"
+            element={<PostDetail/>}
         />
         <Route
             path="login"

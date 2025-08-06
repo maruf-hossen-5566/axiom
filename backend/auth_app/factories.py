@@ -16,3 +16,6 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 
 users = UserFactory.create_batch(10)
+
+# from auth_app.factories import UserFactory
+# UserFactory.create_batch(50)

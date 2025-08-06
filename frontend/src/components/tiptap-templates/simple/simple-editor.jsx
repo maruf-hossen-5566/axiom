@@ -263,6 +263,7 @@ export function SimpleEditor() {
     const content = usePostStore(state => state?.content)
     const setContent = usePostStore(state => state?.setContent)
 
+
     const editor = useEditor({
         immediatelyRender: false, shouldRerenderOnTransaction: false, editorProps: {
             attributes: {
@@ -272,7 +273,7 @@ export function SimpleEditor() {
                 "aria-label": "Main content area, start typing to enter text.",
                 class: "simple-editor",
             },
-        }, content: content, onUpdate: ({editor}) => {
+        }, content: content || "", onUpdate: ({editor}) => {
             const json = editor.getJSON()
             setContent(json)
         }, extensions: [StarterKit.configure({
@@ -307,11 +308,15 @@ export function SimpleEditor() {
         }
     }, [isMobile, mobileView])
 
+
     useEffect(() => {
-        if (editor && content) {
-            editor?.commands?.setContent(content);
+        if (!editor || !content) return;
+
+        const isDifferent = JSON.stringify(content) !== JSON.stringify(editor.getJSON());
+        if (isDifferent) {
+            editor.commands.setContent(content, false);
         }
-    }, [editor, content]);
+    }, [content, editor]);
 
 
     return (<div className="simple-editor-wrapper">
@@ -344,7 +349,7 @@ export function SimpleEditor() {
             <EditorContent
                 editor={editor}
                 role="presentation"
-                className="simple-editor-content min-h-screen !max-w-screen-md w-full"
+                className="simple-editor-content !prose dark:!prose-invert min-h-screen !max-w-screen-md w-full"
             />
             {/*--- Publish */}
             <Publish/>

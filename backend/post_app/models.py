@@ -13,6 +13,7 @@ class Post(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=399)
+    thumbnail = models.OneToOneField("Thumbnail", on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()
     published_at = models.DateTimeField(default=timezone.now)
@@ -30,9 +31,9 @@ class Post(models.Model):
 
 class Thumbnail(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="thumbnail", blank=True, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="thumbnails")
     image = models.ImageField(upload_to="thumbnails/", validators=[validate_image])
-    create_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         if self.image:

@@ -1,7 +1,27 @@
 import {Button} from "@/components/ui/button.jsx";
 import PublishButton from "@/components/custom/Post/New/PublishButton.jsx";
+import {usePostStore} from "@/store/postStore.js";
+import {deleteThumbnail} from "@/api/postApi.js";
+import {toast} from "sonner";
 
 const Publish = () => {
+    const clearPostStore = usePostStore(state => state?.clearPostStore)
+    const thumbnail = usePostStore(state => state?.thumbnail)
+
+
+    const handleCancel = async () => {
+        const thumbnail_id = thumbnail?.id
+        if (thumbnail_id) {
+            try {
+                const res = await deleteThumbnail({id: thumbnail_id})
+
+            } catch (error) {
+                toast.error(error?.response?.data?.detail || "Failed to delete thumbnail.")
+            }
+        }
+        clearPostStore()
+        window.location.replace(window.location.pathname + '?refresh=' + new Date().getTime());
+    }
 
 
     return (<>
@@ -10,6 +30,7 @@ const Publish = () => {
                 <Button
                     variant={"ghost"}
                     className={"rounded-full"}
+                    onClick={handleCancel}
                 >Cancel</Button>
                 <PublishButton/>
             </div>

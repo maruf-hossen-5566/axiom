@@ -17,7 +17,7 @@ const Title = () => {
     }, [title]);
 
 
-    return (<div className={"max-w-screen-md w-full mx-auto py-6 xs:py-8 px-6 xs:px-12 "}>
+    return (<div className={"max-w-screen-md w-full mx-auto py-6 xs:py-6 px-6 xs:px-12"}>
             <textarea
                 ref={titleRef}
                 spellCheck={false}
@@ -27,6 +27,7 @@ const Title = () => {
                 placeholder={"Title..."}
                 maxLength={299}
                 value={title}
+                disabled={true}
             ></textarea>
     </div>);
 };

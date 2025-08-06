@@ -2,35 +2,34 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.jsx";
 import {useEffect, useState} from "react";
 import moment from "moment/moment.js";
+import {getPosts} from "@/api/postApi.js";
+import {toast} from "sonner";
+import {useFeedStore} from "@/store/feedStore.js";
 
 const FeaturedPost = () => {
-    const [posts, setPosts] = useState([])
-    let post = {}
+    const setFeatured = useFeedStore(state => state?.setFeatured)
+    const featured = useFeedStore(state => state?.featured)
+    const posts = useFeedStore(state => state?.posts)
+    const setPosts = useFeedStore(state => state?.setPosts)
 
     useEffect(() => {
-        // fetch("https://jsonplaceholder.typicode.com/posts")
-        // fetch("https://dummyjson.com/posts")
-        fetch("https://jsonfakery.com/blogs/paginated")
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! Status: ${res?.status}`)
-                }
-                return res?.json()
-            })
-            .then((data) => {
-                console.log(data)
-                setPosts(data?.data)
-            }).catch((error) => {
-            console.error("Fetch error: ", error)
-        })
+        const fetchFeaturedPosts = async () => {
+            try {
+                const res = await getPosts()
+                setPosts(res?.data?.posts)
+            } catch (error) {
+                console.error("Post fetch error: ", error)
+                toast.error(error?.response?.data?.detail || "Failed to fetch posts.")
+            }
+        }
+        fetchFeaturedPosts()
     }, []);
 
     if (posts) {
-        post = posts[0]
+        setFeatured(posts[0])
     }
 
-    return (
-        <>
+    return (<>
             <Card
                 className={"w-full h-full max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none cursor-pointer"}
             >
@@ -38,7 +37,7 @@ const FeaturedPost = () => {
                     <div className="aspect-video w-full">
                         <img
                             loading="lazy"
-                            src={post?.featured_image || "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"}
+                            src={featured?.thumbnail?.image || "https://images.unsplash.com/photo-1631942771581-961f187e8afc?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
                             alt="Photo by Drew Beamer"
                             className="rounded-sm w-full h-full object-cover"
                         />
@@ -47,17 +46,18 @@ const FeaturedPost = () => {
 
                 <CardContent className={"col-span-4 self-center"}>
                     <div className="w-full pb-1.5 text-[13px] flex text-muted-foreground items-center justify-start">
-                        <p>{moment(post?.created_at, "ddd, M/D/YYYY").format("MMM D, YYYY")}</p>
+                        <p>{moment(featured?.published_at).format("MMM D, YYYY")}</p>
                         <p className={"size-[5px] bg-accent rounded-full mx-2"}></p>
                         <p>5 min read</p>
                     </div>
                     <div className="w-full">
                         <CardTitle
                             className={"capitalize mt-1 text-xl font-normal font-inter line-clamp-2"}
-                        >{post?.subtitle}</CardTitle>
+                        >{featured?.title}</CardTitle>
                         <CardDescription
-                            className={"mt-1.5 text-sm font-inter leading-relaxe line-clamp-3"}
-                        >{post?.summary}</CardDescription>
+                            className={"mt-1.5 text-sm font-inter line-clamp-3"}
+                            dangerouslySetInnerHTML={{ __html: featured?.content }}
+                        ></CardDescription>
                     </div>
                     <div className="mt-4 flex items-center gap-2">
                         <Avatar className={"size-5"}>
@@ -66,14 +66,13 @@ const FeaturedPost = () => {
                                 src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                                 alt="@evilrabbit"
                             />
-                            <AvatarFallback>{post?.user?.first_name[0] || "A"}</AvatarFallback>
+                            <AvatarFallback>{featured?.author?.full_name[0] || "A"}</AvatarFallback>
                         </Avatar>
-                        <p className={"text-sm font-normal hover:underline"}>{`${post?.user?.first_name} ${post?.user?.last_name}`}</p>
+                        <p className={"text-sm font-normal hover:underline"}>{`${featured?.author?.full_name}`}</p>
                     </div>
                 </CardContent>
             </Card>
-        </>
-    );
+        </>);
 };
 
 export default FeaturedPost;

@@ -39,7 +39,6 @@ const Thumbnail = () => {
 
             const res = await addThumbnail(form)
             setThumbnail(res?.data)
-
         } catch (error) {
             console.error("ERROR: ", error)
             toast.error(error?.response?.data?.detail || "Failed to upload thumbnail.")
@@ -66,7 +65,7 @@ const Thumbnail = () => {
     }
 
 
-    return (<div className={"max-w-screen-xl w-full mx-auto pt-6 xs:pt-12 lg:px-12 "}>
+    return (<div className={"max-w-screen-xl w-full mx-auto pt-6 pb-4 xs:pt-12 lg:px-12 "}>
         {!thumbnail && !loading ? <div className={"max-w-screen-md w-full mx-auto px-3 xs:px-9 "}>
                 <Button
                     variant={"ghost"}

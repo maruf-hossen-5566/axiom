@@ -1,10 +1,13 @@
 import {persist} from "zustand/middleware";
 import {create} from "zustand/react";
 
-
-const useUserStore = create(persist((set) => ({
+const initialStore = {
     isAuthenticated: false,
     user: null,
+}
+
+const useUserStore = create(persist((set) => ({
+    ...initialStore,
 
     login: (userData) => set({
         isAuthenticated: true, user: userData
