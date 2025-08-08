@@ -1,26 +1,29 @@
-import React, {useLayoutEffect} from 'react';
-import {Outlet} from "react-router-dom";
+import { useLayoutEffect } from "react";
+import { Outlet } from "react-router-dom";
 import useThemeStore from "@/store/themeStore.js";
-import {Tooltip} from "@/components/ui/tooltip.jsx";
-import {Toaster} from "@/components/ui/sonner.jsx";
+import { Toaster } from "@/components/ui/sonner.jsx";
+import { ScrollRestoration } from "react-router-dom";
 
 const BaseLayout = () => {
-    const isDarkMode = useThemeStore(state => state.isDarkMode)
+	const isDarkMode = useThemeStore((state) => state.isDarkMode);
 
-    useLayoutEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add("dark")
-        }
-    }, []);
+	useLayoutEffect(() => {
+		if (isDarkMode) {
+			document.documentElement.classList.add("dark");
+		}
+	}, []);
 
-    return <div className={"bg-background min-h-screen"}>
-        <Outlet/>
-        <Toaster
-            position="bottom-right"
-            closeButton={true}
-            richColors={true}
-        />
-    </div>
+	return (
+		<div className={"bg-background min-h-screen"}>
+			<Outlet />
+			<Toaster
+				position="bottom-right"
+				closeButton={true}
+				richColors={true}
+			/>
+			<ScrollRestoration />
+		</div>
+	);
 };
 
 export default BaseLayout;

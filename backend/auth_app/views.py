@@ -19,8 +19,12 @@ def signup(request):
     serializer = RegisterSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
-        return Response({"detail": "Account has been created successfully. Please log in to continue."},
-                        status.HTTP_201_CREATED)
+        return Response(
+            {
+                "detail": "Account has been created successfully. Please log in to continue."
+            },
+            status.HTTP_201_CREATED,
+        )
 
     return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -38,15 +42,14 @@ def login(request):
         data = {
             "detail": "Log in was successful.",
             "user": serializer.data,
-            "tokens": {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh)
-            }
+            "tokens": {"access": str(refresh.access_token), "refresh": str(refresh)},
         }
         return Response(data, status.HTTP_200_OK)
 
-    return Response({"detail": "Invalid credentials. Please check the email and password."},
-                    status.HTTP_400_BAD_REQUEST)
+    return Response(
+        {"detail": "Invalid credentials. Please check the email and password."},
+        status.HTTP_400_BAD_REQUEST,
+    )
 
 
 @api_view(["GET"])
@@ -68,5 +71,7 @@ def delete(request, pk):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    return Response({"detail": "You don't have permission to perform this action."},
-                    status=status.HTTP_403_FORBIDDEN)
+    return Response(
+        {"detail": "You don't have permission to perform this action."},
+        status=status.HTTP_403_FORBIDDEN,
+    )
