@@ -11,38 +11,43 @@ import {
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useUserStor from "@/store/userStore";
+import { usePostStore } from "@/store/postStore";
 import { SingleComment } from "./SingleComment";
 import { addComment, getComments } from "@/api/commentApi";
 import { toast } from "sonner";
 
 const Comments = () => {
-	const [comments, setComments] = useState(null);
 	const [commentText, setCommentText] = useState("");
 	const user = useUserStor((state) => state?.user);
+	const post = usePostStore((state) => state?.post);
+	const comments = usePostStore((state) => state?.comments);
+	const setComments = usePostStore((state) => state?.setComments);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const fetchComments = async () => {
 			try {
-				// const res = await axios.get("https://dummyjson.com/comments");
-				const res = await getComments();
+				const res = await getComments({ post: post?.id });
 				setComments(res?.data);
 			} catch (error) {
-				console.error("Comment fetch error: ", error);
 				toast.error(
 					error?.response?.data?.detail || "Failed to fetch comments."
 				);
 			}
 		};
 		fetchComments();
-	}, []);
+	}, [post]);
 
-	const handleComment = async (e) => {
+	const handleAdd = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 		try {
-			const res = await addComment({ comment: commentText });
-			setComments((prev) => [...prev, res?.data]);
+			const res = await addComment({
+				content: commentText,
+				post: post?.id,
+			});
+			setCommentText("");
+			setComments([...comments, res?.data]);
 		} catch (error) {
 			toast.error(
 				error?.response?.data?.detail || "Failed to add comment."
@@ -67,7 +72,7 @@ const Comments = () => {
 									alt={user?.username || "No username"}
 								/>
 								<AvatarFallback>
-									{user?.full_name[0].toUpperCase() ||
+									{user?.full_name[0]?.toUpperCase() ||
 										"Not full_name"}
 								</AvatarFallback>
 							</Avatar>
@@ -78,30 +83,34 @@ const Comments = () => {
 						<textarea
 							placeholder="Write your comment..."
 							rows="5"
-							className="py-1 px-3 bg-input/30 border border-input outline-none rounded-sm resize-none"
+							className="py-2 px-3 text-sm bg-input/30 border border-input outline-none rounded-sm resize-none"
 							onChange={(e) => setCommentText(e.target?.value)}
 							value={commentText}></textarea>
 						<div className="w-full flex items-center justify-end gap-2">
 							<Button
 								variant="ghost"
-								className="rounded-full">
+								className="rounded-full"
+								disabled={loading || !commentText.trim()}
+								onClick={() => setCommentText("")}>
 								Cancel
 							</Button>
 							<Button
-								onClick={handleComment}
-								className="rounded-full">
+								onClick={handleAdd}
+								className="rounded-full"
+								disabled={loading || !commentText.trim()}>
 								Comment
 							</Button>
 						</div>
 					</div>
 					<div className="w-full block border-t px-4">
 						<div className="w-full divide-y ">
-							{comments?.map((comment) => (
-								<SingleComment
-									comment={comment}
-									key={comment?.id}
-								/>
-							))}
+							{comments &&
+								comments?.map((comment) => (
+									<SingleComment
+										comment={comment}
+										key={comment?.id}
+									/>
+								))}
 						</div>
 					</div>
 				</div>

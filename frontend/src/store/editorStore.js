@@ -10,11 +10,16 @@ const indexDBStorage = {
 
 
 const initialStore = {
-    thumbnail: null, title: "", content: "", tags: [],
+    thumbnail: null, title: "",
+    content: {
+        "type": "doc",
+        "content": []
+    }
+    , tags: [],
 }
 
 
-export const usePostDetailStore = create(persist((set) => ({
+export const useEditorStore = create(persist((set) => ({
     ...initialStore,
 
     setTitle: (value) => set({
@@ -30,7 +35,7 @@ export const usePostDetailStore = create(persist((set) => ({
         ...initialStore
     })
 }), {
-    name: "post-detail-storage",
+    name: "editor-storage",
     storage: createJSONStorage(() => indexDBStorage),
 }))
 

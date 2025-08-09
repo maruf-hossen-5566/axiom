@@ -10,14 +10,14 @@ import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { toast } from "sonner";
 import { addThumbnail, deleteThumbnail } from "@/api/postApi.js";
-import { usePostStore } from "@/store/postStore.js";
+import { useEditorStore } from "@/store/editorStore.js";
 
 const Thumbnail = () => {
 	const previewRef = useRef(null);
 	const inputRef = useRef(null);
 	const [loading, setLoading] = useState(false);
-	const thumbnail = usePostStore((state) => state?.thumbnail);
-	const setThumbnail = usePostStore((state) => state?.setThumbnail);
+	const thumbnail = useEditorStore((state) => state?.thumbnail);
+	const setThumbnail = useEditorStore((state) => state?.setThumbnail);
 
 	const handleFileChange = async (e) => {
 		const file = e?.target?.files[0];

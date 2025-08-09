@@ -15,7 +15,7 @@ import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
 import { Placeholder, Selection } from "@tiptap/extensions";
-import { usePostDetailStore } from "@/store/postDetailStore.js";
+import { usePostStore } from "@/store/postStore.js";
 import Title from "@/components/custom/Post/Detail/Title.jsx";
 import Thumbnail from "./Thumbnail";
 import Author from "./Author";
@@ -45,11 +45,9 @@ const extensions = [
 
 const PostDetail = () => {
 	const { author, slug } = useParams();
-	const [post, setPost] = useState(null);
-	const title = usePostDetailStore((state) => state?.title);
-	const setTitle = usePostDetailStore((state) => state?.setTitle);
-	const content = usePostDetailStore((state) => state?.content);
-	const setContent = usePostDetailStore((state) => state?.setContent);
+	const [content, setContent] = useState("");
+	const post = usePostStore((state) => state?.post);
+	const setPost = usePostStore((state) => state?.setPost);
 
 	useEffect(() => {
 		const fetchPostDetail = async () => {
@@ -57,7 +55,6 @@ const PostDetail = () => {
 				const res = await getPostDetail(author, slug);
 				setPost(res?.data);
 			} catch (error) {
-				console.error("Error: ", error);
 				toast.error(
 					error?.response?.data?.detail ||
 						"Failed to fetch post detail."
@@ -72,7 +69,9 @@ const PostDetail = () => {
 			const html = generateHTML(JSON.parse(post?.content), extensions);
 			setContent(html);
 		}
-	}, [post, content, setContent]);
+	}, [post, post?.content]);
+
+	// console.log("Post Detail: ", post);
 
 	return (
 		<div className={"min-h-screen w-full mx-auto"}>

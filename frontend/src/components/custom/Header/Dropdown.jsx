@@ -5,12 +5,12 @@ import useUserStore from "@/store/userStore.js";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.jsx";
 import {ArrowRightFromLine, Bell, Bookmark, LayoutDashboard, PenLine, Settings} from "lucide-react";
 import {removeTokens} from "@/utils/token.js";
-import {usePostStore} from "@/store/postStore.js";
+import {useEditorStore} from "@/store/editorStore.js";
 
 const ProfileDropdown = () => {
     const user = useUserStore(state => state.user)
     const logout = useUserStore(state => state.logout)
-    const clearPostStore = usePostStore(state => state?.clearPostStore)
+    const clearPostStore = useEditorStore(state => state?.clearPostStore)
 
     const handleLogout = () => {
         if (!confirm("Do you really want to log out?")) {

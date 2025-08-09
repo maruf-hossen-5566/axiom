@@ -2,14 +2,14 @@ import React, {useState} from 'react';
 import {Button} from "@/components/ui/button.jsx";
 import {toast} from "sonner";
 import {addPost} from "@/api/postApi.js";
-import {usePostStore} from "@/store/postStore.js";
+import {useEditorStore} from "@/store/editorStore.js";
 import {useNavigate} from "react-router-dom";
 
 const PublishButton = () => {
-    const post = usePostStore()
+    const post = useEditorStore()
     const [loading, setLoading] = useState(false)
-    const thumbnail = usePostStore(state => state?.thumbnail)
-    const clearPostStore = usePostStore(state => state?.clearPostStore)
+    const thumbnail = useEditorStore(state => state?.thumbnail)
+    const clearPostStore = useEditorStore(state => state?.clearPostStore)
     const navigate = useNavigate()
 
 

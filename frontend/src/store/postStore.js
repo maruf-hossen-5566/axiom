@@ -1,41 +1,45 @@
-import {persist, createJSONStorage} from "zustand/middleware";
-import {create} from "zustand/react";
-import {del, get, set} from "idb-keyval";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from "zustand/react";
+import { del, get, set } from "idb-keyval";
 
 const indexDBStorage = {
-    getItem: async (name) => (await get(name)) || null,
-    setItem: async (name, value) => await set(name, value),
-    removeItem: async (name) => await del(name),
+	getItem: async (name) => (await get(name)) || null,
+	setItem: async (name, value) => await set(name, value),
+	removeItem: async (name) => await del(name),
 };
 
-
 const initialStore = {
-    thumbnail: null, title: "",
-    content: {
-        "type": "doc",
-        "content": []
-    }
-    , tags: [],
-}
+	post: null,
+	comments: null,
+};
 
+export const usePostStore = create(
+	persist(
+		(set) => ({
+			...initialStore,
 
-export const usePostStore = create(persist((set) => ({
-    ...initialStore,
-
-    setTitle: (value) => set({
-        title: value
-    }), setContent: (newContent) => set({
-        content: newContent
-    }), setThumbnail: (value) => set({
-        thumbnail: value
-    }), setTags: (value) => set({
-        tags: value
-    }),
-    clearPostStore: () => set({
-        ...initialStore
-    })
-}), {
-    name: "post-storage",
-    storage: createJSONStorage(() => indexDBStorage),
-}))
-
+			setPost: (data) =>
+				set({
+					post: data,
+				}),
+			setComments: (data) =>
+				set({
+					comments: data,
+				}),
+			clearComments: () =>
+				set({
+					comments: null,
+				}),
+			clearPost: () =>
+				set({
+					post: null,
+				}),
+			clearPostStore: () => set({ ...initialStore }),
+		}),
+		{
+			name: "post-storage",
+			getStorage: () => localStorage,
+			// storage: createJSONStorage(() => indexDBStorage),
+		}
+	)
+);

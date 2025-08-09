@@ -73,7 +73,7 @@ import Youtube from '@tiptap/extension-youtube'
 import Thumbnail from "@/components/custom/Post/New/Thumbnail.jsx";
 import Publish from "@/components/custom/Post/New/Publish.jsx";
 import {useEffect} from "react";
-import {usePostStore} from "@/store/postStore.js";
+import {useEditorStore} from "@/store/editorStore.js";
 
 
 const MainToolbarContent = ({onHighlighterClick, onLinkClick, isMobile, editor}) => {
@@ -260,8 +260,8 @@ export function SimpleEditor() {
     const windowSize = useWindowSize()
     const [mobileView, setMobileView] = React.useState("main")
     const toolbarRef = React.useRef(null)
-    const content = usePostStore(state => state?.content)
-    const setContent = usePostStore(state => state?.setContent)
+    const content = useEditorStore(state => state?.content)
+    const setContent = useEditorStore(state => state?.setContent)
 
 
     const editor = useEditor({

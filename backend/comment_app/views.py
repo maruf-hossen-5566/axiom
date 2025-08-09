@@ -1,3 +1,4 @@
+import time
 from rest_framework.response import Response
 from rest_framework import status
 from utils.helpers import get_first_error
@@ -12,16 +13,23 @@ from django.db.models import Q
 
 @api_view(["GET"])
 def get(request):
-    post_id = request.data.get("post_id")
+    post_id = request.query_params.get("post")
     comments = Comment.objects.filter(Q(post__id=post_id))
     serializer = CommentSerializer(comments, many=True, context={"request": request})
     return Response(serializer.data, status.HTTP_200_OK)
 
 
-@api_view(["POST"])
+@api_view(["POST", "PUT"])
 @permission_classes([IsAuthenticated])
 def add(request):
     serializer = CommentSerializer(data=request.data, context={"request": request})
+
+    if request.method == "PUT":
+        id = request.data.get("id")
+        comment_object = get_object_or_404(Comment, id=id)
+        serializer = CommentSerializer(
+            comment_object, data=request.data, context={"request": request}
+        )
 
     if serializer.is_valid():
         serializer.save(author=request.user)
@@ -34,7 +42,13 @@ def add(request):
 @permission_classes([IsAuthenticated])
 @api_view(["POST"])
 def delete(request):
-    id = request.data.get("comment_id")
+    id = request.data.get("id")
     comment = get_object_or_404(Comment, id=id)
-    comment.delete()
-    return Response(status.HTTP_204_NO_CONTENT)
+    if request.user == comment.author:
+        comment.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+
+    return Response(
+        {"detail": "Access Denied – You don’t have permission to perform this action."},
+        status.HTTP_403_FORBIDDEN,
+    )

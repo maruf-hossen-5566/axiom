@@ -1,10 +1,10 @@
 import React, {useEffect, useRef} from 'react';
-import {usePostStore} from "@/store/postStore.js";
+import {useEditorStore} from "@/store/editorStore.js";
 
 const Title = () => {
     // const [title, setTitle] = useState("")
-    const title = usePostStore(state => state?.title)
-    const setTitle = usePostStore(state => state?.setTitle)
+    const title = useEditorStore(state => state?.title)
+    const setTitle = useEditorStore(state => state?.setTitle)
     const titleRef = useRef(null)
 
     const adjustHeight = () => {

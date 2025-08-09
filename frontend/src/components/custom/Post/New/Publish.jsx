@@ -1,12 +1,12 @@
 import {Button} from "@/components/ui/button.jsx";
 import PublishButton from "@/components/custom/Post/New/PublishButton.jsx";
-import {usePostStore} from "@/store/postStore.js";
+import {useEditorStore} from "@/store/editorStore.js";
 import {deleteThumbnail} from "@/api/postApi.js";
 import {toast} from "sonner";
 
 const Publish = () => {
-    const clearPostStore = usePostStore(state => state?.clearPostStore)
-    const thumbnail = usePostStore(state => state?.thumbnail)
+    const clearPostStore = useEditorStore(state => state?.clearPostStore)
+    const thumbnail = useEditorStore(state => state?.thumbnail)
 
 
     const handleCancel = async () => {
