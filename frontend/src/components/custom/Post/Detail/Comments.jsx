@@ -22,6 +22,8 @@ const Comments = () => {
 	const post = usePostStore((state) => state?.post);
 	const comments = usePostStore((state) => state?.comments);
 	const setComments = usePostStore((state) => state?.setComments);
+	const commentCount = usePostStore((state) => state?.commentCount);
+	const setCommentCount = usePostStore((state) => state?.setCommentCount);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -43,11 +45,12 @@ const Comments = () => {
 		setLoading(true);
 		try {
 			const res = await addComment({
-				content: commentText,
 				post: post?.id,
+				content: commentText,
 			});
 			setCommentText("");
-			setComments([...comments, res?.data]);
+			setComments([...comments, res?.data?.comment]);
+			setCommentCount(res?.data?.comment_count);
 		} catch (error) {
 			toast.error(
 				error?.response?.data?.detail || "Failed to add comment."

@@ -7,6 +7,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user_model, authenticate
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 
 User = get_user_model()
 
@@ -39,9 +42,12 @@ def login(request):
     if user is not None:
         refresh = RefreshToken.for_user(user)
         serializer = UserSerializer(user, context={"request": request})
+        following_ids = user.get_following()
+
         data = {
             "detail": "Log in was successful.",
             "user": serializer.data,
+            "following": following_ids,
             "tokens": {"access": str(refresh.access_token), "refresh": str(refresh)},
         }
         return Response(data, status.HTTP_200_OK)
@@ -53,9 +59,11 @@ def login(request):
 
 
 @api_view(["GET"])
-def get(request, pk=None):
-    if pk:
-        user = get_object_or_404(User, id=pk)
+def get(request):
+    username = request.query_params("username")
+
+    if username:
+        user = get_object_or_404(User, username=username)
         serializer = UserSerializer(user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -65,6 +73,7 @@ def get(request, pk=None):
 
 
 @api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
 def delete(request, pk):
     user = get_object_or_404(User, id=pk)
     if request.user == user:

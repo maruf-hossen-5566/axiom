@@ -1,41 +1,52 @@
-import {persist, createJSONStorage} from "zustand/middleware";
-import {create} from "zustand/react";
-import {del, get, set} from "idb-keyval";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from "zustand/react";
+import { del, get, set } from "idb-keyval";
 
 const indexDBStorage = {
-    getItem: async (name) => (await get(name)) || null,
-    setItem: async (name, value) => await set(name, value),
-    removeItem: async (name) => await del(name),
+	getItem: async (name) => (await get(name)) || null,
+	setItem: async (name, value) => await set(name, value),
+	removeItem: async (name) => await del(name),
 };
 
-
 const initialStore = {
-    thumbnail: null, title: "",
-    content: {
-        "type": "doc",
-        "content": []
-    }
-    , tags: [],
-}
+	thumbnail: null,
+	title: "",
+	content: {
+		type: "doc",
+		content: [],
+	},
+	tags: [],
+};
 
+export const useEditorStore = create(
+	persist(
+		(set) => ({
+			...initialStore,
 
-export const useEditorStore = create(persist((set) => ({
-    ...initialStore,
-
-    setTitle: (value) => set({
-        title: value
-    }), setContent: (newContent) => set({
-        content: newContent
-    }), setThumbnail: (value) => set({
-        thumbnail: value
-    }), setTags: (value) => set({
-        tags: value
-    }),
-    clearPostStore: () => set({
-        ...initialStore
-    })
-}), {
-    name: "editor-storage",
-    storage: createJSONStorage(() => indexDBStorage),
-}))
-
+			setTitle: (value) =>
+				set({
+					title: value,
+				}),
+			setContent: (newContent) =>
+				set({
+					content: newContent,
+				}),
+			setThumbnail: (value) =>
+				set({
+					thumbnail: value,
+				}),
+			setTags: (value) =>
+				set({
+					tags: value,
+				}),
+			clearEditorStore: () =>
+				set({
+					...initialStore,
+				}),
+		}),
+		{
+			name: "editor-storage",
+			storage: createJSONStorage(() => indexDBStorage),
+		}
+	)
+);

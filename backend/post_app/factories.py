@@ -25,17 +25,18 @@ class PostFactory(factory.django.DjangoModelFactory):
 # from django.contrib.auth import get_user_model
 # from faker import Faker
 # import random
-#
+# import json
+
 # fake = Faker()
-#
+
 # User = get_user_model()
 # users = list(User.objects.all())
-#
+
 # for user in users:
 #     title = " ".join(fake.sentences(nb=2))
 #     paras = []
 #     for _ in range(random.randint(5, 10)):
-#         para = f"<p>{fake.paragraph(nb_sentences=random.randint(5, 10))}</p>"
-#         paras.append(para)
-#     content = "".join(paras)
+#         para = f"{fake.paragraph(nb_sentences=random.randint(5, 10))}"
+#         paras.append({"type": "paragraph","content": [{"type": "text", "text": para}]})
+#     content = json.dumps({"type": "doc","content": paras})
 #     PostFactory.create(author=user, title=title, content=content)

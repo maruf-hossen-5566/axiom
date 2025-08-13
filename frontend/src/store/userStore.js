@@ -4,6 +4,7 @@ import { create } from "zustand/react";
 const initialStore = {
 	isAuthenticated: false,
 	user: null,
+	followingIds: [],
 };
 
 const useUserStore = create(
@@ -11,6 +12,10 @@ const useUserStore = create(
 		(set) => ({
 			...initialStore,
 
+			setFollowingIds: (data) =>
+				set({
+					followingIds: data,
+				}),
 			login: (userData) =>
 				set({
 					isAuthenticated: true,
@@ -18,8 +23,7 @@ const useUserStore = create(
 				}),
 			logout: () =>
 				set({
-					isAuthenticated: false,
-					user: null,
+					...initialStore,
 				}),
 		}),
 		{

@@ -72,12 +72,10 @@ const Thumbnail = () => {
 	};
 
 	return (
-		<div
-			className={
-				"max-w-screen-xl w-full mx-auto pt-6 pb-4 xs:pt-12 lg:px-12 "
-			}>
+		<div className={"w-full mx-auto pt-6 pb-4 xs:pt-12 lg:px-12 "}>
 			{!thumbnail && !loading ? (
-				<div className={"max-w-screen-md w-full mx-auto px-3 xs:px-9 "}>
+				<div className={"max-w-screen-md w-full mx-auto px-3 xs:px-9"}>
+					{/* <div className={"max-w-screen-md w-full mx-auto "}> */}
 					<Button
 						variant={"ghost"}
 						className={"cursor-pointer rounded-full"}
@@ -90,55 +88,60 @@ const Thumbnail = () => {
 					</Button>
 				</div>
 			) : (
-				<div
-					className={`relative w-full aspect-video flex items-center justify-center ${
-						loading && "border rounded-sm"
-					}`}>
-					{loading ? (
-						<LoaderCircle className={"self-center animate-spin"} />
-					) : (
-						<>
-							<div className="absolute top-3 right-3 w-max flex items-center justify-center gap-2">
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<Button
-											size={"icon"}
-											className={"cursor-pointer"}
-											asChild>
-											<Label htmlFor="thumbnail">
-												<RefreshCcw />
-											</Label>
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent>
-										Select again
-									</TooltipContent>
-								</Tooltip>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<Button
-											size={"icon"}
-											className={"cursor-pointer"}
-											onClick={handleRemove}>
-											<X />
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent>Remove</TooltipContent>
-								</Tooltip>
+				<div className="w-full lg:max-w-screen-md mx-auto lg:px-12 flex items-center justify-center">
+					<div className="relative aspect-video w-full">
+						{loading ? (
+							<div className="w-full h-full flex items-center justify-center border">
+								<LoaderCircle
+									className={
+										"size-16 text-accent-foreground self-center animate-spin"
+									}
+								/>
 							</div>
-							<img
-								ref={previewRef}
-								src={
-									thumbnail ||
-									"https://images.unsplash.com/photo-1508349937151-22b68b72d5b1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-								}
-								alt="Thumbnail"
-								className={
-									"size-full object-center object-cover"
-								}
-							/>
-						</>
-					)}
+						) : (
+							<>
+								<div className="absolute top-3 right-3 w-max flex items-center justify-center gap-2">
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												size={"icon"}
+												className={"cursor-pointer"}
+												asChild>
+												<Label htmlFor="thumbnail">
+													<RefreshCcw />
+												</Label>
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>
+											Select again
+										</TooltipContent>
+									</Tooltip>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												size={"icon"}
+												className={"cursor-pointer"}
+												onClick={handleRemove}>
+												<X />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>Remove</TooltipContent>
+									</Tooltip>
+								</div>
+								<img
+									ref={previewRef}
+									src={
+										thumbnail?.image ||
+										"https://images.unsplash.com/photo-1508349937151-22b68b72d5b1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+									}
+									alt="Thumbnail"
+									className={
+										"aspect-video size-full object-center object-cover"
+									}
+								/>
+							</>
+						)}
+					</div>
 				</div>
 			)}
 			<Input

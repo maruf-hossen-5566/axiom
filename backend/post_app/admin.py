@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Thumbnail
+from .models import Like, Post, Thumbnail
 
 
 @admin.register(Post)
@@ -17,3 +17,9 @@ class ThumbnailAdmin(admin.ModelAdmin):
     ordering = [
         "-created_at",
     ]
+
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ("id", "user__full_name", "post__title")
+    ordering = ["-created_at"]

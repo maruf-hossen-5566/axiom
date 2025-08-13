@@ -22,6 +22,13 @@ def get(request):
 @api_view(["POST", "PUT"])
 @permission_classes([IsAuthenticated])
 def add(request):
+    post_id = request.data.get("post")
+
+    if not post_id:
+        return Response(
+            {"detail": "Post ID not provided."}, status.HTTP_400_BAD_REQUEST
+        )
+
     serializer = CommentSerializer(data=request.data, context={"request": request})
 
     if request.method == "PUT":
@@ -33,10 +40,16 @@ def add(request):
 
     if serializer.is_valid():
         serializer.save(author=request.user)
-        return Response(serializer.data, status.HTTP_200_OK)
+        data = {
+            "comment_count": get_object_or_404(
+                Post, id=serializer.data.get("post")
+            ).get_comment_count(),
+            "comment": serializer.data,
+        }
+        return Response(data, status.HTTP_200_OK)
 
     first_error = get_first_error(serializer.errors)
-    return Response(first_error, status.HTTP_400_BAD_REQUEST)
+    return Response({"detail": first_error}, status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])

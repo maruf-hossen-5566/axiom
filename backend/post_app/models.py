@@ -3,8 +3,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils import timezone
-
-from .helper import validate_image, optimize_image
+from utils.helpers import validate_image
+from .helper import optimize_image
 
 User = get_user_model()
 
@@ -13,7 +13,9 @@ class Post(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=399)
-    thumbnail = models.OneToOneField("Thumbnail", on_delete=models.CASCADE, blank=True, null=True)
+    thumbnail = models.OneToOneField(
+        "Thumbnail", on_delete=models.CASCADE, blank=True, null=True
+    )
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()
     published_at = models.DateTimeField(default=timezone.now)
@@ -28,10 +30,20 @@ class Post(models.Model):
             self.generate_slug()
         super().save(*args, **kwargs)
 
+    def get_like_count(self):
+        count = self.likes.count()
+        return count
+
+    def get_comment_count(self):
+        count = self.comments.count()
+        return count
+
 
 class Thumbnail(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="thumbnails")
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="thumbnails"
+    )
     image = models.ImageField(upload_to="thumbnails/", validators=[validate_image])
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -44,3 +56,10 @@ class Thumbnail(models.Model):
         if self.image:
             self.image.delete(save=False)
         super().delete(*args, **kwargs)
+
+
+class Like(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
+    created_at = models.DateTimeField(auto_now_add=True)

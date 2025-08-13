@@ -27,7 +27,6 @@ const Title = () => {
                 placeholder={"Title..."}
                 maxLength={299}
                 value={title}
-                disabled={true}
             ></textarea>
     </div>);
 };

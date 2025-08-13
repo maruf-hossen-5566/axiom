@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "auth_app",
     "comment_app",
+    "profile_app",
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,8 @@
+from urllib import request
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from utils.helpers import validate_image
 
 
 class UserManager(BaseUserManager):
@@ -28,13 +30,28 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    avatar = models.ImageField(
+        upload_to="avatar/", validators=[validate_image], null=True, blank=True
+    )
     email = models.EmailField("email address", unique=True)
     full_name = models.CharField("full name", max_length=99)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", ]
+    REQUIRED_FIELDS = ["username", "full_name"]
 
-    objects = UserManager()
+    objects = UserManager()  # type: ignore
 
     def __str__(self):
         return self.email
+
+    def get_full_name(self):
+        return self.full_name
+
+    def get_following_ids(self):
+        return self.following.values_list("author__id", flat=True)
+
+    def get_follower_count(self):
+        return self.followers.count()
+
+    def get_following_count(self):
+        return self.following.count()

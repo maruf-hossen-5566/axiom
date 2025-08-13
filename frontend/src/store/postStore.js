@@ -10,7 +10,11 @@ const indexDBStorage = {
 
 const initialStore = {
 	post: null,
+	content: null,
+	isLiked: false,
+	likeCount: 0,
 	comments: null,
+	commentCount: 0,
 };
 
 export const usePostStore = create(
@@ -18,13 +22,31 @@ export const usePostStore = create(
 		(set) => ({
 			...initialStore,
 
+			setPostData: (data) => set({ ...data }),
+
 			setPost: (data) =>
 				set({
 					post: data,
 				}),
+			setContent: (data) =>
+				set({
+					content: data,
+				}),
+			setIsLiked: (value) =>
+				set({
+					isLiked: value,
+				}),
+			setLikeCount: (value) =>
+				set({
+					likeCount: value,
+				}),
 			setComments: (data) =>
 				set({
 					comments: data,
+				}),
+			setCommentCount: (value) =>
+				set({
+					commentCount: value,
 				}),
 			clearComments: () =>
 				set({
@@ -38,8 +60,7 @@ export const usePostStore = create(
 		}),
 		{
 			name: "post-storage",
-			getStorage: () => localStorage,
-			// storage: createJSONStorage(() => indexDBStorage),
+			storage: createJSONStorage(() => sessionStorage),
 		}
 	)
 );

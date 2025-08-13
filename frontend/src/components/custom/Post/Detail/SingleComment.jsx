@@ -1,33 +1,28 @@
-import { Badge } from "@/components/ui/badge";
+import { deleteComment, updateComment } from "@/api/commentApi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Ellipsis } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuPortal,
-	DropdownMenuSeparator,
-	DropdownMenuShortcut,
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
-import { updateComment, deleteComment } from "@/api/commentApi";
 import { usePostStore } from "@/store/postStore";
 import useUserStore from "@/store/userStore";
+import { Ellipsis } from "lucide-react";
 import moment from "moment";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 export const SingleComment = ({ comment }) => {
 	const user = useUserStore((state) => state?.user);
 	const post = usePostStore((state) => state?.post);
 	const comments = usePostStore((state) => state?.comments);
 	const setComments = usePostStore((state) => state?.setComments);
+	const commentCount = usePostStore((state) => state?.commentCount);
+	const setCommentCount = usePostStore((state) => state?.setCommentCount);
 	const [updatingComment, setUpdatingComment] = useState(false);
 	const [updateCommentText, setUpdateCommentText] = useState(
 		comment?.content
@@ -36,6 +31,10 @@ export const SingleComment = ({ comment }) => {
 	const updateCommentInputRef = useRef(null);
 
 	const handleDelete = async () => {
+		if (!confirm("Do you really want to delete this comment?")) {
+			return;
+		}
+
 		try {
 			const id = comment?.id;
 			await deleteComment({ id: id });
@@ -43,6 +42,7 @@ export const SingleComment = ({ comment }) => {
 				(comment) => comment?.id !== id
 			);
 			setComments(filteredComments);
+			setCommentCount(commentCount - 1);
 		} catch (error) {
 			toast.error(
 				error?.response?.data?.detail || "Failed to delete comment."
@@ -161,7 +161,7 @@ export const SingleComment = ({ comment }) => {
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent
-									className="w-56 z-[500]"
+									className="w-56 z-[100]"
 									align="end">
 									{user &&
 									user?.id === comment?.author?.id ? (

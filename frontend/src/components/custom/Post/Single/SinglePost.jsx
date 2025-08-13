@@ -15,7 +15,9 @@ import { Link } from "react-router-dom";
 
 const SinglePost = ({ post }) => {
 	return (
-		<Link to={`${post?.author?.username}/${post?.slug}`} className="h-full">
+		<Link
+			to={`/${post?.author?.username}/${post?.slug}`}
+			className="h-full">
 			<Card
 				className={
 					"w-full h-full col-span-1 bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none cursor-pointer"
@@ -56,7 +58,10 @@ const SinglePost = ({ post }) => {
 					<div className="mt-4 flex items-center gap-2">
 						<Avatar className={"size-5"}>
 							<AvatarImage
-								src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+								src={
+									post?.author?.avatar ||
+									"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+								}
 								alt={`@${post?.author?.username}`}
 							/>
 							<AvatarFallback>ER</AvatarFallback>

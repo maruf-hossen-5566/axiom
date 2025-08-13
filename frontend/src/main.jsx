@@ -15,6 +15,7 @@ import NewPost from "@/components/custom/Post/New/NewPost.jsx";
 import EditorLayout from "@/Layout/EditorLayout.jsx";
 import BaseLayout from "@/Layout/BaseLayout.jsx";
 import PostDetail from "@/components/custom/Post/Detail/PostDetail.jsx";
+import Profile from "@/components/custom/Profile/Profile";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -27,6 +28,10 @@ const router = createBrowserRouter(
 				<Route
 					index
 					element={<Home />}
+				/>
+				<Route
+					path=":username"
+					element={<Profile />}
 				/>
 				<Route
 					path=":author/:slug"

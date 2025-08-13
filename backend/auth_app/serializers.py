@@ -8,18 +8,35 @@ User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
-        validators=[UniqueValidator(queryset=User.objects.all(), message="Username already taken.")],
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(), message="Username already taken."
+            )
+        ],
         error_messages={
             "blank": "Username cannot be blank.",
-        })
+        },
+    )
     email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all(), message="This email is already registered.")],
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(), message="This email is already registered."
+            )
+        ],
         error_messages={
             "blank": "Email cannot be blank.",
-            "invalid": "Enter a valid email address."
-        })
-    full_name = serializers.CharField(max_length=99, error_messages={"blank": "Fullname cannot be blank."})
-    password = serializers.CharField(write_only=True, error_messages={"blank": "Password cannot be blank.", })
+            "invalid": "Enter a valid email address.",
+        },
+    )
+    full_name = serializers.CharField(
+        max_length=99, error_messages={"blank": "Fullname cannot be blank."}
+    )
+    password = serializers.CharField(
+        write_only=True,
+        error_messages={
+            "blank": "Password cannot be blank.",
+        },
+    )
 
     class Meta:
         model = User
@@ -34,12 +51,31 @@ class RegisterSerializer(serializers.ModelSerializer):
             full_name=validated_data["full_name"],
             username=validated_data["username"],
             email=validated_data["email"],
-            password=validated_data["password"]
+            password=validated_data["password"],
         )
         return user
 
 
 class UserSerializer(serializers.ModelSerializer):
+    follower_count = serializers.SerializerMethodField(method_name="get_follower_count")
+    following_count = serializers.SerializerMethodField(
+        method_name="get_following_count"
+    )
+
     class Meta:
         model = User
-        exclude = ["password", "groups", "user_permissions", "is_staff", "is_superuser", "first_name", "last_name"]
+        exclude = [
+            "password",
+            "groups",
+            "user_permissions",
+            "is_staff",
+            "is_superuser",
+            "first_name",
+            "last_name",
+        ]
+
+    def get_follower_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()
