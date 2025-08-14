@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { removeTokens } from "@/utils/token.js";
 import { useEditorStore } from "@/store/editorStore.js";
+import { Link } from "react-router-dom";
 
 const ProfileDropdown = () => {
 	const user = useUserStore((state) => state.user);
@@ -45,33 +46,37 @@ const ProfileDropdown = () => {
 			loop={true}>
 			<DropdownMenuGroup>
 				<DropdownMenuItem
+					asChild
 					className={
 						"w-full flex items-center justify-start gap-y-0"
 					}>
-					<Avatar>
-						<AvatarImage
-							src={
-								user?.avatar || "https://github.com/shadcn.png"
-							}
-						/>
-						<AvatarFallback className={"capitalize"}>
-							{user?.full_name[0] || "A"}
-						</AvatarFallback>
-					</Avatar>
-					<div
-						className={
-							"w-full flex flex-col items-start justify-start gap-y-0 overflow-x-hidden"
-						}>
-						<p
+					<Link to={`/${user?.username}`}>
+						<Avatar>
+							<AvatarImage
+								src={
+									user?.avatar ||
+									"https://github.com/shadcn.png"
+								}
+							/>
+							<AvatarFallback className={"capitalize"}>
+								{user?.full_name[0] || "A"}
+							</AvatarFallback>
+						</Avatar>
+						<div
 							className={
-								"w-full capitalize truncate text-base font-bold"
+								"w-full flex flex-col items-start justify-start gap-y-0 overflow-x-hidden"
 							}>
-							{(user && user?.full_name) || "Anonymous"}
-						</p>
-						<p className={"w-full truncate"}>
-							@{(user && user?.username) || "anonymous"}
-						</p>
-					</div>
+							<p
+								className={
+									"w-full capitalize truncate text-base font-bold"
+								}>
+								{(user && user?.full_name) || "Anonymous"}
+							</p>
+							<p className={"w-full truncate"}>
+								@{(user && user?.username) || "anonymous"}
+							</p>
+						</div>
+					</Link>
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />

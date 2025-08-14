@@ -43,7 +43,9 @@ const Author = () => {
 				</div>
 			) : (
 				<>
-					<div className="w-full flex items-center justify-start gap-2 hover:cursor-pointer ">
+					<Link
+						to={`/${post?.author?.username}`}
+						className="w-full flex items-center justify-start gap-2 hover:cursor-pointer ">
 						<div className="flex items-center justify-start gap-2 group">
 							<Avatar>
 								<AvatarImage
@@ -105,7 +107,7 @@ const Author = () => {
 						<p className={"text-xs text-muted-foreground"}>
 							5 min read
 						</p>
-					</div>
+					</Link>
 				</>
 			)}
 		</div>

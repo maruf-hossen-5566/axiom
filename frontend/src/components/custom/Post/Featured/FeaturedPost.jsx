@@ -136,7 +136,9 @@ const FeaturedPost = () => {
 									__html: content,
 								}}></CardDescription>
 						</div>
-						<div className="mt-4 flex items-center gap-2">
+						<Link
+							to={`${featured?.author?.username}`}
+							className="mt-4 flex items-center gap-2">
 							<Avatar className={"size-5"}>
 								<AvatarImage
 									src={
@@ -153,7 +155,7 @@ const FeaturedPost = () => {
 								className={
 									"text-sm font-normal hover:underline"
 								}>{`${featured?.author?.full_name}`}</p>
-						</div>
+						</Link>
 					</CardContent>
 				</Card>
 			</Link>

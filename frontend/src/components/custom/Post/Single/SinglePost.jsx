@@ -55,7 +55,9 @@ const SinglePost = ({ post }) => {
 							{post?.title}
 						</CardTitle>
 					</div>
-					<div className="mt-4 flex items-center gap-2">
+					<Link
+						to={`/${post?.author?.username}`}
+						className="mt-4 flex items-center gap-2">
 						<Avatar className={"size-5"}>
 							<AvatarImage
 								src={
@@ -70,7 +72,7 @@ const SinglePost = ({ post }) => {
 							className={
 								"text-sm font-normal hover:underline"
 							}>{`${post?.author?.full_name || "No Name"}`}</p>
-					</div>
+					</Link>
 				</CardContent>
 			</Card>
 		</Link>
