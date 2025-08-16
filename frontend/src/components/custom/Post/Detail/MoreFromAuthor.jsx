@@ -61,7 +61,7 @@ const MoreFromAuthor = () => {
 								asChild
 								variant="outline"
 								className="rounded-full">
-								<Link to="/">
+								<Link to={`/${post?.author?.username}`}>
 									See more from{" "}
 									<span className="capitalize">
 										{post?.author?.full_name}

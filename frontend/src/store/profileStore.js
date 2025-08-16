@@ -23,7 +23,7 @@ export const useProfileStore = create(
 			set({
 				post: null,
 			}),
-		clearPostStore: () => set({ ...initialStore }),
+		clearProfileStore: () => set({ ...initialStore }),
 	}),
 	{
 		name: "profile-storage",

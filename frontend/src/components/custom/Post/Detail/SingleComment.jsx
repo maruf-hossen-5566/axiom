@@ -61,7 +61,7 @@ export const SingleComment = ({ comment }) => {
 			const res = await updateComment(data);
 			const targetId = comment?.id;
 			const updatedComments = comments?.map((comment) =>
-				comment?.id === targetId ? { ...res?.data } : comment
+				comment?.id === targetId ? { ...res?.data?.comment } : comment
 			);
 			setComments(updatedComments);
 			setUpdatingComment(false);

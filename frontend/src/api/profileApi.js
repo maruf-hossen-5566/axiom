@@ -8,6 +8,6 @@ export const follow = (data) => {
 	return apiClient.post("profile/follow/", data);
 };
 
-export const blockProfile = () => {
+export const blockProfile = (data) => {
 	return apiClient.post("profile/block/", data);
 };

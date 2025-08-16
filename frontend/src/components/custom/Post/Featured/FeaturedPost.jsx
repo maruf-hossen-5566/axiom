@@ -1,5 +1,6 @@
 import { getPosts } from "@/api/postApi.js";
 import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
+import { FeaturedPostSkeleton } from "@/components/custom/Skeleton/FeaturedPostSkeleton";
 import {
 	Avatar,
 	AvatarFallback,
@@ -85,81 +86,80 @@ const FeaturedPost = () => {
 		}
 	}, [featured]);
 
-	return (
-		<>
-			<Link
-				to={`/${featured?.author?.username}/${featured?.slug}`}
-				className="w-full block mx-auto">
-				<Card
-					className={
-						"w-full h-full max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none cursor-pointer"
-					}>
-					<CardHeader className={"col-span-3"}>
-						<div className="aspect-video w-full">
-							<img
-								loading="lazy"
-								src={
-									featured?.thumbnail?.image ||
-									"https://images.unsplash.com/photo-1631942771581-961f187e8afc?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-								}
-								alt="Photo by Drew Beamer"
-								className="rounded-sm w-full h-full object-cover"
-							/>
-						</div>
-					</CardHeader>
+	return !featured ? (
+		<div className="w-full">
+			<FeaturedPostSkeleton />
+		</div>
+	) : (
+		<div className="w-full block mx-auto">
+			<Card className="w-full h-full max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none">
+				<CardHeader className={"col-span-3"}>
+					<Link
+						to={`/${featured?.author?.username}/${featured?.slug}`}
+						className="aspect-video w-full">
+						<img
+							loading="lazy"
+							src={
+								featured?.thumbnail?.image ||
+								"https://images.unsplash.com/photo-1631942771581-961f187e8afc?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+							}
+							alt="Photo by Drew Beamer"
+							className="rounded-sm w-full h-full object-cover"
+						/>
+					</Link>
+				</CardHeader>
 
-					<CardContent className={"col-span-4 self-center"}>
-						<div className="w-full pb-1.5 text-[13px] flex text-muted-foreground items-center justify-start">
-							<p>
-								{moment(featured?.published_at).format(
-									"MMM D, YYYY"
-								)}
-							</p>
-							<p
-								className={
-									"size-[5px] bg-accent rounded-full mx-2"
-								}></p>
-							<p>5 min read</p>
-						</div>
-						<div className="w-full">
-							<CardTitle
-								className={
-									"capitalize mt-1 text-xl font-normal font-inter line-clamp-2"
-								}>
-								{featured?.title}
-							</CardTitle>
-							<CardDescription
-								className={
-									"mt-1.5 text-sm font-inter line-clamp-3"
+				<CardContent className={"col-span-4 self-center"}>
+					<div className="w-full pb-1.5 text-[13px] flex text-muted-foreground items-center justify-start">
+						<p>
+							{moment(featured?.published_at).format(
+								"MMM D, YYYY"
+							)}
+						</p>
+						<p
+							className={
+								"size-[5px] bg-accent rounded-full mx-2"
+							}></p>
+						<p>5 min read</p>
+					</div>
+					<Link
+						to={`/${featured?.author?.username}/${featured?.slug}`}
+						className="w-full">
+						<CardTitle
+							className={
+								"capitalize mt-1 text-xl font-normal font-inter line-clamp-2"
+							}>
+							{featured?.title}
+						</CardTitle>
+						<CardDescription
+							className={"mt-1.5 text-sm font-inter line-clamp-3"}
+							dangerouslySetInnerHTML={{
+								__html: content,
+							}}></CardDescription>
+					</Link>
+					<Link
+						to={`${featured?.author?.username}`}
+						className="w-max mt-4 flex items-center gap-2">
+						<Avatar className={"size-5"}>
+							<AvatarImage
+								src={
+									featured?.author?.avatar ||
+									"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 								}
-								dangerouslySetInnerHTML={{
-									__html: content,
-								}}></CardDescription>
-						</div>
-						<Link
-							to={`${featured?.author?.username}`}
-							className="mt-4 flex items-center gap-2">
-							<Avatar className={"size-5"}>
-								<AvatarImage
-									src={
-										featured?.author?.avatar ||
-										"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-									}
-									alt="@evilrabbit"
-								/>
-								<AvatarFallback>
-									{featured?.author?.full_name[0] || "A"}
-								</AvatarFallback>
-							</Avatar>
-							<p
-								className={
-									"text-sm font-normal hover:underline"
-								}>{`${featured?.author?.full_name}`}</p>
-						</Link>
-					</CardContent>
-				</Card>
-			</Link>
-		</>
+								alt="@evilrabbit"
+							/>
+							<AvatarFallback>
+								{featured?.author?.full_name[0] || "A"}
+							</AvatarFallback>
+						</Avatar>
+						<p
+							className={
+								"text-sm font-normal hover:underline"
+							}>{`${featured?.author?.full_name}`}</p>
+					</Link>
+				</CardContent>
+			</Card>
+		</div>
 	);
 };
 

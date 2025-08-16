@@ -13,6 +13,7 @@ const LoginForm = () => {
 	const [formError, setFormError] = useState({ email: [], password: [] });
 	const login = useUserStore((state) => state.login);
 	const setFollowingIds = useUserStore((state) => state.setFollowingIds);
+	const setBlockedIds = useUserStore((state) => state.setBlockedIds);
 	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
@@ -27,7 +28,8 @@ const LoginForm = () => {
 			setLoading(true);
 			const res = await loginApi(formData);
 			login(res?.data?.user);
-			setFollowingIds(res?.data?.following);
+			setFollowingIds(res?.data?.following_ids);
+			setBlockedIds(res?.data?.blocked_ids);
 			setTokens(res?.data?.tokens);
 			localStorage.setItem("reloadTab", Date.now().toString());
 			navigate("/");

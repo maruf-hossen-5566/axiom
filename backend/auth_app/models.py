@@ -49,6 +49,9 @@ class User(AbstractUser):
 
     def get_following_ids(self):
         return self.following.values_list("author__id", flat=True)
+    
+    def get_blocked_ids(self):
+        return self.blocking.values_list("blocked__id", flat=True)
 
     def get_follower_count(self):
         return self.followers.count()

@@ -5,6 +5,7 @@ const initialStore = {
 	isAuthenticated: false,
 	user: null,
 	followingIds: [],
+	blockedIds: [],
 };
 
 const useUserStore = create(
@@ -15,6 +16,10 @@ const useUserStore = create(
 			setFollowingIds: (data) =>
 				set({
 					followingIds: data,
+				}),
+			setBlockedIds: (data) =>
+				set({
+					blockedIds: data,
 				}),
 			login: (userData) =>
 				set({

@@ -28,7 +28,7 @@ const BaseLayout = () => {
 			<Toaster
 				position="bottom-right"
 				closeButton={true}
-				richColors={true}
+				// richColors={true}
 			/>
 			<ScrollRestoration />
 		</div>

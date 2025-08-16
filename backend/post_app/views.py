@@ -13,7 +13,6 @@ from django.db.models import Q
 
 @api_view(["GET"])
 def get(request, author_name=None, slug=None):
-    time.sleep(1)
     if author_name and slug:
         post = get_object_or_404(Post, author__username=author_name, slug=slug)
         is_liked = False

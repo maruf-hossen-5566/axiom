@@ -1,3 +1,4 @@
+import { SinglePostSkeleton } from "@/components/custom/Skeleton/SinglePostSkeleton";
 import SinglePost from "@/components/custom/Post/Single/SinglePost";
 import { useEffect, useState } from "react";
 import { moreToRead } from "@/api/postApi";

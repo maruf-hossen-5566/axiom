@@ -43,10 +43,10 @@ const Author = () => {
 				</div>
 			) : (
 				<>
-					<Link
-						to={`/${post?.author?.username}`}
-						className="w-full flex items-center justify-start gap-2 hover:cursor-pointer ">
-						<div className="flex items-center justify-start gap-2 group">
+					<div className="w-full flex items-center justify-start gap-2 hover:cursor-pointer ">
+						<Link
+							to={`/${post?.author?.username}`}
+							className="flex items-center justify-start gap-2 group">
 							<Avatar>
 								<AvatarImage
 									src={
@@ -78,7 +78,7 @@ const Author = () => {
 									}`}
 								</p>
 							</div>
-						</div>
+						</Link>
 						{post?.author?.id.toString() !==
 						user?.id?.toString() ? (
 							<Button
@@ -107,7 +107,7 @@ const Author = () => {
 						<p className={"text-xs text-muted-foreground"}>
 							5 min read
 						</p>
-					</Link>
+					</div>
 				</>
 			)}
 		</div>

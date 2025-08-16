@@ -14,6 +14,7 @@ import { Placeholder, Selection } from "@tiptap/extensions";
 import { generateHTML } from "@tiptap/html";
 import { StarterKit } from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
+import PostDetailSkeleton from "@/components/custom/Skeleton/PostDetailSkeleton";
 
 const extensions = [
 	StarterKit,
@@ -48,20 +49,8 @@ export const Content = () => {
 
 	return (
 		<>
-			{/* {!htmlContent || loading ? ( */}
-			{/* {!htmlContent ? ( */}
 			{!post || !post.content ? (
-				<div className="max-w-screen-md w-full pb-16 prose dark:prose-invert border-b-0 flex flex-col gap-3.5">
-					{[...Array(12)].map((_, i) => (
-						<div
-							className="w-full flex flex-col gap-3.5"
-							key={i}>
-							<Skeleton className="h-4 w-full rounded-full" />
-							<Skeleton className="h-4 w-full rounded-full" />
-							<Skeleton className="h-4 mb-4 w-4/5 rounded-full" />
-						</div>
-					))}
-				</div>
+				<PostDetailSkeleton />
 			) : (
 				<div
 					className="max-w-screen-md w-full pb-16 prose dark:prose-invert border-none"

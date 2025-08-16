@@ -1,3 +1,5 @@
+import time
+import uuid
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -5,9 +7,10 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user_model
 from auth_app.serializers import UserSerializer
+from utils.helpers import validate_uuid
 from post_app.serializers import PostSerializer
 from post_app.models import Post
-from profile_app.models import Follow
+from profile_app.models import Block, Follow
 
 User = get_user_model()
 
@@ -17,10 +20,8 @@ User = get_user_model()
 def follow(request):
     author_id = request.data.get("author_id")
 
-    if not author_id:
-        return Response(
-            {"detail": "Author ID not provided."}, status.HTTP_400_BAD_REQUEST
-        )
+    if not author_id or not validate_uuid(author_id):
+        return Response({"detail": "Invalid UUID."}, status.HTTP_400_BAD_REQUEST)
 
     if str(author_id) == str(request.user.id):
         return Response(
@@ -29,23 +30,24 @@ def follow(request):
 
     author = get_object_or_404(User, id=author_id)
 
-    follow_instance = Follow.objects.filter(author=author, user=request.user)
-    if follow_instance.exists():
-        follow_instance.delete()
-        message = f'Unfollowed "{author.get_full_name()}"'
-    else:
-        user = Follow.objects.create(author=author, user=request.user)
-        message = f'Following "{author.get_full_name()}"'
-
-    following_ids = request.user.get_following_ids()
-    return Response(
-        {
-            "detail": message,
-            "user": UserSerializer(user.author, context={"request": request}).data,
-            "following_ids": following_ids,
-        },
-        status.HTTP_200_OK,
+    follow_instance, created = Follow.objects.get_or_create(
+        author=author, user=request.user
     )
+
+    data = {}
+    if created:
+        data["detail"] = f'Following "{author.get_full_name()}"'
+        data["user"] = UserSerializer(
+            follow_instance.author, context={"request": request}
+        ).data
+    else:
+        data["detail"] = f'Unfollowed "{author.get_full_name()}"'
+        follow_instance.delete()
+        data["user"] = UserSerializer(author, context={"request": request}).data
+
+    data["following_ids"] = request.user.get_following_ids()
+
+    return Response(data, status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -69,4 +71,33 @@ def get_profile(request):
         "is_following": is_following,
         "posts": PostSerializer(posts, many=True, context={"request": request}).data,
     }
+    return Response(data, status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def block_profile(request):
+    profile_id = request.data.get("profile_id")
+
+    if not profile_id or not validate_uuid(profile_id):
+        return Response({"detail": "Invalid UUID."}, status.HTTP_400_BAD_REQUEST)
+
+    if uuid.UUID(profile_id) == request.user.id:
+        return Response(
+            {"detail": "You cannot block your self."}, status.HTTP_400_BAD_REQUEST
+        )
+
+    user = get_object_or_404(User, id=profile_id)
+    obj, created = Block.objects.get_or_create(blocker=request.user, blocked=user)
+
+    data = {}
+
+    if created:
+        data["detail"] = f'Blocked "{user.get_full_name()}"'
+    else:
+        obj.delete()
+        data["detail"] = f'Unblocked "{user.get_full_name()}"'
+
+    data["blocked_ids"] = request.user.get_blocked_ids()
+
     return Response(data, status.HTTP_200_OK)
