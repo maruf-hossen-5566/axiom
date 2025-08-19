@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Like, Post, Thumbnail
+from .models import Like, Post, Tag, Thumbnail
 
 
 @admin.register(Post)
@@ -23,3 +23,12 @@ class ThumbnailAdmin(admin.ModelAdmin):
 class LikeAdmin(admin.ModelAdmin):
     list_display = ("id", "user__full_name", "post__title")
     ordering = ["-created_at"]
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "created_at")
+    ordering = [
+        "-created_at",
+    ]
+    readonly_fields = ("id",)

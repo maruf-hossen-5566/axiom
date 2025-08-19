@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useProfileStore } from "@/store/profileStore.js";
 import useUserStore from "@/store/userStore.js";
-import { CalendarDays, Ellipsis, MapPin } from "lucide-react";
+import { CalendarDays, Ellipsis, Link2, MapPin } from "lucide-react";
 import moment from "moment/moment.js";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -150,6 +150,15 @@ const Profile = () => {
 										<p>California, USA</p>
 									</div>
 									<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
+										<Link2 className="-rotate-45 size-[1.125rem]" />
+										<a
+											className="text-blue-500 hover:underline"
+											target="_blank"
+											href="https://x.com/sm_maruf_60447">
+											https://x.com/sm_maruf_60447
+										</a>
+									</div>
+									<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
 										<CalendarDays className="size-[1.125rem]" />
 										<p>
 											Joined{" "}
@@ -186,26 +195,30 @@ const Profile = () => {
 										loop={true}>
 										<DropdownMenuItem
 											onClick={handleCopyProfile}>
-											Copy profile
+											Copy profile link
 										</DropdownMenuItem>
-										<DropdownMenuItem
-											onClick={handleBlock}
-											variant={
-												blockedIds &&
+										{user?.id !== profile?.id && (
+											<DropdownMenuItem
+												onClick={handleBlock}
+												variant={
+													blockedIds &&
+													profile &&
+													blockedIds?.includes(
+														profile?.id
+													)
+														? "destructive"
+														: ""
+												}>
+												{blockedIds &&
 												profile &&
 												blockedIds?.includes(
 													profile?.id
 												)
-													? "destructive"
-													: ""
-											}>
-											{blockedIds &&
-											profile &&
-											blockedIds?.includes(profile?.id)
-												? "Unblock"
-												: "Block"}{" "}
-											@{profile?.username}
-										</DropdownMenuItem>
+													? "Unblock"
+													: "Block"}{" "}
+												@{profile?.username}
+											</DropdownMenuItem>
+										)}
 									</DropdownMenuContent>
 								</DropdownMenu>
 							</div>

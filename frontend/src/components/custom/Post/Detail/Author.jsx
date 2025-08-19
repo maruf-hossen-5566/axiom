@@ -43,7 +43,7 @@ const Author = () => {
 				</div>
 			) : (
 				<>
-					<div className="w-full flex items-center justify-start gap-2 hover:cursor-pointer ">
+					<div className="w-full flex items-center justify-start gap-2">
 						<Link
 							to={`/${post?.author?.username}`}
 							className="flex items-center justify-start gap-2 group">

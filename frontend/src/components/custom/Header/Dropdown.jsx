@@ -81,11 +81,11 @@ const ProfileDropdown = () => {
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
-				<DropdownMenuItem>
-					<>
+				<DropdownMenuItem asChild>
+					<Link to="/new">
 						<PenLine />
 						Create Post
-					</>
+					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem>
 					<>

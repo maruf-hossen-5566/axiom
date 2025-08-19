@@ -18,6 +18,7 @@ class Post(models.Model):
     )
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()
+    tags = models.ManyToManyField("Tag", related_name="tags", blank=True, null=True)
     published_at = models.DateTimeField(default=timezone.now)
 
     def generate_slug(self):
@@ -62,4 +63,10 @@ class Like(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Tag(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name = models.CharField(max_length=299, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
