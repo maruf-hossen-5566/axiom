@@ -20,12 +20,14 @@ import {
 } from "lucide-react";
 import { removeTokens } from "@/utils/token.js";
 import { useEditorStore } from "@/store/editorStore.js";
+import { usePostStore } from "@/store/postStore.js";
 import { Link } from "react-router-dom";
 
 const ProfileDropdown = () => {
 	const user = useUserStore((state) => state.user);
 	const logout = useUserStore((state) => state.logout);
 	const clearEditorStore = useEditorStore((state) => state?.clearEditorStore);
+	const clearPostStore = usePostStore((state) => state?.clearPostStore);
 
 	const handleLogout = () => {
 		if (!confirm("Do you really want to log out?")) {

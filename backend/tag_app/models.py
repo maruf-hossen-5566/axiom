@@ -1,0 +1,20 @@
+import uuid
+from django.db import models
+from django.utils.text import slugify
+
+
+class Tag(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    slug = models.CharField(max_length=999, default="")
+    name = models.CharField(max_length=299, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def generate_slug(self):
+        base_slug = slugify(self.name)
+        suffix = uuid.uuid4().hex[:8]
+        self.slug = f"{base_slug}-{suffix}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.generate_slug()
+        super().save(*args, **kwargs)

@@ -1,11 +1,11 @@
 import { getPostDetail } from "@/api/postApi.js";
 import Title from "@/components/custom/Post/Detail/Title.jsx";
-import { Button } from "@/components/ui/Button";
 import { usePostStore } from "@/store/postStore.js";
-import { ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import useUserStore from "@/store/userStore.js";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import BackButton from "../New/BackButton";
 import Author from "./Author";
 import { Content } from "./Content";
 import Engagement from "./Engagement";
@@ -13,10 +13,11 @@ import MoreFromAuthor from "./MoreFromAuthor";
 import MoreToRead from "./MoreToRead";
 import PostTags from "./PostTags";
 import Thumbnail from "./Thumbnail";
-import BackButton from "../New/BackButton";
 
 const PostDetail = () => {
 	const { author, slug } = useParams();
+	// const user = useUserStore((state) => state?.isAuthenticated);
+	const user = useUserStore();
 	const post = usePostStore((state) => state?.post);
 	const setPost = usePostStore((state) => state?.setPost);
 	const setIsLiked = usePostStore((state) => state?.setIsLiked);
@@ -44,7 +45,7 @@ const PostDetail = () => {
 			}
 		};
 		fetchPostDetail();
-	}, [author, slug]);
+	}, [author, slug, user]);
 
 	return (
 		<div className={"min-h-screen w-full mx-auto"}>

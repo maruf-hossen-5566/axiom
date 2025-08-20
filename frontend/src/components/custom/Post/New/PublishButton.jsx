@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -18,7 +19,7 @@ import { useEditorStore } from "@/store/editorStore.js";
 import { useNavigate } from "react-router-dom";
 
 const PublishButton = () => {
-	const post = useEditorStore();
+	const editor = useEditorStore();
 	const [loading, setLoading] = useState(false);
 	const thumbnail = useEditorStore((state) => state?.thumbnail);
 	const clearEditorStore = useEditorStore((state) => state?.clearEditorStore);
@@ -31,9 +32,9 @@ const PublishButton = () => {
 		setLoading(true);
 
 		const isEmpty =
-			post?.title?.trim() === "" ||
-			!post?.content?.content[0].content ||
-			!post?.content?.content[0]?.content[0]?.text?.trim();
+			editor?.title?.trim() === "" ||
+			!editor?.content?.content[0].content ||
+			!editor?.content?.content[0]?.content[0]?.text?.trim();
 
 		if (isEmpty) {
 			toast.warning("Please add Title and Content properly.");
@@ -42,8 +43,12 @@ const PublishButton = () => {
 		}
 
 		const data = {
-			title: post?.title,
-			content: JSON.stringify(post?.content),
+			title: editor?.title,
+			content: JSON.stringify(editor?.content),
+			publish: editor?.publish,
+			disableLike: editor?.disableLike,
+			disableComment: editor?.disableComment,
+			tag: editor?.tags,
 		};
 
 		if (thumbnail) {
@@ -120,42 +125,48 @@ const PublishButton = () => {
 								</div>
 								<Switch
 									id="publish"
-									checked={post?.publish}
+									checked={editor?.publish}
 									onCheckedChange={() => {
-										post?.setPublish(!post?.publish);
+										editor?.setPublish(!editor?.publish);
 									}}
 								/>
 							</div>
 							<div className="w-full flex items-start justify-between gap-2 ">
 								<div className="w-full flex flex-col items-start justify-center gap-1.5">
-									<Label htmlFor="show-likes">Like</Label>
+									<Label htmlFor="disable-like">
+										Disable Like
+									</Label>
 									<p className="text-xs text-muted-foreground">
 										Toggle to set the post as published and
 										visible or unpublished and private.
 									</p>
 								</div>
 								<Switch
-									id="show-likes"
-									checked={post?.showLikes}
+									id="disable-like"
+									checked={editor?.disableLike}
 									onCheckedChange={() => {
-										post?.setShowLikes(!post?.showLikes);
+										editor?.setDisableLike(
+											!editor?.disableLike
+										);
 									}}
 								/>
 							</div>
 							<div className="w-full flex items-start justify-between gap-2 ">
 								<div className="w-full flex flex-col items-start justify-center gap-1.5">
-									<Label htmlFor="comments">Comments</Label>
+									<Label htmlFor="disable-comment">
+										Disable Comment
+									</Label>
 									<p className="text-xs text-muted-foreground">
 										Toggle to set the post as published and
 										visible or unpublished and private.
 									</p>
 								</div>
 								<Switch
-									id="comments"
-									checked={post?.showComments}
+									id="disable-comment"
+									checked={editor?.disableComment}
 									onCheckedChange={() => {
-										post?.setShowComments(
-											!post?.showComments
+										editor?.setDisableComment(
+											!editor?.disableComment
 										);
 									}}
 								/>
@@ -190,40 +201,11 @@ const PublishButton = () => {
 								</div>
 							)}
 						</div>
-
-						<div className="w-full pb-8 flex flex-col items-start justify-between gap-2">
-							<div className="w-full flex flex-wrap gap-2">
-								<Label htmlFor="tags-input">Tags</Label>
-								<Input
-									type="text"
-									id="tags-input"
-									placeholder="Start typing to search..."
-									disabled={tags?.length >= 5}
-									onKeyDown={(e) => handleTagAdd(e)}
-								/>
-							</div>
-							{tags?.length > 0 && (
-								<div className="w-full mt-2 flex flex-wrap gap-2">
-									{tags?.map((tag) => (
-										<Button
-											className="rounded-full"
-											size="sm"
-											key={tag?.id}
-											onClick={() =>
-												handleRemoveTag(tag)
-											}>
-											{tag?.name}
-											<X />
-										</Button>
-									))}
-								</div>
-							)}
-						</div>
 					</div>
 					<SheetFooter>
 						<Button
 							disabled={loading}
-							// onClick={(e) => handlePublish(e)}
+							onClick={(e) => handlePublish(e)}
 							className="w-full rounded-full">
 							Publish
 						</Button>

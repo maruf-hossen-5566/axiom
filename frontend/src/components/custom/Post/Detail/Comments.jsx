@@ -67,44 +67,52 @@ const Comments = () => {
 					<SheetDescription></SheetDescription>
 				</SheetHeader>
 				<div className="grid flex-1 auto-rows-min gap-6">
-					<div className="grid gap-3 px-4">
-						<div className="w-full flex items-center justify-start gap-2">
-							<Avatar className="size-6">
-								<AvatarImage
-									src="https://github.com/shadcn.png"
-									alt={user?.username || "No username"}
-								/>
-								<AvatarFallback>
-									{user?.full_name[0]?.toUpperCase() ||
-										"Not full_name"}
-								</AvatarFallback>
-							</Avatar>
-							<p className="text-sm">
-								{user?.full_name || "Anonymous"}
-							</p>
+					{post && !post?.disableComment ? (
+						<div className="grid gap-3 px-4">
+							<div className="w-full flex items-center justify-start gap-2">
+								<Avatar className="size-6">
+									<AvatarImage
+										src="https://github.com/shadcn.png"
+										alt={user?.username || "No username"}
+									/>
+									<AvatarFallback>
+										{user?.full_name[0]?.toUpperCase() ||
+											"Not full_name"}
+									</AvatarFallback>
+								</Avatar>
+								<p className="text-sm">
+									{user?.full_name || "Anonymous"}
+								</p>
+							</div>
+							<textarea
+								placeholder="Write your comment..."
+								rows="5"
+								className="py-2 px-3 text-sm bg-input/30 border border-input outline-none rounded-sm resize-none"
+								onChange={(e) =>
+									setCommentText(e.target?.value)
+								}
+								value={commentText}></textarea>
+							<div className="w-full flex items-center justify-end gap-2">
+								<Button
+									variant="ghost"
+									className="rounded-full"
+									disabled={loading || !commentText.trim()}
+									onClick={() => setCommentText("")}>
+									Cancel
+								</Button>
+								<Button
+									onClick={handleAdd}
+									className="rounded-full"
+									disabled={loading || !commentText.trim()}>
+									Comment
+								</Button>
+							</div>
 						</div>
-						<textarea
-							placeholder="Write your comment..."
-							rows="5"
-							className="py-2 px-3 text-sm bg-input/30 border border-input outline-none rounded-sm resize-none"
-							onChange={(e) => setCommentText(e.target?.value)}
-							value={commentText}></textarea>
-						<div className="w-full flex items-center justify-end gap-2">
-							<Button
-								variant="ghost"
-								className="rounded-full"
-								disabled={loading || !commentText.trim()}
-								onClick={() => setCommentText("")}>
-								Cancel
-							</Button>
-							<Button
-								onClick={handleAdd}
-								className="rounded-full"
-								disabled={loading || !commentText.trim()}>
-								Comment
-							</Button>
-						</div>
-					</div>
+					) : (
+						<p className="py-12 px-4 text-sm text-center">
+							Comment has been disabled by the author.
+						</p>
+					)}
 					<div className="w-full block border-t px-4">
 						<div className="w-full divide-y ">
 							{comments &&

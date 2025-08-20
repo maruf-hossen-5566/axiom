@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "auth_app",
     "comment_app",
     "profile_app",
+    "tag_app",
 ]
 
 MIDDLEWARE = [

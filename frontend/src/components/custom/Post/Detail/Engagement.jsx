@@ -1,3 +1,8 @@
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
@@ -88,8 +93,9 @@ const Engagement = () => {
 				<div className="flex items-center justify-between sm:justify-start gap-2 ">
 					<Button
 						variant="ghost"
-						className="text-xs rounded-full "
-						onClick={handleLike}>
+						className="text-xs rounded-full disabled:cursor-not-allowed"
+						onClick={handleLike}
+						disabled={post && post?.disableLike}>
 						<>
 							<Heart fill={isLiked ? "currentColor" : "none"} />
 							{likeCount && likeCount > 0 ? (

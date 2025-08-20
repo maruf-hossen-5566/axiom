@@ -162,6 +162,10 @@ def like(request):
         )
 
     post = get_object_or_404(Post, id=post_id)
+
+    if post.disableComment:
+        return Response({"detail": "Likes are disabled."}, status.HTTP_400_BAD_REQUEST)
+
     is_liked = Like.objects.filter(post=post, user=request.user)
 
     if is_liked.exists():

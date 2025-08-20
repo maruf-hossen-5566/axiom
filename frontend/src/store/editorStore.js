@@ -17,8 +17,8 @@ const initialStore = {
 	},
 	tags: [],
 	publish: true,
-	showLikes: true,
-	showComments: true,
+	disableLike: false,
+	disableComment: false,
 };
 
 export const useEditorStore = create(
@@ -46,13 +46,13 @@ export const useEditorStore = create(
 				set({
 					publish: value,
 				}),
-			setShowLikes: (value) =>
+			setDisableLike: (value) =>
 				set({
-					showLikes: value,
+					disableLike: value,
 				}),
-			setShowComments: (value) =>
+			setDisableComment: (value) =>
 				set({
-					showComments: value,
+					disableComment: value,
 				}),
 			clearEditorStore: () =>
 				set({

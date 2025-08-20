@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 from utils.helpers import validate_image
 from .helper import optimize_image
+from tag_app.models import Tag
 
 User = get_user_model()
 
@@ -18,7 +19,10 @@ class Post(models.Model):
     )
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()
-    tags = models.ManyToManyField("Tag", related_name="tags", blank=True, null=True)
+    tags = models.ManyToManyField(Tag, related_name="tags", blank=True)
+    publish = models.BooleanField(default=True)
+    disableLike = models.BooleanField(default=False)
+    disableComment = models.BooleanField(default=False)
     published_at = models.DateTimeField(default=timezone.now)
 
     def generate_slug(self):
@@ -63,10 +67,4 @@ class Like(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class Tag(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = models.CharField(max_length=299, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
