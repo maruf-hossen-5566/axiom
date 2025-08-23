@@ -6,6 +6,7 @@ const initialStore = {
 	user: null,
 	followingIds: [],
 	blockedIds: [],
+	bookmarked: [],
 };
 
 const useUserStore = create(
@@ -20,6 +21,10 @@ const useUserStore = create(
 			setBlockedIds: (data) =>
 				set({
 					blockedIds: data,
+				}),
+			setBookmarked: (data) =>
+				set({
+					bookmarked: data,
 				}),
 			login: (userData) =>
 				set({

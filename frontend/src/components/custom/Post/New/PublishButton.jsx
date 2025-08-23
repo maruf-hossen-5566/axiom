@@ -46,8 +46,8 @@ const PublishButton = () => {
 			title: editor?.title,
 			content: JSON.stringify(editor?.content),
 			publish: editor?.publish,
-			disableLike: editor?.disableLike,
-			disableComment: editor?.disableComment,
+			disable_like: editor?.disableLike,
+			disable_comment: editor?.disableComment,
 			tag: editor?.tags,
 		};
 

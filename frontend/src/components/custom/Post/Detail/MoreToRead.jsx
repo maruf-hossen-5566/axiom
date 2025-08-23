@@ -29,7 +29,7 @@ const MoreToRead = () => {
 		if (post) {
 			fetchPosts();
 		}
-	}, [post]);
+	}, []);
 
 	return (
 		<>

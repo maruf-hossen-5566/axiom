@@ -1,3 +1,4 @@
+import pluralize from "pluralize";
 import { deleteComment, updateComment } from "@/api/commentApi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePostStore } from "@/store/postStore";
 import useUserStore from "@/store/userStore";
-import { Ellipsis } from "lucide-react";
+import {
+	ChevronDown,
+	ChevronUp,
+	Ellipsis,
+	Heart,
+	MessageCircle,
+	Reply,
+} from "lucide-react";
 import moment from "moment";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -21,6 +29,7 @@ export const SingleComment = ({ comment }) => {
 	const post = usePostStore((state) => state?.post);
 	const comments = usePostStore((state) => state?.comments);
 	const setComments = usePostStore((state) => state?.setComments);
+	const likeCount = usePostStore((state) => state?.likeCount);
 	const commentCount = usePostStore((state) => state?.commentCount);
 	const setCommentCount = usePostStore((state) => state?.setCommentCount);
 	const [updatingComment, setUpdatingComment] = useState(false);
@@ -29,6 +38,7 @@ export const SingleComment = ({ comment }) => {
 	);
 	const [loading, setLoading] = useState(false);
 	const updateCommentInputRef = useRef(null);
+	const [showReplies, setShowReplies] = useState(false);
 
 	const handleDelete = async () => {
 		if (!confirm("Do you really want to delete this comment?")) {
@@ -36,10 +46,10 @@ export const SingleComment = ({ comment }) => {
 		}
 
 		try {
-			const id = comment?.id;
-			await deleteComment({ id: id });
+			const commentId = comment?.id;
+			await deleteComment({ comment_id: commentId, post_id: post?.id });
 			const filteredComments = comments?.filter(
-				(comment) => comment?.id !== id
+				(comment) => comment?.id !== commentId
 			);
 			setComments(filteredComments);
 			setCommentCount(commentCount - 1);
@@ -50,12 +60,13 @@ export const SingleComment = ({ comment }) => {
 		}
 	};
 
-	const handleUpdate = async (e) => {
+	const handleUpdate = async () => {
 		setLoading(true);
 		try {
 			const data = {
 				...comment,
 				content: updateCommentText,
+				post_id: post?.id,
 			};
 
 			const res = await updateComment(data);
@@ -195,6 +206,37 @@ export const SingleComment = ({ comment }) => {
 							</DropdownMenu>
 						</div>
 						<p className="text-sm mt-2">{comment?.content}</p>
+						<div className="-ml-3 mt-5 w-full flex items-center justify-center gap-1.5">
+							<Button
+								className="text-xs rounded-full"
+								size="sm"
+								variant="ghost">
+								<Heart /> {likeCount}
+							</Button>
+							<Button
+								className="text-xs rounded-full"
+								size="sm"
+								variant="ghost">
+								<MessageCircle /> Reply
+							</Button>
+							<div className="ml-auto flex items-center justify-center">
+								<Button
+									className="text-xs rounded-full"
+									size="sm"
+									variant="ghost"
+									onClick={() =>
+										setShowReplies(!showReplies)
+									}>
+									{commentCount}{" "}
+									{pluralize("reply", commentCount)}
+									{showReplies ? (
+										<ChevronUp />
+									) : (
+										<ChevronDown />
+									)}
+								</Button>
+							</div>
+						</div>
 					</div>
 				)}
 			</div>

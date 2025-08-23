@@ -1,10 +1,10 @@
 import time
-import uuid
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404, get_list_or_404
+from .decorators import author_required, post_published_required
 from .models import Like, Post, Thumbnail
 from .serializers import PostSerializer, ThumbnailSerializer
 from utils.helpers import get_first_error
@@ -12,22 +12,32 @@ from django.db.models import Q
 
 
 @api_view(["GET"])
-def get(request, author_name=None, slug=None):
-    if author_name and slug:
-        post = get_object_or_404(Post, author__username=author_name, slug=slug)
-        is_liked = False
-        if request.user.is_authenticated:
-            is_liked = Like.objects.filter(post=post, user=request.user).exists()
-        serializer = PostSerializer(post, context={"request": request})
-        data = {
-            "post": serializer.data,
-            "isLiked": is_liked,
-        }
-        return Response(data, status=status.HTTP_200_OK)
-
+def get_posts(request):
     posts = get_list_or_404(Post.objects.order_by("-published_at"))
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response({"posts": serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_post_detail(request, author_name, slug):
+    post = get_object_or_404(Post, author__username=author_name, slug=slug)
+
+    is_liked = False
+    if request.user.is_authenticated:
+        if not post.published and post.author != request.user:
+            return Response(
+                {"detail": "No Post matches the given query."},
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+        is_liked = Like.objects.filter(post=post, user=request.user).exists()
+
+    serializer = PostSerializer(post, context={"request": request})
+    data = {
+        "post": serializer.data,
+        "is_liked": is_liked,
+    }
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -152,9 +162,10 @@ def delete(request):
 
 
 @api_view(["POST"])
+@post_published_required
 @permission_classes([IsAuthenticated])
 def like(request):
-    post_id: str = request.data.get("post_id")
+    post_id: str = request.data.get("post")
 
     if not (post_id and post_id.strip()):
         return Response(
@@ -163,7 +174,7 @@ def like(request):
 
     post = get_object_or_404(Post, id=post_id)
 
-    if post.disableComment:
+    if post.disable_like:
         return Response({"detail": "Likes are disabled."}, status.HTTP_400_BAD_REQUEST)
 
     is_liked = Like.objects.filter(post=post, user=request.user)
@@ -178,3 +189,57 @@ def like(request):
     data = {"is_liked": is_liked, "like_count": post.get_like_count()}
 
     return Response(data, status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@author_required
+@permission_classes([IsAuthenticated])
+def like_setting(request):
+    post_id = request.data.get("post_id")
+
+    post = get_object_or_404(Post, id=post_id)
+    post.disable_like = not post.disable_like
+    post.save()
+    post.refresh_from_db()
+    return Response(
+        {"detail": "Post settings updated.", "disable_like": post.disable_like},
+        status.HTTP_200_OK,
+    )
+
+
+@api_view(["POST"])
+@author_required
+@permission_classes([IsAuthenticated])
+def comment_setting(request):
+    post_id = request.data.get("post_id")
+
+    post = get_object_or_404(Post, id=post_id)
+    post.disable_comment = not post.disable_comment
+    post.save()
+    post.refresh_from_db()
+    return Response(
+        {
+            "detail": "Post settings updated successfully.",
+            "disable_comment": post.disable_comment,
+        },
+        status.HTTP_200_OK,
+    )
+
+
+@api_view(["POST"])
+@author_required
+@permission_classes([IsAuthenticated])
+def publish_setting(request):
+    post_id = request.data.get("post_id")
+
+    post = get_object_or_404(Post, id=post_id)
+    post.published = not post.published
+    post.save()
+    post.refresh_from_db()
+    return Response(
+        {
+            "detail": "Post settings updated successfully.",
+            "published": post.published,
+        },
+        status.HTTP_200_OK,
+    )

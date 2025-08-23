@@ -1,6 +1,6 @@
-import time
 from rest_framework.response import Response
 from rest_framework import status
+from post_app.urls import post_published_required
 from utils.helpers import get_first_error
 from comment_app.serializers import CommentSerializer
 from comment_app.models import Comment, Post
@@ -20,6 +20,7 @@ def get(request):
 
 
 @api_view(["POST", "PUT"])
+@post_published_required
 @permission_classes([IsAuthenticated])
 def add(request):
     post_id = request.data.get("post")
@@ -30,6 +31,13 @@ def add(request):
         )
 
     serializer = CommentSerializer(data=request.data, context={"request": request})
+
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.disable_comment:
+        return Response(
+            {"detail": "Comments are disabled."}, status.HTTP_400_BAD_REQUEST
+        )
 
     if request.method == "PUT":
         id = request.data.get("id")
@@ -52,16 +60,20 @@ def add(request):
     return Response({"detail": first_error}, status.HTTP_400_BAD_REQUEST)
 
 
-@permission_classes([IsAuthenticated])
 @api_view(["POST"])
+@post_published_required
+@permission_classes([IsAuthenticated])
 def delete(request):
-    id = request.data.get("id")
-    comment = get_object_or_404(Comment, id=id)
-    if request.user == comment.author:
-        comment.delete()
-        return Response(status.HTTP_204_NO_CONTENT)
+    comment_id = request.data.get("comment_id")
 
-    return Response(
-        {"detail": "Access Denied – You don’t have permission to perform this action."},
-        status.HTTP_403_FORBIDDEN,
-    )
+    comment = get_object_or_404(Comment, id=comment_id, author=request.user)
+    comment.delete()
+    return Response(status.HTTP_204_NO_CONTENT)
+
+    # if request.user == comment.author:
+    # return Response(status.HTTP_204_NO_CONTENT)
+
+    # return Response(
+    #     {"detail": "Access Denied – You don’t have permission to perform this action."},
+    #     status.HTTP_403_FORBIDDEN,
+    # )

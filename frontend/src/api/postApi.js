@@ -40,10 +40,26 @@ export const likePost = (data) => {
 	return apiClient.post("posts/like/", data);
 };
 
+export const bookmarkPost = (data) => {
+	return apiClient.post("posts/bookmark/", data);
+};
+
 export const moreFromAuthor = (data) => {
 	return apiClient.get("posts/more-from-author/", { params: data });
 };
 
 export const moreToRead = (data) => {
 	return apiClient.get("posts/more-to-read/", { params: data });
+};
+
+export const likeSetting = (data) => {
+	return apiClient.post("posts/like-setting/", data);
+};
+
+export const commentSetting = (data) => {
+	return apiClient.post("posts/comment-setting/", data);
+};
+
+export const publishSetting = (data) => {
+	return apiClient.post("posts/publish-setting/", data);
 };

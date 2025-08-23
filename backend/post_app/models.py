@@ -20,9 +20,9 @@ class Post(models.Model):
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="tags", blank=True)
-    publish = models.BooleanField(default=True)
-    disableLike = models.BooleanField(default=False)
-    disableComment = models.BooleanField(default=False)
+    published = models.BooleanField(default=True)
+    disable_like = models.BooleanField(default=False)
+    disable_comment = models.BooleanField(default=False)
     published_at = models.DateTimeField(default=timezone.now)
 
     def generate_slug(self):

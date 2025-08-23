@@ -15,6 +15,7 @@ import { usePostStore } from "@/store/postStore";
 import { SingleComment } from "./SingleComment";
 import { addComment, getComments } from "@/api/commentApi";
 import { toast } from "sonner";
+import { MessageCircleOff } from "lucide-react";
 
 const Comments = () => {
 	const [commentText, setCommentText] = useState("");
@@ -38,7 +39,7 @@ const Comments = () => {
 			}
 		};
 		fetchComments();
-	}, [post]);
+	}, []);
 
 	const handleAdd = async (e) => {
 		e.preventDefault();
@@ -67,7 +68,7 @@ const Comments = () => {
 					<SheetDescription></SheetDescription>
 				</SheetHeader>
 				<div className="grid flex-1 auto-rows-min gap-6">
-					{post && !post?.disableComment ? (
+					{post && !post?.disable_comment && post?.published ? (
 						<div className="grid gap-3 px-4">
 							<div className="w-full flex items-center justify-start gap-2">
 								<Avatar className="size-6">
@@ -109,8 +110,9 @@ const Comments = () => {
 							</div>
 						</div>
 					) : (
-						<p className="py-12 px-4 text-sm text-center">
-							Comment has been disabled by the author.
+						<p className="py-12 px-4 flex flex-col items-center justify-center gap-4 text-sm text-center">
+							<MessageCircleOff />
+							Comment has been disabled for this post.
 						</p>
 					)}
 					<div className="w-full block border-t px-4">

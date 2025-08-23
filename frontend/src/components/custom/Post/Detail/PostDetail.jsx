@@ -1,3 +1,5 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { getPostDetail } from "@/api/postApi.js";
 import Title from "@/components/custom/Post/Detail/Title.jsx";
 import { usePostStore } from "@/store/postStore.js";
@@ -13,10 +15,11 @@ import MoreFromAuthor from "./MoreFromAuthor";
 import MoreToRead from "./MoreToRead";
 import PostTags from "./PostTags";
 import Thumbnail from "./Thumbnail";
+import { Info } from "lucide-react";
+import UnpublishedAlert from "./UnpublishedAlert";
 
 const PostDetail = () => {
 	const { author, slug } = useParams();
-	// const user = useUserStore((state) => state?.isAuthenticated);
 	const user = useUserStore();
 	const post = usePostStore((state) => state?.post);
 	const setPost = usePostStore((state) => state?.setPost);
@@ -32,7 +35,7 @@ const PostDetail = () => {
 				clearPostStore();
 				const res = await getPostDetail(author, slug);
 				setPost(res?.data?.post);
-				setIsLiked(res?.data?.isLiked);
+				setIsLiked(res?.data?.is_liked);
 				setLikeCount(res?.data?.post?.like_count);
 				setCommentCount(res?.data?.post?.comment_count);
 			} catch (error) {
@@ -57,21 +60,20 @@ const PostDetail = () => {
 						loading={!post}
 					/>
 				</div>
+
+				<UnpublishedAlert />
+
 				<Thumbnail />
-				<div
-					className={
-						// "max-w-screen-md w-full pb-24 mx-auto px-6 xs:px-12 divide-y divide-accent"
-						"max-w-screen-md w-full mx-auto px-6 xs:px-12 divide-y divide-accent"
-					}>
+				<div className="max-w-screen-md w-full mx-auto px-6 xs:px-12 divide-y divide-accent">
 					<Author />
 					<Title />
 					<Content />
 					{post && (
-						<div className={"w-full sticky bottom-0 z-50 "}>
+						<div className={"w-full sticky bottom-0 z-50"}>
 							<Engagement />
 						</div>
 					)}
-					<div className={"w-full "}>
+					<div className="w-full">
 						<PostTags />
 					</div>
 				</div>

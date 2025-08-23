@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path("get/", get_tags, name="get_tags"),
-    path("get/<str:slug>/", get_tags, name="get_tag"),
+    path("add/", get_tags, name="add_tag"),
+    path("", get_tags, name="get_tags"),
+    path("<str:slug>/", get_tags, name="get_tag"),
 ]

@@ -29,7 +29,7 @@ const MoreFromAuthor = () => {
 		if (post) {
 			fetchPosts();
 		}
-	}, [post]);
+	}, []);
 
 	return (
 		<>
