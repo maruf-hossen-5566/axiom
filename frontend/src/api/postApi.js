@@ -41,7 +41,7 @@ export const likePost = (data) => {
 };
 
 export const bookmarkPost = (data) => {
-	return apiClient.post("posts/bookmark/", data);
+	return apiClient.post("bookmark/add/", data);
 };
 
 export const moreFromAuthor = (data) => {

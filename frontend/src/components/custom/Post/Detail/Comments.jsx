@@ -62,14 +62,14 @@ const Comments = () => {
 
 	return (
 		<>
-			<SheetContent className="z-[100] overflow-y-auto pb-12">
-				<SheetHeader>
+			<SheetContent className="max-w-full xs:max-w-md w-full z-[100] overflow-y-auto pb-12">
+				<SheetHeader className="px-6">
 					<SheetTitle>Comments</SheetTitle>
 					<SheetDescription></SheetDescription>
 				</SheetHeader>
 				<div className="grid flex-1 auto-rows-min gap-6">
 					{post && !post?.disable_comment && post?.published ? (
-						<div className="grid gap-3 px-4">
+						<div className="grid gap-3 px-6">
 							<div className="w-full flex items-center justify-start gap-2">
 								<Avatar className="size-6">
 									<AvatarImage
@@ -110,12 +110,12 @@ const Comments = () => {
 							</div>
 						</div>
 					) : (
-						<p className="py-12 px-4 flex flex-col items-center justify-center gap-4 text-sm text-center">
+						<p className="py-12 px-6 flex flex-col items-center justify-center gap-4 text-sm text-center">
 							<MessageCircleOff />
 							Comment has been disabled for this post.
 						</p>
 					)}
-					<div className="w-full block border-t px-4">
+					<div className="w-full block border-t px-6">
 						<div className="w-full divide-y ">
 							{comments &&
 								comments?.map((comment) => (

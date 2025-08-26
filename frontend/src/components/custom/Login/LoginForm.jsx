@@ -14,6 +14,7 @@ const LoginForm = () => {
 	const login = useUserStore((state) => state.login);
 	const setFollowingIds = useUserStore((state) => state.setFollowingIds);
 	const setBlockedIds = useUserStore((state) => state.setBlockedIds);
+	const setBookmarkedIds = useUserStore((state) => state.setBookmarkedIds);
 	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
@@ -30,6 +31,7 @@ const LoginForm = () => {
 			login(res?.data?.user);
 			setFollowingIds(res?.data?.following_ids);
 			setBlockedIds(res?.data?.blocked_ids);
+			setBookmarkedIds(res?.data?.bookmark_ids);
 			setTokens(res?.data?.tokens);
 			localStorage.setItem("reloadTab", Date.now().toString());
 			navigate("/");

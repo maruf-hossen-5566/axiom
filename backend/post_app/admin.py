@@ -6,6 +6,7 @@ from .models import Like, Post, Thumbnail
 class PostAdmin(admin.ModelAdmin):
     list_display = ("id", "author", "title")
     prepopulated_fields = {"slug": ("title",)}
+    search_fields = ("title",)
     ordering = [
         "-published_at",
     ]

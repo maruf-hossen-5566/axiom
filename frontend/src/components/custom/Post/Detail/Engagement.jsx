@@ -27,9 +27,9 @@ const Engagement = () => {
 	const user = useUserStore((state) => state?.user);
 	const comments = usePostStore((state) => state?.comments);
 	const post = usePostStore((state) => state?.post);
-	const bookmarked = usePostStore((state) => state?.bookmarked);
+	const bookmarkedIds = useUserStore((state) => state?.bookmarkedIds);
+	const setBookmarkedIds = useUserStore((state) => state?.setBookmarkedIds);
 	const setPost = usePostStore((state) => state?.setPost);
-	const setBookmarked = usePostStore((state) => state?.setBookmarked);
 	const isLiked = usePostStore((state) => state?.isLiked);
 	const setIsLiked = usePostStore((state) => state?.setIsLiked);
 	const likeCount = usePostStore((state) => state?.likeCount);
@@ -54,7 +54,10 @@ const Engagement = () => {
 	const handleBookmark = async () => {
 		try {
 			const res = await bookmarkPost({ post_id: post?.id });
+			setBookmarkedIds(res?.data?.bookmarks);
+			toast.info(res?.data?.detail || "Bookmark saved/removed.");
 		} catch (error) {
+			// console.error("Bookmark error: ", error);
 			toast.error(error?.response?.data?.detail || "Failed to bookmark.");
 		}
 	};
@@ -137,132 +140,138 @@ const Engagement = () => {
 	};
 
 	return (
-		<>
-			<div className="bg-background block w-full border-t py-4 ">
-				<div className="flex items-center justify-between sm:justify-start gap-2 ">
-					<Button
-						variant="ghost"
-						className="text-xs rounded-full disabled:cursor-not-allowed"
-						onClick={handleLike}
-						disabled={
-							post && (post?.disable_like || !post?.published)
-						}>
-						<>
-							<Heart fill={isLiked ? "currentColor" : "none"} />
-							{likeCount && likeCount > 0 ? (
-								likeCount
-							) : (
-								<span className="max-sm:hidden">Like</span>
+		<div className="max-w-screen-md bg-background block w-full border-t py-4 max-xs:px-3 max-sm:px-9 border-b">
+			<div className="flex items-center justify-between sm:justify-start gap-4 ">
+				<Button
+					variant="ghost"
+					className="text-xs rounded-full disabled:cursor-not-allowed"
+					onClick={handleLike}
+					disabled={post && (post?.disable_like || !post?.published)}>
+					<>
+						<Heart fill={isLiked ? "currentColor" : "none"} />
+						{likeCount && likeCount > 0 ? (
+							likeCount
+						) : (
+							<span className="max-sm:hidden">Like</span>
+						)}
+					</>
+				</Button>
+				<Sheet>
+					<SheetTrigger asChild>
+						<Button
+							variant="ghost"
+							className={`text-xs rounded-full  ${
+								comments &&
+								!comments?.length > 0 &&
+								" max-sm:size-9"
+							}`}
+							disabled={post && !post?.published}>
+							<>
+								<MessageCircle />
+								{commentCount > 0 ? (
+									commentCount
+								) : (
+									<span className="max-sm:hidden">
+										Comment
+									</span>
+								)}
+							</>
+						</Button>
+					</SheetTrigger>
+					<Comments />
+				</Sheet>
+				<Button
+					variant="ghost"
+					size={
+						bookmarkedIds && bookmarkedIds?.includes(post?.id)
+							? "icon"
+							: "default"
+					}
+					className="text-xs max-sm:size-9 sm:ml-auto rounded-full "
+					onClick={handleBookmark}>
+					<>
+						<Bookmark
+							fill={
+								bookmarkedIds &&
+								bookmarkedIds?.includes(post?.id)
+									? "currentColor"
+									: "none"
+							}
+						/>
+						{bookmarkedIds &&
+							!bookmarkedIds?.includes(post?.id) && (
+								<span className="max-sm:hidden">Bookmark</span>
 							)}
-						</>
-					</Button>
-					<Sheet>
-						<SheetTrigger asChild>
-							<Button
-								variant="ghost"
-								className={`text-xs rounded-full  ${
-									comments &&
-									!comments?.length > 0 &&
-									" max-sm:size-9"
-								}`}
-								disabled={post && !post?.published}>
-								<>
-									<MessageCircle />
-									{commentCount > 0 ? (
-										commentCount
-									) : (
-										<span className="max-sm:hidden">
-											Comment
-										</span>
-									)}
-								</>
-							</Button>
-						</SheetTrigger>
-						<Comments />
-					</Sheet>
-					<Button
-						variant="ghost"
-						className="text-xs max-sm:size-9 sm:ml-auto rounded-full "
-						onClick={() => setBookmarked(!bookmarked)}>
-						<>
-							<Bookmark
-								fill={bookmarked ? "currentColor" : "none"}
-							/>
-							<span className="max-sm:hidden">
-								{bookmarked ? "Bookmarked" : "Bookmark"}
-							</span>
-						</>
-					</Button>
-					<Button
-						variant="ghost"
-						className="text-xs max-sm:size-9 rounded-full "
-						onClick={handleShare}>
-						<>
-							<Share />
-							<span className="max-sm:hidden">Share</span>
-						</>
-					</Button>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								size="icon"
-								variant="ghost"
-								className="text-xs rounded-full ">
-								<Ellipsis />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent
-							className="w-56 z-[100]"
-							align="end">
-							{user && user?.id === post?.author?.id && (
-								<>
-									<DropdownMenuItem>Edit</DropdownMenuItem>
-									<DropdownMenuSeparator />
-									<DropdownMenuItem
-										onClick={handlePublishSetting}>
-										{post && post?.published
-											? "Unpublish"
-											: "Publish"}
-									</DropdownMenuItem>
-									<DropdownMenuItem
-										onClick={handleLikeSetting}>
-										{post && post?.disable_like
-											? "Enable like"
-											: "Disable like"}
-									</DropdownMenuItem>
-									<DropdownMenuItem
-										onClick={handleCommentSetting}>
-										{post && post?.disable_comment
-											? "Enable comment"
-											: "Disable comment"}
-									</DropdownMenuItem>
-									<DropdownMenuSeparator />
-								</>
-							)}
-							{user && user?.id === post?.author?.id ? (
+					</>
+				</Button>
+				<Button
+					variant="ghost"
+					className="text-xs max-sm:size-9 rounded-full "
+					onClick={handleShare}>
+					<>
+						<Share />
+						<span className="max-sm:hidden">Share</span>
+					</>
+				</Button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							size="icon"
+							variant="ghost"
+							className="text-xs rounded-full ">
+							<Ellipsis />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent
+						className="w-56 z-[100]"
+						align="end">
+						{user && user?.id === post?.author?.id && (
+							<>
+								<DropdownMenuItem>Edit</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									onClick={handlePublishSetting}>
+									{post && post?.published
+										? "Unpublish"
+										: "Publish"}
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={handleLikeSetting}>
+									{post && post?.disable_like
+										? "Enable like"
+										: "Disable like"}
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={handleCommentSetting}>
+									{post && post?.disable_comment
+										? "Enable comment"
+										: "Disable comment"}
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+							</>
+						)}
+						{user && user?.id === post?.author?.id ? (
+							<DropdownMenuItem
+								variant="destructive"
+								onClick={handleDelete}>
+								Delete
+							</DropdownMenuItem>
+						) : (
+							<>
 								<DropdownMenuItem
 									variant="destructive"
-									onClick={handleDelete}>
-									Delete
+									onClick={() =>
+										alert(
+											"It's just for demonstration purpose."
+										)
+									}>
+									Report
 								</DropdownMenuItem>
-							) : (
-								<>
-									<DropdownMenuItem
-										variant="destructive"
-										onClick={() =>
-											alert(
-												"It's just for demonstration purpose."
-											)
-										}>
-										Report
-									</DropdownMenuItem>
-								</>
-							)}
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
+							</>
+						)}
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
-		</>
+		</div>
 	);
 };
 

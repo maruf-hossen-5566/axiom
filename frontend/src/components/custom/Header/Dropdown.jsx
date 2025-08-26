@@ -1,3 +1,4 @@
+import useThemeStore from "@/store/themeStore.js";
 import {
 	DropdownMenuContent,
 	DropdownMenuGroup,
@@ -15,19 +16,24 @@ import {
 	Bell,
 	Bookmark,
 	LayoutDashboard,
+	Moon,
 	PenLine,
 	Settings,
+	Sun,
 } from "lucide-react";
 import { removeTokens } from "@/utils/token.js";
 import { useEditorStore } from "@/store/editorStore.js";
 import { usePostStore } from "@/store/postStore.js";
 import { Link } from "react-router-dom";
+import ThemeButton from "./ThemeButton";
 
 const ProfileDropdown = () => {
 	const user = useUserStore((state) => state.user);
 	const logout = useUserStore((state) => state.logout);
 	const clearEditorStore = useEditorStore((state) => state?.clearEditorStore);
 	const clearPostStore = usePostStore((state) => state?.clearPostStore);
+	const isDarkMode = useThemeStore((state) => state.isDarkMode);
+	const setIsDarkMode = useThemeStore((state) => state.setIsDarkMode);
 
 	const handleLogout = () => {
 		if (!confirm("Do you really want to log out?")) {
@@ -113,6 +119,14 @@ const ProfileDropdown = () => {
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
+				<DropdownMenuItem onClick={() => setIsDarkMode(!isDarkMode)}>
+					{isDarkMode ? (
+						<Sun className={"pointer-events-none"} />
+					) : (
+						<Moon className={"pointer-events-none"} />
+					)}{" "}
+					Theme
+				</DropdownMenuItem>
 				<DropdownMenuItem>
 					<>
 						<Bell />

@@ -14,7 +14,7 @@ from django.db.models import Q
 @api_view(["GET"])
 def get(request):
     post_id = request.query_params.get("post")
-    comments = Comment.objects.filter(Q(post__id=post_id))
+    comments = Comment.objects.filter(Q(post__id=post_id) & Q(parent__isnull=True))
     serializer = CommentSerializer(comments, many=True, context={"request": request})
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -77,3 +77,11 @@ def delete(request):
     #     {"detail": "Access Denied – You don’t have permission to perform this action."},
     #     status.HTTP_403_FORBIDDEN,
     # )
+
+
+@api_view(["POST"])
+@post_published_required
+@permission_classes([IsAuthenticated])
+def like(request):
+    comment_id = request.data.get("comment_id")
+    pass

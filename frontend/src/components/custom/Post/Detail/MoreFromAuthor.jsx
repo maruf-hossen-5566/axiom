@@ -2,7 +2,7 @@ import SinglePost from "@/components/custom/Post/Single/SinglePost";
 import { useEffect, useState } from "react";
 import { moreFromAuthor } from "@/api/postApi";
 import { Button } from "@/components/ui/Button";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { usePostStore } from "@/store/postStore";
 import { toast } from "sonner";
 import NoContent from "./NoContent";
@@ -10,6 +10,7 @@ import NoContent from "./NoContent";
 const MoreFromAuthor = () => {
 	const [posts, setPosts] = useState([]);
 	const post = usePostStore((state) => state?.post);
+	const { author, slug } = useParams();
 
 	useEffect(() => {
 		const fetchPosts = async () => {
@@ -29,11 +30,11 @@ const MoreFromAuthor = () => {
 		if (post) {
 			fetchPosts();
 		}
-	}, []);
+	}, [post?.id]);
 
 	return (
 		<>
-			{posts.length > 0 && (
+			{posts && posts.length > 0 && (
 				<div className="w-full border-t">
 					<div className="w-full max-w-screen-md mx-auto my-16">
 						<div className="text-xl font-medium mb-8 mx-6 xs:mx-12">

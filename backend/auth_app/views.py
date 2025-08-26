@@ -44,12 +44,14 @@ def login(request):
         serializer = UserSerializer(user, context={"request": request})
         following_ids = user.get_following_ids()
         blocked_ids = user.get_blocked_ids()
+        bookmark_ids = user.bookmarks.values_list("post__id", flat=True)
 
         data = {
             "detail": "Log in was successful.",
             "user": serializer.data,
             "following_ids": following_ids,
             "blocked_ids": blocked_ids,
+            "bookmark_ids": bookmark_ids,
             "tokens": {"access": str(refresh.access_token), "refresh": str(refresh)},
         }
         return Response(data, status.HTTP_200_OK)

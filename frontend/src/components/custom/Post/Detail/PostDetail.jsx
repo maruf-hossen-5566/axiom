@@ -48,7 +48,7 @@ const PostDetail = () => {
 			}
 		};
 		fetchPostDetail();
-	}, [author, slug, user]);
+	}, [author, slug]);
 
 	return (
 		<div className={"min-h-screen w-full mx-auto"}>
@@ -68,17 +68,19 @@ const PostDetail = () => {
 					<Author />
 					<Title />
 					<Content />
-					{post && (
-						<div className={"w-full sticky bottom-0 z-50"}>
-							<Engagement />
-						</div>
-					)}
-					<div className="w-full">
-						<PostTags />
+				</div>
+				{post && (
+					<div
+						className={
+							"max-w-screen-md w-full sm:px-12 mx-auto sticky bottom-0 z-50"
+						}>
+						<Engagement />
 					</div>
+				)}
+				<div className="max-w-screen-md w-full mx-auto px-6 xs:px-12 divide-y divide-accent">
+					<PostTags />
 				</div>
 				<MoreFromAuthor />
-
 				<MoreToRead />
 				<div className={"w-full py-4"}></div>
 			</>

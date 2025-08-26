@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "comment_app",
     "profile_app",
     "tag_app",
+    "bookmark_app",
 ]
 
 MIDDLEWARE = [

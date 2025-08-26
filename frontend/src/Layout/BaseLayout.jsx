@@ -19,8 +19,10 @@ const BaseLayout = () => {
 	useLayoutEffect(() => {
 		if (isDarkMode) {
 			document.documentElement.classList.add("dark");
+		} else {
+			document.documentElement.classList.remove("dark");
 		}
-	}, []);
+	}, [isDarkMode]);
 
 	return (
 		<div className={"bg-background min-h-screen"}>

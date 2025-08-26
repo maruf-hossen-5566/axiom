@@ -2,7 +2,7 @@ import { SinglePostSkeleton } from "@/components/custom/Skeleton/SinglePostSkele
 import SinglePost from "@/components/custom/Post/Single/SinglePost";
 import { useEffect, useState } from "react";
 import { moreToRead } from "@/api/postApi";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { usePostStore } from "@/store/postStore.js";
@@ -10,6 +10,7 @@ import { usePostStore } from "@/store/postStore.js";
 const MoreToRead = () => {
 	const [posts, setPosts] = useState([]);
 	const post = usePostStore((state) => state?.post);
+	const { author, slug } = useParams();
 
 	useEffect(() => {
 		const fetchPosts = async () => {
@@ -29,36 +30,35 @@ const MoreToRead = () => {
 		if (post) {
 			fetchPosts();
 		}
-	}, []);
+	}, [post?.id]);
 
 	return (
-		<>
-			{posts.length > 0 && (
-				<div className="w-full border-t">
-					<div className="w-full max-w-screen-md mx-auto my-16">
-						<div className="text-xl font-medium mb-8 mx-6 xs:mx-12">
-							Recommended for you
-						</div>
-						<div className="w-full grid grid-cols-1 sm:grid-cols-2 xs:px-6">
-							{posts?.map((post) => (
-								<SinglePost
-									post={post}
-									key={post?.id}
-								/>
-							))}
-						</div>
-						<div className="w-full px-6 xs:px-12 mt-12">
-							<Button
-								asChild
-								variant="outline"
-								className="rounded-full">
-								<Link to="/">More recommendations</Link>
-							</Button>
-						</div>
+		posts &&
+		posts.length > 0 && (
+			<div className="w-full border-t">
+				<div className="w-full max-w-screen-md mx-auto my-16">
+					<div className="text-xl font-medium mb-8 mx-6 xs:mx-12">
+						Recommended for you
+					</div>
+					<div className="w-full grid grid-cols-1 sm:grid-cols-2 xs:px-6">
+						{posts?.map((post) => (
+							<SinglePost
+								post={post}
+								key={post?.id}
+							/>
+						))}
+					</div>
+					<div className="w-full px-6 xs:px-12 mt-12">
+						<Button
+							asChild
+							variant="outline"
+							className="rounded-full">
+							<Link to="/">More recommendations</Link>
+						</Button>
 					</div>
 				</div>
-			)}
-		</>
+			</div>
+		)
 	);
 };
 

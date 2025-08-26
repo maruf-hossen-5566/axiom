@@ -9,6 +9,7 @@ urlpatterns = [
     path("api/auth/", include("auth_app.urls")),
     path("api/posts/", include("post_app.urls")),
     path("api/comments/", include("comment_app.urls")),
+    path("api/bookmark/", include("bookmark_app.urls")),
     path("api/profile/", include("profile_app.urls")),
     path("api/tags/", include("tag_app.urls")),
     # --------------------------------------------

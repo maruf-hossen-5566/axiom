@@ -85,9 +85,14 @@ def add(request):
         serializer = PostSerializer(post, data=data, context={"request": request})
 
     if serializer.is_valid():
-        serializer.save()
+        saved_post = serializer.save()
+        message = "Post published successfully."
+
+        if not saved_post.published:  # type: ignore
+            message = "Draft saved successfully."
+
         return Response(
-            {"detail": "Post published successfully.", "post": serializer.data},
+            {"detail": message, "post": serializer.data},
             status=status.HTTP_201_CREATED,
         )
 

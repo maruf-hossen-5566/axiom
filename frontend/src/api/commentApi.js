@@ -15,3 +15,7 @@ export const updateComment = (data) => {
 export const deleteComment = (data) => {
 	return apiClient.post("comments/delete/", data);
 };
+
+export const likeComment = (data) => {
+	return apiClient.post("comments/like/", data);
+};

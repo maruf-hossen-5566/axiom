@@ -43,7 +43,9 @@ const Author = () => {
 				</div>
 			) : (
 				<>
-					<div className="w-full flex items-center justify-start gap-2">
+					<div
+						className="w-full flex items-center justify-start gap-2
+                    ">
 						<Link
 							to={`/${post?.author?.username}`}
 							className="flex items-center justify-start gap-2 group">
@@ -61,10 +63,10 @@ const Author = () => {
 										"A"}
 								</AvatarFallback>
 							</Avatar>
-							<div className="">
+							<div className="w-full">
 								<p
 									className={
-										"text-sm group-hover:underline font-semibold"
+										"text-sm text-nowrap group-hover:underline font-semibold"
 									}>{`${
 									post?.author?.full_name || "No Name"
 								}`}</p>
@@ -98,13 +100,19 @@ const Author = () => {
 								<Link to=".">Edit profile</Link>
 							</Button>
 						)}
-						<p className={"ml-4 text-xs text-muted-foreground"}>
+						<p
+							className={
+								"max-sm:hidden ml-4 text-xs text-muted-foreground"
+							}>
 							{`${moment(post?.published_at).format(
 								"MMM D, YYYY"
 							)}`}
 						</p>
-						<div className="size-1 mx-1.5 bg-accent rounded-full"></div>
-						<p className={"text-xs text-muted-foreground"}>
+						<div className="max-sm:hidden size-1 mx-1.5 bg-accent rounded-full"></div>
+						<p
+							className={
+								"max-sm:hidden text-xs text-muted-foreground"
+							}>
 							5 min read
 						</p>
 					</div>

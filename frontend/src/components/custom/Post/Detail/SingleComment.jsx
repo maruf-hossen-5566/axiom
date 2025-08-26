@@ -1,5 +1,5 @@
 import pluralize from "pluralize";
-import { deleteComment, updateComment } from "@/api/commentApi";
+import { deleteComment, updateComment, likeComment } from "@/api/commentApi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,56 +85,42 @@ export const SingleComment = ({ comment }) => {
 		setLoading(false);
 	};
 
+	const handleLike = async () => {
+		try {
+			const res = await likeComment({
+				post_id: post?.id,
+				comment_id: comment?.id,
+			});
+		} catch (error) {
+			console.error("Like error: ", error);
+			toast.error(error?.response?.data?.detail || "Failed to like.");
+		}
+	};
+
 	return (
 		<>
-			<div className="w-full py-8 flex items-start gap-2">
-				<Avatar className="size-6">
-					<AvatarImage
-						src="https://github.com/shadcn.png"
-						alt={
-							(comment && comment?.author?.username) ||
-							"Anonymous"
-						}
-					/>
-					<AvatarFallback>
-						{(comment &&
-							comment?.author?.full_name[0].toUpperCase()) ||
-							"A"}
-					</AvatarFallback>
-				</Avatar>
-				{updatingComment ? (
-					<div className="w-full flex flex-col items-center justify-start gap-3">
-						<textarea
-							placeholder="Write your comment..."
-							rows="5"
-							className="w-full py-2 px-3 text-sm bg-input/30 border border-input outline-none rounded-sm resize-none"
-							onChange={(e) =>
-								setUpdateCommentText(e.target?.value)
-							}
-							value={updateCommentText}></textarea>
-						<div className="w-full flex items-center justify-between gap-2">
-							<Button
-								variant="ghost"
-								className="rounded-full"
-								onClick={() => setUpdatingComment(false)}>
-								Cancel
-							</Button>
-							<Button
-								onClick={handleUpdate}
-								className="rounded-full"
-								disabled={
-									loading ||
-									!updateCommentText?.trim() ||
-									updateCommentText?.trim() ===
-										comment?.content
-								}>
-								Update
-							</Button>
-						</div>
-					</div>
-				) : (
+			<div className="w-full pt-5 pb-5 flex items-start gap-2">
+				{!updatingComment ? (
 					<div className="w-full">
 						<div className="w-full flex items-start justify-between gap-4">
+							<Avatar className="size-7 self-center">
+								<AvatarImage
+									src={
+										comment?.author?.avatar ||
+										"https://github.com/shadcn.png"
+									}
+									alt={
+										(comment &&
+											comment?.author?.username) ||
+										"Anonymous"
+									}
+								/>
+								<AvatarFallback>
+									{(comment &&
+										comment?.author?.full_name[0].toUpperCase()) ||
+										"A"}
+								</AvatarFallback>
+							</Avatar>
 							<div className="w-full flex flex-col">
 								<div className="flex items-center gap-2">
 									<p className="text-sm font-medium">
@@ -205,37 +191,88 @@ export const SingleComment = ({ comment }) => {
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>
+
 						<p className="text-sm mt-2">{comment?.content}</p>
-						<div className="-ml-3 mt-5 w-full flex items-center justify-center gap-1.5">
-							<Button
-								className="text-xs rounded-full"
-								size="sm"
-								variant="ghost">
-								<Heart /> {likeCount}
-							</Button>
-							<Button
-								className="text-xs rounded-full"
-								size="sm"
-								variant="ghost">
-								<MessageCircle /> Reply
-							</Button>
-							<div className="ml-auto flex items-center justify-center">
+
+						<div className="mt-5 w-full flex items-center justify-start gap-4">
+							<div className="w-max flex items-center ">
 								<Button
-									className="text-xs rounded-full"
-									size="sm"
+									className="text-xs size-8 -ml-2.5 rounded-full"
 									variant="ghost"
-									onClick={() =>
-										setShowReplies(!showReplies)
-									}>
-									{commentCount}{" "}
-									{pluralize("reply", commentCount)}
-									{showReplies ? (
-										<ChevronUp />
-									) : (
-										<ChevronDown />
-									)}
+									onClick={handleLike}>
+									<Heart />
 								</Button>
+								<span className="text-xs -ml-0.5">
+									{likeCount}
+								</span>
 							</div>
+							<Button
+								className="text-xs rounded-full"
+								size="sm"
+								variant="ghost">
+								Reply
+							</Button>
+							{comment?.replies?.length > 0 && (
+								<div className="ml-auto flex items-center justify-center">
+									<Button
+										className="text-xs rounded-full"
+										size="sm"
+										variant="ghost"
+										onClick={() =>
+											setShowReplies(!showReplies)
+										}>
+										{commentCount}{" "}
+										{pluralize("reply", commentCount)}
+										{showReplies ? (
+											<ChevronUp />
+										) : (
+											<ChevronDown />
+										)}
+									</Button>
+								</div>
+							)}
+						</div>
+
+						{showReplies && (
+							<div className="w-full mt-6 flex flex-col items-center justify-center border-l-2 pl-6 divide-y">
+								{comment?.replies.length > 0 &&
+									comment?.replies?.map((reply) => (
+										<SingleComment
+											comment={reply}
+											key={reply?.id}
+										/>
+									))}
+							</div>
+						)}
+					</div>
+				) : (
+					<div className="w-full flex flex-col items-center justify-start gap-3">
+						<textarea
+							placeholder="Write your comment..."
+							rows="5"
+							className="w-full py-2 px-3 text-sm bg-input/30 border border-input outline-none rounded-sm resize-none"
+							onChange={(e) =>
+								setUpdateCommentText(e.target?.value)
+							}
+							value={updateCommentText}></textarea>
+						<div className="w-full flex items-center justify-between gap-2">
+							<Button
+								variant="ghost"
+								className="rounded-full"
+								onClick={() => setUpdatingComment(false)}>
+								Cancel
+							</Button>
+							<Button
+								onClick={handleUpdate}
+								className="rounded-full"
+								disabled={
+									loading ||
+									!updateCommentText?.trim() ||
+									updateCommentText?.trim() ===
+										comment?.content
+								}>
+								Update
+							</Button>
 						</div>
 					</div>
 				)}

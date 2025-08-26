@@ -45,7 +45,7 @@ const PublishButton = () => {
 		const data = {
 			title: editor?.title,
 			content: JSON.stringify(editor?.content),
-			publish: editor?.publish,
+			published: editor?.published,
 			disable_like: editor?.disableLike,
 			disable_comment: editor?.disableComment,
 			tag: editor?.tags,
@@ -58,7 +58,8 @@ const PublishButton = () => {
 		toast.promise(addPost(data), {
 			loading: "Loading...",
 			success: (res) => {
-				navigate("/");
+				const post = res?.data?.post;
+				navigate(`/${post?.author?.username}/${post?.slug}`);
 				clearEditorStore();
 				return (
 					res?.data?.detail || "Post has been created successfully."
@@ -102,9 +103,8 @@ const PublishButton = () => {
 				<SheetTrigger asChild>
 					<Button
 						disabled={loading}
-						// onClick={(e) => handlePublish(e)}
 						className={"ml-auto rounded-full"}>
-						Publish
+						Next
 					</Button>
 				</SheetTrigger>
 
@@ -114,33 +114,37 @@ const PublishButton = () => {
 						<SheetDescription></SheetDescription>
 					</SheetHeader>
 					<div className="w-full flex flex-col px-4 space-y-8 divide-y pt-5">
-						<div className="w-full pb-8 flex flex-col space-y-8">
+						<div className="w-full pb-8 flex flex-col space-y-10">
 							<div className="w-full flex items-start justify-between gap-2">
-								<div className="w-full flex flex-col items-start justify-center gap-1.5">
-									<Label htmlFor="publish">Publish</Label>
+								<Label
+									htmlFor="publish"
+									className="w-full flex flex-col items-start gap-1.5">
+									Publish
 									<p className="text-xs text-muted-foreground">
 										Toggle to set the post as published and
 										visible or unpublished and private.
 									</p>
-								</div>
+								</Label>
 								<Switch
 									id="publish"
-									checked={editor?.publish}
+									checked={editor?.published}
 									onCheckedChange={() => {
-										editor?.setPublish(!editor?.publish);
+										editor?.setPublished(
+											!editor?.published
+										);
 									}}
 								/>
 							</div>
 							<div className="w-full flex items-start justify-between gap-2 ">
-								<div className="w-full flex flex-col items-start justify-center gap-1.5">
-									<Label htmlFor="disable-like">
-										Disable Like
-									</Label>
+								<Label
+									htmlFor="disable-like"
+									className="w-full flex flex-col items-start gap-1.5">
+									Disable Like
 									<p className="text-xs text-muted-foreground">
 										Toggle to set the post as published and
 										visible or unpublished and private.
 									</p>
-								</div>
+								</Label>
 								<Switch
 									id="disable-like"
 									checked={editor?.disableLike}
@@ -152,15 +156,15 @@ const PublishButton = () => {
 								/>
 							</div>
 							<div className="w-full flex items-start justify-between gap-2 ">
-								<div className="w-full flex flex-col items-start justify-center gap-1.5">
-									<Label htmlFor="disable-comment">
-										Disable Comment
-									</Label>
+								<Label
+									htmlFor="disable-comment"
+									className="w-full flex flex-col items-start gap-1.5">
+									Disable Comment
 									<p className="text-xs text-muted-foreground">
 										Toggle to set the post as published and
 										visible or unpublished and private.
 									</p>
-								</div>
+								</Label>
 								<Switch
 									id="disable-comment"
 									checked={editor?.disableComment}
@@ -207,7 +211,7 @@ const PublishButton = () => {
 							disabled={loading}
 							onClick={(e) => handlePublish(e)}
 							className="w-full rounded-full">
-							Publish
+							{editor && !editor?.published ? "Draft" : "Publish"}
 						</Button>
 					</SheetFooter>
 				</SheetContent>

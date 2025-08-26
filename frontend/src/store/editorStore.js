@@ -16,7 +16,7 @@ const initialStore = {
 		content: [],
 	},
 	tags: [],
-	publish: true,
+	published: true,
 	disableLike: false,
 	disableComment: false,
 };
@@ -42,9 +42,9 @@ export const useEditorStore = create(
 				set({
 					tags: value,
 				}),
-			setPublish: (value) =>
+			setPublished: (value) =>
 				set({
-					publish: value,
+					published: value,
 				}),
 			setDisableLike: (value) =>
 				set({
