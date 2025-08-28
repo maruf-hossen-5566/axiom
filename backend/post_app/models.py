@@ -40,7 +40,7 @@ class Post(models.Model):
         return count
 
     def get_comment_count(self):
-        count = self.comments.count()
+        count = self.comments.filter(parent__isnull=True).count()
         return count
 
 

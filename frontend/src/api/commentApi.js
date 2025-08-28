@@ -1,7 +1,7 @@
 import apiClient from "@/api/apiClient.js";
 
 export const getComments = (data) => {
-	return apiClient.get("comments/", { params: data });
+	return apiClient.post("comments/", data);
 };
 
 export const addComment = (data) => {
