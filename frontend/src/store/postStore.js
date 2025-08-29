@@ -3,7 +3,7 @@ import {create} from "zustand/react";
 
 
 const initialStore = {
-    post: null, content: null, isLiked: false, likeCount: 0, comments: null, commentCount: 0, commentSortBy: "top"
+    post: null, content: null, comments: null, commentSortBy: "top"
 };
 
 export const usePostStore = create(persist((set) => ({

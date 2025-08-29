@@ -1,223 +1,274 @@
-import { toast } from "sonner";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { X } from "lucide-react";
+import {Separator} from "@/components/ui/separator"
 import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-	SheetFooter,
+    Command,
+    CommandDialog,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    CommandSeparator,
+    CommandShortcut,
+} from "@/components/ui/command"
+import {toast} from "sonner";
+import {Label} from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {Switch} from "@/components/ui/switch";
+import {X} from "lucide-react";
+import {
+    Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,
 } from "@/components/ui/sheet";
-import { useState } from "react";
-import { Button } from "@/components/ui/button.jsx";
-import { addPost } from "@/api/postApi.js";
-import { useEditorStore } from "@/store/editorStore.js";
-import { useNavigate } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Button} from "@/components/ui/button.jsx";
+import {addPost} from "@/api/postApi.js";
+import {useEditorStore} from "@/store/editorStore.js";
+import {useNavigate} from "react-router-dom";
+import {getPostTags} from "@/api/tagApi.js";
+import {Badge} from "@/components/ui/badge.jsx";
+import moment from "moment";
+import slugify from "slugify";
+import pluralize from "pluralize";
 
 const PublishButton = () => {
-	const editor = useEditorStore();
-	const [loading, setLoading] = useState(false);
-	const thumbnail = useEditorStore((state) => state?.thumbnail);
-	const clearEditorStore = useEditorStore((state) => state?.clearEditorStore);
-	const navigate = useNavigate();
-	const tags = useEditorStore((state) => state?.tags);
-	const setTags = useEditorStore((state) => state?.setTags);
+    const editor = useEditorStore();
+    const [loading, setLoading] = useState(false);
+    const thumbnail = useEditorStore((state) => state?.thumbnail);
+    const clearEditorStore = useEditorStore((state) => state?.clearEditorStore);
+    const navigate = useNavigate();
+    const tags = useEditorStore((state) => state?.tags);
+    const setTags = useEditorStore((state) => state?.setTags);
+    const [fetchedTags, setFetchedTags] = useState([])
+    const [tagQuery, setTagQuery] = useState("")
 
-	const handlePublish = (e) => {
-		e.preventDefault();
-		setLoading(true);
+    const handlePublish = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-		const isEmpty =
-			editor?.title?.trim() === "" ||
-			!editor?.content?.content[0].content ||
-			!editor?.content?.content[0]?.content[0]?.text?.trim();
+        const isEmpty = editor?.title?.trim() === "" || !editor?.content?.content[0].content || !editor?.content?.content[0]?.content[0]?.text?.trim();
 
-		if (isEmpty) {
-			toast.warning("Please add Title and Content properly.");
-			setLoading(false);
-			return;
-		}
+        if (isEmpty) {
+            toast.warning("Please add Title and Content properly.");
+            setLoading(false);
+            return;
+        }
 
-		const data = {
-			title: editor?.title,
-			content: JSON.stringify(editor?.content),
-			published: editor?.published,
-			disable_like: editor?.disableLike,
-			disable_comment: editor?.disableComment,
-			tag: editor?.tags,
-		};
+        const data = {
+            title: editor?.title,
+            content: JSON.stringify(editor?.content),
+            published: editor?.published,
+            disable_like: editor?.disableLike,
+            disable_comment: editor?.disableComment,
+            tags: tags,
+        };
 
-		if (thumbnail) {
-			data["thumbnail_id"] = thumbnail?.id;
-		}
+        if (thumbnail) {
+            data["thumbnail_id"] = thumbnail?.id;
+        }
 
-		toast.promise(addPost(data), {
-			loading: "Loading...",
-			success: (res) => {
-				const post = res?.data?.post;
-				navigate(`/${post?.author?.username}/${post?.slug}`);
-				clearEditorStore();
-				return (
-					res?.data?.detail || "Post has been created successfully."
-				);
-			},
-			error: (error) => {
-				console.log("Error: ", error);
-				return (
-					error?.response?.data?.detail || "Failed to create post."
-				);
-			},
-		});
-		setLoading(false);
-	};
+        const toastId = toast.loading("Loading...", {duration: Infinity})
+        try {
+            const res = await addPost(data)
+            const post = res?.data?.post;
 
-	const handleRemoveTag = (tag) => {
-		const filteredTags = tags?.filter((t) => t?.id !== tag?.id);
-		setTags(filteredTags);
-	};
+            navigate(`/${post?.author?.username}/${post?.slug}`);
+            clearEditorStore();
 
-	const handleTagAdd = (e) => {
-		if (e?.key === "Enter") {
-			if (e?.target?.value?.trim() === "") {
-				return;
-			}
+            toast.success(res?.data?.detail || "Post has been created successfully.", {id: toastId, duration: 4000});
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error?.response?.data?.detail || "Failed to create post.", {id: toastId, duration: 4000})
+        }
+        setLoading(false);
+    };
 
-			const tagId = crypto?.randomUUID();
-			const tag = {
-				id: tagId,
-				name: e?.target?.value,
-			};
-			setTags([...tags, tag]);
-			e.target.value = "";
-		}
-	};
+    const handleRemoveTag = (tag) => {
+        const filteredTags = tags?.filter((t) => t?.id !== tag?.id);
+        setTags(filteredTags);
+    };
 
-	return (
-		<>
-			{/* <Sheet open={true}> */}
-			<Sheet>
-				<SheetTrigger asChild>
-					<Button
-						disabled={loading}
-						className={"ml-auto rounded-full"}>
-						Next
-					</Button>
-				</SheetTrigger>
+    const handleAddTag = (tag) => {
+        const alreadyExists = tags?.find(t => t?.name?.toLowerCase() === tag?.name?.toLowerCase())
 
-				<SheetContent className="z-[100] overflow-y-auto">
-					<SheetHeader className="border-b">
-						<SheetTitle>Post settings</SheetTitle>
-						<SheetDescription></SheetDescription>
-					</SheetHeader>
-					<div className="w-full flex flex-col px-4 space-y-8 divide-y pt-5">
-						<div className="w-full pb-8 flex flex-col space-y-10">
-							<div className="w-full flex items-start justify-between gap-2">
-								<Label
-									htmlFor="publish"
-									className="w-full flex flex-col items-start gap-1.5">
-									Publish
-									<p className="text-xs text-muted-foreground">
-										Toggle to set the post as published and
-										visible or unpublished and private.
-									</p>
-								</Label>
-								<Switch
-									id="publish"
-									checked={editor?.published}
-									onCheckedChange={() => {
-										editor?.setPublished(
-											!editor?.published
-										);
-									}}
-								/>
-							</div>
-							<div className="w-full flex items-start justify-between gap-2 ">
-								<Label
-									htmlFor="disable-like"
-									className="w-full flex flex-col items-start gap-1.5">
-									Disable Like
-									<p className="text-xs text-muted-foreground">
-										Toggle to set the post as published and
-										visible or unpublished and private.
-									</p>
-								</Label>
-								<Switch
-									id="disable-like"
-									checked={editor?.disableLike}
-									onCheckedChange={() => {
-										editor?.setDisableLike(
-											!editor?.disableLike
-										);
-									}}
-								/>
-							</div>
-							<div className="w-full flex items-start justify-between gap-2 ">
-								<Label
-									htmlFor="disable-comment"
-									className="w-full flex flex-col items-start gap-1.5">
-									Disable Comment
-									<p className="text-xs text-muted-foreground">
-										Toggle to set the post as published and
-										visible or unpublished and private.
-									</p>
-								</Label>
-								<Switch
-									id="disable-comment"
-									checked={editor?.disableComment}
-									onCheckedChange={() => {
-										editor?.setDisableComment(
-											!editor?.disableComment
-										);
-									}}
-								/>
-							</div>
-						</div>
+        if (alreadyExists) {
+            toast.warning("Tag already exists.")
+            return
+        }
+        setTagQuery("")
+        setTags([tag, ...tags]);
+    };
 
-						<div className="w-full pb-8 flex flex-col items-start justify-between gap-2">
-							<div className="w-full flex flex-wrap gap-2">
-								<Label htmlFor="tags-input">Tags</Label>
-								<Input
-									type="text"
-									id="tags-input"
-									placeholder="Start typing to search..."
-									disabled={tags?.length >= 5}
-									onKeyDown={(e) => handleTagAdd(e)}
-								/>
-							</div>
-							{tags?.length > 0 && (
-								<div className="w-full mt-2 flex flex-wrap gap-2">
-									{tags?.map((tag) => (
-										<Button
-											className="rounded-full"
-											size="sm"
-											key={tag?.id}
-											onClick={() =>
-												handleRemoveTag(tag)
-											}>
-											{tag?.name}
-											<X />
-										</Button>
-									))}
-								</div>
-							)}
-						</div>
-					</div>
-					<SheetFooter>
-						<Button
-							disabled={loading}
-							onClick={(e) => handlePublish(e)}
-							className="w-full rounded-full">
-							{editor && !editor?.published ? "Draft" : "Publish"}
-						</Button>
-					</SheetFooter>
-				</SheetContent>
-			</Sheet>
-		</>
-	);
+    const fetchTags = async () => {
+        const data = {
+            query: tagQuery.trim(), exclude: tags?.map(t => t?.id)
+        }
+
+        try {
+            const res = await getPostTags(data)
+            let newTags = res?.data?.tags
+
+            if (newTags?.length <= 0) {
+                const newTag = {
+                    id: crypto?.randomUUID(),
+                    name: tagQuery?.trim(),
+                    created_at: moment(Date.now()).format(),
+                    slug: slugify(tagQuery?.toLowerCase()?.trim()),
+                    post_count: 0
+                }
+                newTags.push(newTag)
+            }
+            setFetchedTags(newTags)
+        } catch (error) {
+            toast.error(error?.response?.data?.detail || `Failed to fetch tags for "${tagQuery}"`)
+        }
+    }
+    useEffect(() => {
+        if (tagQuery?.trim() !== "") {
+            fetchTags()
+        } else {
+            setFetchedTags([])
+        }
+    }, [tagQuery])
+
+
+    return (<>
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button
+                    disabled={loading}
+                    className={"ml-auto rounded-full"}
+                >
+                    Next
+                </Button>
+            </SheetTrigger>
+
+            <SheetContent className="max-w-full xs:max-w-md w-full z-[100] overflow-y-auto">
+                <SheetHeader className="border-b">
+                    <SheetTitle>Post settings</SheetTitle>
+                    <SheetDescription></SheetDescription>
+                </SheetHeader>
+                <div className="w-full flex flex-col px-4 space-y-8 divide-y pt-5">
+                    <div className="w-full pb-8 flex flex-col space-y-10">
+                        <div className="w-full flex items-start justify-between gap-2">
+                            <Label
+                                htmlFor="publish"
+                                className="w-full flex flex-col items-start gap-1.5"
+                            >
+                                Publish
+                                <p className="text-xs text-muted-foreground">
+                                    Toggle to set the post as published and
+                                    visible or unpublished and private.
+                                </p>
+                            </Label>
+                            <Switch
+                                id="publish"
+                                checked={editor?.published}
+                                onCheckedChange={() => {
+                                    editor?.setPublished(!editor?.published);
+                                }}
+                            />
+                        </div>
+                        <div className="w-full flex items-start justify-between gap-2 ">
+                            <Label
+                                htmlFor="disable-like"
+                                className="w-full flex flex-col items-start gap-1.5"
+                            >
+                                Disable Like
+                                <p className="text-xs text-muted-foreground">
+                                    Toggle to set the post as published and
+                                    visible or unpublished and private.
+                                </p>
+                            </Label>
+                            <Switch
+                                id="disable-like"
+                                checked={editor?.disableLike}
+                                onCheckedChange={() => {
+                                    editor?.setDisableLike(!editor?.disableLike);
+                                }}
+                            />
+                        </div>
+                        <div className="w-full flex items-start justify-between gap-2 ">
+                            <Label
+                                htmlFor="disable-comment"
+                                className="w-full flex flex-col items-start gap-1.5"
+                            >
+                                Disable Comment
+                                <p className="text-xs text-muted-foreground">
+                                    Toggle to set the post as published and
+                                    visible or unpublished and private.
+                                </p>
+                            </Label>
+                            <Switch
+                                id="disable-comment"
+                                checked={editor?.disableComment}
+                                onCheckedChange={() => {
+                                    editor?.setDisableComment(!editor?.disableComment);
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="w-full pb-8 flex flex-col items-start justify-between gap-2">
+                        <div className="relative w-full flex flex-col gap-2">
+                            <Label htmlFor="tags-input">Tags</Label>
+                            <Command className="px-0">
+                                <CommandInput
+                                    className="tags-input"
+                                    disabled={tags?.length >= 5}
+                                    placeholder="Search tag..."
+                                    value={`${tagQuery.charAt(0).toUpperCase() + tagQuery.slice(1)}`.trimStart()}
+                                    onValueChange={setTagQuery}
+                                />
+                                {(fetchedTags && fetchedTags?.length > 0 && document.activeElement === document.querySelector(".tags-input")) &&
+                                    <CommandList
+                                        className="utline-none border-t"
+                                    >
+                                        {fetchedTags.map((tag) => (<CommandItem
+                                            className="py-2 rounded-none"
+                                            key={tag?.id}
+                                            value={tag?.name}
+                                            onSelect={() => handleAddTag(tag)}
+                                        >
+                                            <div className="w-full flex flex-col">
+                                                <p className="text-base font-semibold">{tag.name}</p>
+                                                <div className="w-full flex items-center justify-start gap-2">
+                                                    <p className="text-sm text-muted-foreground">#{tag.slug}</p>
+                                                    <Separator
+                                                        orientation="vertical"
+                                                        className="!h-3"
+                                                    />
+                                                    <p className="text-sm text-muted-foreground">{tag?.post_count} {pluralize("post", tag?.post_count)}</p>
+                                                </div>
+                                            </div>
+                                        </CommandItem>))}
+                                        <CommandEmpty>No results found.</CommandEmpty>
+                                    </CommandList>}
+                            </Command>
+                        </div>
+                        {tags?.length > 0 && (<div className="w-full mt-2 flex flex-wrap gap-2">
+                            {tags?.map((tag) => (<Button
+                                className="rounded-full max-w-full overflow-hidden"
+                                size="sm"
+                                key={tag?.id}
+                                onClick={() => handleRemoveTag(tag)}
+                            >
+                                {tag?.name}
+                                <X/>
+                            </Button>))}
+                        </div>)}
+                    </div>
+                </div>
+                <SheetFooter>
+                    <Button
+                        disabled={loading}
+                        onClick={(e) => handlePublish(e)}
+                        className="w-full rounded-full"
+                    >
+                        {editor && !editor?.published ? "Draft" : "Publish"}
+                    </Button>
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
+    </>);
 };
 
 export default PublishButton;

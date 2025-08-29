@@ -10,6 +10,8 @@ from .serializers import PostSerializer, ThumbnailSerializer
 from utils.helpers import get_first_error
 from django.db.models import Q
 
+from tag_app.models import Tag
+
 
 @api_view(["GET"])
 def get_posts(request):
@@ -73,9 +75,20 @@ def more_to_read(request):
 @api_view(["POST", "PUT"])
 @permission_classes([IsAuthenticated])
 def add(request):
-    time.sleep(1)
     data = request.data.copy()
     data["author_id"] = request.user.id
+
+    tags = data.get("tags", None)
+    data["tags_ids"] = []
+
+    if tags and len(tags) > 0:
+        for tag in tags:
+            not_exists = Tag.objects.filter(id=tag["id"]).exists()
+            if not not_exists:
+                del tag["post_count"]
+                Tag.objects.create(**tag)
+
+            data["tags_ids"].append(tag["id"])
 
     serializer = PostSerializer(data=data, context={"request": request})
 
@@ -96,6 +109,7 @@ def add(request):
             status=status.HTTP_201_CREATED,
         )
 
+    print("Serializer error: ", serializer.errors)
     first_error = get_first_error(serializer.errors)
     return Response({"detail": first_error}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -182,14 +196,14 @@ def like(request):
     if post.disable_like:
         return Response({"detail": "Likes are disabled."}, status.HTTP_400_BAD_REQUEST)
 
-    is_liked = Like.objects.filter(post=post, user=request.user)
+    is_liked = request.user.likes.filter(post=post)
 
     if is_liked.exists():
         is_liked.delete()
-        is_liked = False
     else:
         Like.objects.create(user=request.user, post=post)
-        is_liked = True
+
+    is_liked = is_liked.exists()
 
     data = {"is_liked": is_liked, "like_count": post.get_like_count()}
 

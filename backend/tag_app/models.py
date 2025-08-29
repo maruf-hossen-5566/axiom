@@ -11,10 +11,13 @@ class Tag(models.Model):
 
     def generate_slug(self):
         base_slug = slugify(self.name)
-        suffix = uuid.uuid4().hex[:8]
-        self.slug = f"{base_slug}-{suffix}"
+        already_taken = Tag.objects.filter(slug=self.slug).exists()
+        if not already_taken:
+            return base_slug
+        suffix = uuid.uuid4().hex[:4]
+        return f"{base_slug}-{suffix}"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.generate_slug()
+        self.name = self.name.capitalize()
+        self.slug = self.generate_slug()
         super().save(*args, **kwargs)

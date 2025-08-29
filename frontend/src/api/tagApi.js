@@ -1,7 +1,7 @@
 import apiClient from "@/api/apiClient.js";
 
 export const getPostTags = (data) => {
-	return apiClient.get("tags/", data);
+	return apiClient.post("tags/", data);
 };
 
 export const addTag = (data) => {

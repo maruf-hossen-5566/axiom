@@ -16,7 +16,7 @@ class TagFactory(factory.django.DjangoModelFactory):
 
     @factory.lazy_attribute
     def slug(self):
-        base_slug = slugify(self.name)
+        base_slug = slugify(self.name.capitalize())
         suffix = uuid.uuid4().hex[:8]
         slug = f"{base_slug}-{suffix}"
         return slug
@@ -28,10 +28,10 @@ class TagFactory(factory.django.DjangoModelFactory):
 # from tag_app.factories import TagFactory
 # TagFactory.create_batch(900)
 # from faker import Faker
-
+#
 # fake = Faker()
-
+#
 # tags = fake.words(nb=900, unique=True)
-
+#
 # for tag in tags:
 #     TagFactory.create(name=tag.capitalize())

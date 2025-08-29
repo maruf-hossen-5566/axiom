@@ -14,14 +14,13 @@ function SingleCommentSkeleton() {
 
                 <div className="text-sm mt-3 leading-relaxed">
                     <Skeleton className="h-3 mb-2 w-full rounded-full"/>
+                    <Skeleton className="h-3 mb-2 w-full rounded-full"/>
                     <Skeleton className="h-3 w-4/5 rounded-full"/>
                 </div>
 
                 <div className="mt-5 w-full flex items-center justify-start gap-4">
                     <Skeleton className="h-7 w-12 rounded-full"/>
                     <Skeleton className="h-7 w-12 rounded-full"/>
-
-                    <Skeleton className="ml-auto h-7 w-12 rounded-full"/>
                 </div>
             </div>
         </div>

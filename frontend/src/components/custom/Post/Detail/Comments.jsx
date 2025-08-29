@@ -1,28 +1,25 @@
-import {
-    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {Button} from "@/components/ui/button";
 import {SheetContent, SheetDescription, SheetHeader, SheetTitle,} from "@/components/ui/sheet";
-import {useEffect, useReducer, useState} from "react";
+import {useEffect, useState} from "react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import useUserStore from "@/store/userStore";
 import {usePostStore} from "@/store/postStore";
 import {SingleComment} from "./SingleComment";
 import {addComment, getComments} from "@/api/commentApi";
 import {toast} from "sonner";
-import {MessageCircleOff} from "lucide-react";
+import {MessageCircleDashed, MessageCircleOff} from "lucide-react";
 import SingleCommentSkeleton from "@/components/custom/Skeleton/SingleCommentSkeleton.jsx";
-import {useSearchParams} from "react-router-dom";
 
 const Comments = () => {
     const [commentText, setCommentText] = useState("");
     const user = useUserStore((state) => state?.user);
     const post = usePostStore((state) => state?.post);
+    const setPost = usePostStore((state) => state?.setPost);
     const comments = usePostStore((state) => state?.comments);
     const setComments = usePostStore((state) => state?.setComments);
     const commentSortBy = usePostStore((state) => state?.commentSortBy);
     const setCommentSortBy = usePostStore((state) => state?.setCommentSortBy);
-    const setCommentCount = usePostStore((state) => state?.setCommentCount);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -31,6 +28,7 @@ const Comments = () => {
             setComments(null);
             try {
                 const res = await getComments({post: post?.id, sort: commentSortBy});
+
                 setComments(res?.data);
             } catch (error) {
                 toast.error(error?.response?.data?.detail || "Failed to fetch comments.");
@@ -50,7 +48,7 @@ const Comments = () => {
             });
             setCommentText("");
             setComments([res?.data?.comment, ...comments]);
-            setCommentCount(res?.data?.comment_count);
+            setPost({...post, comment_count: res?.data?.comment_count})
         } catch (error) {
             toast.error(error?.response?.data?.detail || "Failed to add comment.");
         }
@@ -109,35 +107,45 @@ const Comments = () => {
                         Comment has been disabled for this post.
                     </p>)}
                 <div className="w-full block border-t px-6">
-                    <div className="w-full pt-6 pb-8 flex items-center justify-start">
-                        <Select
-                            value={commentSortBy}
-                            onValueChange={val => setCommentSortBy(val)}
-                        >
-                            <SelectTrigger className="w-40 !h-8 py-0">
-                                <SelectValue
-                                    placeholder="Top"
-                                />
-                            </SelectTrigger>
-                            <SelectContent className={"z-[100]"}>
-                                <SelectItem value="top">Top</SelectItem>
-                                <SelectItem value="new">New</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    {post && !post?.comment_count ?
+                        <div className="w-full my-12 p-4 text-sm text-muted-foreground flex flex-col items-center justify-center">
+                            <MessageCircleDashed
+                                size="32"
+                                className="mb-2"
+                            />
+                            <p>No comments yet</p>
+                            <p>Be the first one to comment!</p>
+                        </div> : <>
+                            {post?.comment_count >= 5 && <div className="w-full pt-6 flex items-center justify-start">
+                                <Select
+                                    value={commentSortBy}
+                                    onValueChange={val => setCommentSortBy(val)}
+                                >
+                                    <SelectTrigger className="w-40 !h-8 py-0">
+                                        <SelectValue
+                                            placeholder="Top"
+                                        />
+                                    </SelectTrigger>
+                                    <SelectContent className={"z-[100]"}>
+                                        <SelectItem value="top">Top</SelectItem>
+                                        <SelectItem value="new">New</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>}
 
-                    <div className="w-full divide-y">
-                        {!comments ? <>
-                            <SingleCommentSkeleton/>
-                            <SingleCommentSkeleton/>
-                            <SingleCommentSkeleton/>
-                            <SingleCommentSkeleton/>
-                            <SingleCommentSkeleton/>
-                        </> : comments?.map((comment) => (<SingleComment
-                            comment={comment}
-                            key={comment?.id}
-                        />))}
-                    </div>
+                            <div className="w-full divide-y mt-6">
+                                {!comments?.length > 0 ? <>
+                                    <SingleCommentSkeleton/>
+                                    <SingleCommentSkeleton/>
+                                    <SingleCommentSkeleton/>
+                                    <SingleCommentSkeleton/>
+                                    <SingleCommentSkeleton/>
+                                </> : comments?.map((comment) => (<SingleComment
+                                    comment={comment}
+                                    key={comment?.id}
+                                />))}
+                            </div>
+                        </>}
                 </div>
             </div>
         </SheetContent>

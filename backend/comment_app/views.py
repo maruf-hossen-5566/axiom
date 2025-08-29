@@ -1,24 +1,24 @@
-import json
 import time
 
-from rest_framework.response import Response
-from rest_framework import status
-from post_app.urls import post_published_required
-from utils.helpers import get_first_error
-from comment_app.serializers import CommentSerializer
 from comment_app.models import Comment, CommentLike, Post
-from django.shortcuts import get_object_or_404, get_list_or_404
+from comment_app.serializers import CommentSerializer
+from django.contrib.auth import get_user_model
+from django.db.models import Count, ExpressionWrapper, IntegerField, F
+from django.shortcuts import get_object_or_404
+from post_app.urls import post_published_required
+from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
-from django.db.models import Q, Count, ExpressionWrapper, IntegerField, F
-from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+from utils.helpers import get_first_error
 
 User = get_user_model()
 
 
 @api_view(["POST"])
 def get(request):
+    time.sleep(1)
     sort = request.data.get("sort", None)
     post_id = request.data.get("post")
 

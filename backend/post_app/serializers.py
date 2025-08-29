@@ -2,7 +2,10 @@ from rest_framework import serializers
 from .models import Post, Thumbnail
 from auth_app.serializers import UserSerializer
 from django.contrib.auth import get_user_model
-from rest_framework.exceptions import ValidationError
+
+from tag_app.serializers import TagSerializer
+
+from tag_app.models import Tag
 
 User = get_user_model()
 
@@ -28,6 +31,9 @@ class PostSerializer(serializers.ModelSerializer):
     )
     like_count = serializers.SerializerMethodField(method_name="get_like_count")
     comment_count = serializers.SerializerMethodField(method_name="get_comment_count")
+    is_liked = serializers.SerializerMethodField()
+    tags = TagSerializer(many=True, read_only=True)
+    tags_ids = serializers.PrimaryKeyRelatedField(source="tags", queryset=Tag.objects.all(), write_only=True, many=True)
 
     class Meta:
         model = Post
@@ -42,3 +48,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_comment_count(self, obj):
         return obj.comments.filter(parent__isnull=True).count()
+
+    def get_is_liked(self, obj):
+        request = self.context.get("request")
+
+        if request and request.user.is_authenticated:
+            return obj.likes.filter(user=request.user).exists()
+        return False

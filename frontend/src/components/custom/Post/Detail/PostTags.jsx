@@ -1,16 +1,20 @@
-import { Button } from "@/components/ui/Button";
+import {Button} from "@/components/ui/Button";
+import {usePostStore} from "@/store/postStore.js";
+import {Link} from "react-router-dom";
 
 const PostTags = () => {
-	return (
-		<>
-			<div className="w-full py-12 flex items-start justify-start flex-wrap gap-3 border-">
-				<Button className="rounded-full">Technology</Button>
-				<Button className="rounded-full">Python</Button>
-				<Button className="rounded-full">Computer Engineering</Button>
-				<Button className="rounded-full">Data Science</Button>
-			</div>
-		</>
-	);
+    const post = usePostStore(state => state?.post)
+
+    return post && post?.tags?.length > 0 && (
+        <div className="w-full py-12 flex items-start justify-start flex-wrap gap-3">
+            {post?.tags?.map((tag) => (<Link
+                to={`/`}
+                key={tag?.id}
+            >
+                <Button className="rounded-full">{tag?.name}</Button>
+            </Link>))}
+        </div>)
+
 };
 
 export default PostTags;

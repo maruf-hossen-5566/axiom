@@ -33,7 +33,7 @@ const Header = () => {
 
 				<div className={"flex items-center justify-end gap-2"}>
 					<SearchBar />
-					{!isAuthenticated && <NewPostButton />}
+					{isAuthenticated && <NewPostButton />}
 					<ThemeButton />
 
 					<div className={"flex items-center justify-end gap-2"}>

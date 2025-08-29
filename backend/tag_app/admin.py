@@ -9,4 +9,5 @@ class TagAdmin(admin.ModelAdmin):
     ordering = [
         "-created_at",
     ]
+    prepopulated_fields = {"slug": ("name",)}
     readonly_fields = ("id",)

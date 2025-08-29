@@ -14,13 +14,14 @@ import {useState} from "react";
 import {Link} from "react-router-dom";
 import {toast} from "sonner";
 import AddComment from "./AddComment";
+import SingleCommentSkeleton from "@/components/custom/Skeleton/SingleCommentSkeleton.jsx";
 
 export const SingleComment = ({comment}) => {
     const user = useUserStore((state) => state?.user);
     const post = usePostStore((state) => state?.post);
+    const setPost = usePostStore((state) => state?.setPost);
     const comments = usePostStore((state) => state?.comments);
     const setComments = usePostStore((state) => state?.setComments);
-    const setCommentCount = usePostStore((state) => state?.setCommentCount);
     const [updatingComment, setUpdatingComment] = useState(false);
     const [updateCommentText, setUpdateCommentText] = useState(comment?.content);
     const [loading, setLoading] = useState(false);
@@ -30,6 +31,7 @@ export const SingleComment = ({comment}) => {
 
 
     const handleReply = async () => {
+        setLoading(true)
         try {
             const data = {
                 post: post?.id, parent: comment?.id, content: replyContent,
@@ -52,9 +54,9 @@ export const SingleComment = ({comment}) => {
             setReplyContent("");
             console.log("Comments after: ", comments)
         } catch (error) {
-            console.log("Reply error: ", error)
             toast.error(error?.response?.data?.detail || "Failed to reply.");
         }
+        setLoading(false)
     };
 
     const handleDelete = async () => {
@@ -80,9 +82,8 @@ export const SingleComment = ({comment}) => {
             }
 
             setComments(newComments);
-            setCommentCount(res?.data?.comment_count);
+            setPost({...post, comment_count: res?.data?.comment_count})
         } catch (error) {
-            console.error("Comment delete error: ", error);
             toast.error(error?.response?.data?.detail || "Failed to delete comment.");
         }
     };
@@ -114,6 +115,7 @@ export const SingleComment = ({comment}) => {
     };
 
     const handleLike = async () => {
+        setLoading(true)
         try {
             const commentId = comment?.id
             const res = await likeComment({
@@ -130,13 +132,12 @@ export const SingleComment = ({comment}) => {
             }
             setComments(newComments)
         } catch (error) {
-            console.log("Like error: ", error)
             toast.error(error?.response?.data?.detail || "Failed to like.");
         }
+        setLoading(false)
     };
 
-    return (<>
-        <div className="w-full pt-5 pb-5 flex items-start gap-2">
+    return (<div className="w-full pt-5 pb-5 flex items-start gap-2">
             {!updatingComment ? (<div className="w-full">
                 <div className="w-full flex items-start justify-between gap-4">
                     <Link
@@ -221,6 +222,7 @@ export const SingleComment = ({comment}) => {
                             className="text-xs size-8 -ml-2.5 rounded-full"
                             variant="ghost"
                             onClick={handleLike}
+                            disabled={loading}
                         >
                             <Heart
                                 fill={comment?.is_liked ? "currentColor" : "none"}
@@ -278,6 +280,5 @@ export const SingleComment = ({comment}) => {
                 comment={comment}
                 setUpdatingComment={setUpdatingComment}
             />)}
-        </div>
-    </>);
+        </div>)
 };

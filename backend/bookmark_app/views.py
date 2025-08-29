@@ -23,5 +23,5 @@ def add(request):
         Bookmark.objects.create(post=post, author=request.user)
         message = "Bookmark saved."
 
-    bookmarks = request.user.bookmarks.values_list("post__id", flat=True)
-    return Response({"detail": message, "bookmarks": bookmarks}, status.HTTP_200_OK)
+    bookmarked_ids = request.user.bookmarks.values_list("post__id", flat=True)
+    return Response({"detail": message, "bookmarked_ids": bookmarked_ids}, status.HTTP_200_OK)
