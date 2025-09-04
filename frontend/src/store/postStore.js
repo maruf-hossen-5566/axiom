@@ -9,26 +9,14 @@ const initialStore = {
 export const usePostStore = create(persist((set) => ({
     ...initialStore,
 
-    setPostData: (data) => set({...data}),
-
     setPost: (data) => set({
         post: data,
-    }),
-    setCommentSortBy: (value) => set({
+    }), setCommentSortBy: (value) => set({
         commentSortBy: value,
-    }),
-    setContent: (data) => set({
+    }), setContent: (data) => set({
         content: data,
-    }), setIsLiked: (value) => set({
-        isLiked: value,
-    }), setLikeCount: (value) => set({
-        likeCount: value,
     }), setComments: (data) => set({
         comments: data,
-    }), setCommentCount: (value) => set({
-        commentCount: value,
-    }), clearComments: () => set({
-        comments: null,
     }), clearPost: () => set({
         post: null,
     }), clearPostStore: () => set({...initialStore}),

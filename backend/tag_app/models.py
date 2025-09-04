@@ -5,8 +5,8 @@ from django.utils.text import slugify
 
 class Tag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    slug = models.CharField(max_length=999, default="")
-    name = models.CharField(max_length=299, unique=True)
+    slug = models.CharField(max_length=50, default="")
+    name = models.CharField(max_length=25, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def generate_slug(self):
@@ -18,6 +18,6 @@ class Tag(models.Model):
         return f"{base_slug}-{suffix}"
 
     def save(self, *args, **kwargs):
-        self.name = self.name.capitalize()
+        self.name = self.name.title()
         self.slug = self.generate_slug()
         super().save(*args, **kwargs)

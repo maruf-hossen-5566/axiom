@@ -16,7 +16,7 @@ const SinglePost = ({ post }) => {
 	return (
 		<Card
 			className={
-				"w-full h-full col-span-1 bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none"
+				"w-full h-full col-span-1 bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none max-sm:rounded-none"
 			}>
 			<CardHeader>
 				<Link
@@ -26,7 +26,7 @@ const SinglePost = ({ post }) => {
 						loading="lazy"
 						src={
 							post?.thumbnail?.image ||
-							"https://images.unsplash.com/photo-1533371452382-d45a9da51ad9?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+							"https://images.unsplash.com/photo-1635776062360-af423602aff3?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 						}
 						alt="Photo by Drew Beamer"
 						className="rounded-sm w-full h-full object-cover"

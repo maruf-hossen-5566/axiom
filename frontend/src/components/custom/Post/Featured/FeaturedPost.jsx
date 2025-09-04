@@ -101,7 +101,7 @@ const FeaturedPost = () => {
 							loading="lazy"
 							src={
 								featured?.thumbnail?.image ||
-								"https://images.unsplash.com/photo-1631942771581-961f187e8afc?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+								"https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 							}
 							alt="Photo by Drew Beamer"
 							className="rounded-sm w-full h-full object-cover"

@@ -15,7 +15,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=399)
     thumbnail = models.OneToOneField(
-        "Thumbnail", on_delete=models.CASCADE, blank=True, null=True
+        "Thumbnail", on_delete=models.SET_NULL, blank=True, null=True
     )
     slug = models.SlugField(max_length=999, unique=True)
     content = models.TextField()

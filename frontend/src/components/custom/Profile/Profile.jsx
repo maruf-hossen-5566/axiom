@@ -19,7 +19,7 @@ import useUserStore from "@/store/userStore.js";
 import { CalendarDays, Ellipsis, Link2, MapPin } from "lucide-react";
 import moment from "moment/moment.js";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const Profile = () => {
@@ -36,6 +36,7 @@ const Profile = () => {
 	const clearProfileStore = useProfileStore(
 		(state) => state?.clearProfileStore
 	);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		clearProfileStore();
@@ -46,7 +47,11 @@ const Profile = () => {
 				setProfile(res?.data?.profile);
 				setPosts(res?.data?.posts);
 			} catch (error) {
+				navigate("/");
 				console.error("Profile fetch error: ", error);
+				toast.error(
+					error?.response?.data?.detail || "Failed to get profile"
+				);
 			}
 		};
 		fetchProfile();

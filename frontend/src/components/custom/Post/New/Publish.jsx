@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button.jsx";
-import PublishButton from "@/components/custom/Post/New/PublishButton.jsx";
+import PublishSetting from "@/components/custom/Post/New/PublishSetting.jsx";
 import { useEditorStore } from "@/store/editorStore.js";
 import { deleteThumbnail } from "@/api/postApi.js";
 import { toast } from "sonner";
@@ -35,7 +35,7 @@ const Publish = () => {
 						onClick={handleCancel}>
 						Reset
 					</Button>
-					<PublishButton />
+					<PublishSetting />
 				</div>
 			</div>
 		</>

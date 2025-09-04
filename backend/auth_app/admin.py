@@ -8,3 +8,4 @@ class UserAdmin(admin.ModelAdmin):
     ordering = [
         "date_joined",
     ]
+    search_fields = ("full_name", "email")

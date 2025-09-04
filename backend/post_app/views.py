@@ -15,7 +15,7 @@ from tag_app.models import Tag
 
 @api_view(["GET"])
 def get_posts(request):
-    posts = get_list_or_404(Post.objects.order_by("-published_at"))
+    posts = Post.objects.filter(published=True).order_by("-published_at")
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response({"posts": serializer.data}, status=status.HTTP_200_OK)
 
@@ -52,7 +52,7 @@ def more_from_author(request):
             {"detail": "Author and Post ID not provided."}, status.HTTP_400_BAD_REQUEST
         )
 
-    posts = Post.objects.filter(~Q(id=post_id) & Q(author__id=author_id))
+    posts = Post.objects.filter(Q(author__id=author_id)).exclude(Q(id=post_id))
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -67,7 +67,15 @@ def more_to_read(request):
             {"detail": "Author and Post ID not provided."}, status.HTTP_400_BAD_REQUEST
         )
 
-    posts = Post.objects.filter(~Q(id=post_id) & ~Q(author__id=author_id))
+    tags_id = Tag.objects.filter(tags__id=post_id).values_list("id", flat=True)
+    if tags_id and len(tags_id) > 0:
+        posts = Post.objects.filter(tags__id__in=tags_id).exclude(
+            Q(id=post_id) | Q(author__id=author_id)
+        )[:6]
+    else:
+        posts = Post.objects.exclude(Q(id=post_id) | Q(author__id=author_id)).order_by(
+            "?"
+        )[:6]
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -109,7 +117,6 @@ def add(request):
             status=status.HTTP_201_CREATED,
         )
 
-    print("Serializer error: ", serializer.errors)
     first_error = get_first_error(serializer.errors)
     return Response({"detail": first_error}, status=status.HTTP_400_BAD_REQUEST)
 

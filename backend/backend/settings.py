@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "profile_app",
     "tag_app",
     "bookmark_app",
+    "search_app",
 ]
 
 MIDDLEWARE = [

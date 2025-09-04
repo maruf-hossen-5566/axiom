@@ -1,7 +1,7 @@
 import apiClient from "@/api/apiClient.js";
 
 export const getProfile = (data) => {
-	return apiClient.get("profile/get_profile/", { params: data });
+	return apiClient.post("profile/get_profile/", data);
 };
 
 export const follow = (data) => {

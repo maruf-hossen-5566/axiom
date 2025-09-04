@@ -50,9 +50,9 @@ def follow(request):
     return Response(data, status.HTTP_200_OK)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 def get_profile(request):
-    username: str = request.query_params.get("username")
+    username = request.data.get("username")
 
     if not (username and username.strip()):
         return Response(
@@ -60,7 +60,9 @@ def get_profile(request):
         )
 
     profile = get_object_or_404(User, username=username)
-    posts = get_list_or_404(Post, author=profile)
+    posts = Post.objects.filter(author=profile, published=True).order_by(
+        "-published_at"
+    )
 
     is_following = False
     if request.user and request.user.is_authenticated:
