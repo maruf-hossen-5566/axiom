@@ -112,7 +112,7 @@ const FeaturedPost = () => {
 				<CardContent className={"col-span-4 self-center"}>
 					<div className="w-full pb-1.5 text-[13px] flex text-muted-foreground items-center justify-start">
 						<p>
-							{moment(featured?.published_at).format(
+							{moment(featured?.created_at).format(
 								"MMM D, YYYY"
 							)}
 						</p>

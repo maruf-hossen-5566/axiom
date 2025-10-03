@@ -75,14 +75,14 @@ const SearchBar = () => {
 	return (
 		<>
 			<Button
-				className="max-md:size-9 max-md:!p-0 w-max flex items-center justify-start max-md:justify-center gap-0 rounded-full md:border text-muted-foreground"
-				variant={windowWidth > 768 ? "outline" : "ghost"}
+				className="max-lg:size-9 max-lg:!p-0 w-max flex items-center justify-start max-lg:justify-center gap-0 rounded-full lg:border text-muted-foreground"
+				variant={windowWidth > 1024 ? "outline" : "ghost"}
 				onClick={() => setOpen(!open)}>
-				{<Search className="max-md:!self-center" />}
+				{<Search className="max-lg:!self-center" />}
 				<Input
 					type="text"
 					placeholder="Search"
-					className="max-md:!hidden pl-2 !w-auto border-none outline-none !bg-transparent pointer-events-none"
+					className="max-lg:!hidden pl-2 !w-auto border-none outline-none !bg-transparent pointer-events-none"
 					value={searchQuery}
 					onChange={(e) => console.log("Value: ", e.target.value)}
 				/>
@@ -268,13 +268,21 @@ const SearchBar = () => {
 								{(searchResult?.posts ||
 									searchResult?.users ||
 									searchResult?.tags) && (
-									<div className="w-full py-5 flex justify-center border-t">
-										<Button
-											variant="outline"
-											className="self-center rounded-full">
-											See all results
-										</Button>
-									</div>
+									<>
+										<Separator />
+										<CommandGroup className="w-full !py-5 flex justify-center">
+											<CommandItem
+												variant="outline"
+												className="border !py-2 !px-5 rounded-full"
+												onSelect={() =>
+													console.log(
+														"See more button just clicked."
+													)
+												}>
+												See all results
+											</CommandItem>
+										</CommandGroup>
+									</>
 								)}
 								<CommandEmpty>No results found.</CommandEmpty>
 							</>

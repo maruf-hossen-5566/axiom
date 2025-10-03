@@ -23,7 +23,7 @@ class Post(models.Model):
     published = models.BooleanField(default=True)
     disable_like = models.BooleanField(default=False)
     disable_comment = models.BooleanField(default=False)
-    published_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def generate_slug(self):
         base_slug = slugify(self.title)

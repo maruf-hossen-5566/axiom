@@ -15,7 +15,7 @@ from tag_app.models import Tag
 
 @api_view(["GET"])
 def get_posts(request):
-    posts = Post.objects.filter(published=True).order_by("-published_at")
+    posts = Post.objects.filter(published=True).order_by("-created_at")[:50]
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response({"posts": serializer.data}, status=status.HTTP_200_OK)
 

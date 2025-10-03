@@ -8,7 +8,7 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title", "author__full_name", "author__username")
     ordering = [
-        "-published_at",
+        "-created_at",
     ]
 
 

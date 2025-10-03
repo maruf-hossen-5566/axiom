@@ -33,7 +33,7 @@ const SinglePost = ({ post }) => {
 					/>
 				</Link>
 				<div className="w-full py-1 text-[13px] flex text-muted-foreground items-center justify-start">
-					<p>{moment(post?.published_at).format("MMM D, YYYY")}</p>
+					<p>{moment(post?.created_at).format("MMM D, YYYY")}</p>
 					<p className={"size-[5px] bg-accent rounded-full mx-2"}></p>
 					<p>5 min read</p>
 				</div>

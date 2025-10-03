@@ -16,6 +16,9 @@ import EditorLayout from "@/Layout/EditorLayout.jsx";
 import BaseLayout from "@/Layout/BaseLayout.jsx";
 import PostDetail from "@/components/custom/Post/Detail/PostDetail.jsx";
 import Profile from "@/components/custom/Profile/Profile";
+import PublicOnlyRoute from "@/components/routes/PublicOnlyRoute.jsx";
+import DashboardLayout from "@/Layout/DashboardLayout.jsx";
+import Posts from "@/components/custom/Dashboard/Posts/Posts.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -30,7 +33,6 @@ const router = createBrowserRouter(
 					element={<Home />}
 				/>
 				<Route
-					// path=":username"
 					path=":username"
 					element={<Profile />}
 				/>
@@ -41,17 +43,17 @@ const router = createBrowserRouter(
 				<Route
 					path="login"
 					element={
-						// <PublicOnlyRoute>
-						<Login />
-						// </PublicOnlyRoute>
+						<PublicOnlyRoute>
+							<Login />
+						</PublicOnlyRoute>
 					}
 				/>
 				<Route
 					path="signup"
 					element={
-						// <PublicOnlyRoute>
-						<Signup />
-						// </PublicOnlyRoute>
+						<PublicOnlyRoute>
+							<Signup />
+						</PublicOnlyRoute>
 					}
 				/>
 			</Route>
@@ -61,6 +63,14 @@ const router = createBrowserRouter(
 				<Route
 					path="new"
 					element={<NewPost />}
+				/>
+			</Route>
+			<Route
+				path="dashboard"
+				element={<DashboardLayout />}>
+				<Route
+					path=""
+					element={<Posts />}
 				/>
 			</Route>
 		</Route>

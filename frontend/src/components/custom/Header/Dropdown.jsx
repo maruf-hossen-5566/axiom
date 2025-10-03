@@ -76,11 +76,14 @@ const ProfileDropdown = () => {
 							}>
 							<p
 								className={
-									"w-full capitalize truncate text-base font-bold"
+									"w-full capitalize truncate text-base font-medium"
 								}>
 								{(user && user?.full_name) || "Anonymous"}
 							</p>
-							<p className={"w-full truncate"}>
+							<p
+								className={
+									"w-full truncate text-muted-foreground"
+								}>
 								@{(user && user?.username) || "anonymous"}
 							</p>
 						</div>
@@ -104,11 +107,11 @@ const ProfileDropdown = () => {
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
-				<DropdownMenuItem>
-					<>
+				<DropdownMenuItem asChild>
+					<Link to="/dashboard">
 						<LayoutDashboard />
 						Dashboard
-					</>
+					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem>
 					<>
@@ -137,7 +140,7 @@ const ProfileDropdown = () => {
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
 				<DropdownMenuItem
-					variant={"destructive"}
+					variant="destructive"
 					onClick={handleLogout}>
 					<>
 						<ArrowRightFromLine />

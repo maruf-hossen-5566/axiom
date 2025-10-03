@@ -104,7 +104,7 @@ const Author = () => {
 							className={
 								"max-sm:hidden ml-4 text-xs text-muted-foreground"
 							}>
-							{`${moment(post?.published_at).format(
+							{`${moment(post?.created_at).format(
 								"MMM D, YYYY"
 							)}`}
 						</p>

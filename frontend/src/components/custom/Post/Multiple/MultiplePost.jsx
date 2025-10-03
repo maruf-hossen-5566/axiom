@@ -26,13 +26,13 @@ const MultiplePost = () => {
     }, []);
 
     return (<div
-            className={"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4 items-start justify-center"}
-        >
-            {!posts ? [...Array(12)].map((_, i) => <SinglePostSkeleton key={i}/>) : posts?.map((post) => (<SinglePost
-                    post={post}
-                    key={post?.id}
-                />))}
-        </div>);
+        className={"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4 items-start justify-center"}
+    >
+        {!posts ? [...Array(12)].map((_, i) => <SinglePostSkeleton key={i}/>) : posts?.map((post) => (<SinglePost
+            post={post}
+            key={post?.id}
+        />))}
+    </div>);
 };
 
 export default MultiplePost;
