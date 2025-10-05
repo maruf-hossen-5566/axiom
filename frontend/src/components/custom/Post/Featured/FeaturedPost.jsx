@@ -92,7 +92,7 @@ const FeaturedPost = () => {
 		</div>
 	) : (
 		<div className="w-full block mx-auto">
-			<Card className="w-full h-full max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none">
+			<Card className="w-full h-full max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-sidebar dark:bg-card gap-0">
 				<CardHeader className={"col-span-3"}>
 					<Link
 						to={`/${featured?.author?.username}/${featured?.slug}`}
@@ -112,9 +112,7 @@ const FeaturedPost = () => {
 				<CardContent className={"col-span-4 self-center"}>
 					<div className="w-full pb-1.5 text-[13px] flex text-muted-foreground items-center justify-start">
 						<p>
-							{moment(featured?.created_at).format(
-								"MMM D, YYYY"
-							)}
+							{moment(featured?.created_at).format("MMM D, YYYY")}
 						</p>
 						<p
 							className={

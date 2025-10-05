@@ -17,6 +17,7 @@ import { useSearchParams } from "react-router-dom";
 
 const Posts = () => {
 	const [loading, setLoading] = useState(false);
+	const posts = useDashboardStore((state) => state?.posts);
 	const setPosts = useDashboardStore((state) => state?.setPosts);
 	const postSearchQuery = useDashboardStore(
 		(state) => state?.postSearchQuery
@@ -24,21 +25,23 @@ const Posts = () => {
 	const setPostSearchQuery = useDashboardStore(
 		(state) => state?.setPostSearchQuery
 	);
+	const postSortBy = useDashboardStore((state) => state?.postSortBy);
+	const setPostSortBy = useDashboardStore((state) => state?.setPostSortBy);
+	const postPageNumber = useDashboardStore((state) => state?.postPageNumber);
 
 	useEffect(() => {
 		const fetchPosts = async () => {
 			try {
 				setLoading(true);
 				const response = await getPosts({
-					page: 1,
+					page: postPageNumber,
 					query: postSearchQuery.trim(),
+					sort: postSortBy,
 				});
 				setPosts(response.data);
-				console.log("response.data", response.data);
 
 				setLoading(false);
 			} catch (error) {
-				console.log("Failed to fetch posts: ", error);
 				toast.error(
 					error?.response?.data?.detail || "Failed to fetch posts"
 				);
@@ -46,7 +49,7 @@ const Posts = () => {
 		};
 
 		fetchPosts();
-	}, [postSearchQuery]);
+	}, [postSearchQuery, postSortBy, postPageNumber]);
 
 	return (
 		<div className="max-w-screen-lg w-full mx-auto px-6">
@@ -60,30 +63,33 @@ const Posts = () => {
 					<Input
 						placeholder="Search..."
 						className="max-w-sm"
+						disabled={loading || posts?.count <= 10}
 						value={postSearchQuery}
 						onChange={(e) =>
 							setPostSearchQuery(e?.target?.value?.trimStart())
 						}
 					/>
 
-					<Select defaultValue="newest">
+					<Select
+						value={postSortBy}
+						onValueChange={(value) => setPostSortBy(value)}>
 						<SelectTrigger className="w-44">
 							<SelectValue placeholder="Sort by" />
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="newest">Newest</SelectItem>
 							<SelectItem value="oldest">Oldest</SelectItem>
-							<SelectItem value="most-views">
-								Most Views
+							<SelectItem value="most-engagement">
+								Most Engagement
 							</SelectItem>
-							<SelectItem value="least-views">
-								Least Views
+							<SelectItem value="least-engagement">
+								Least Engagement
 							</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
 
-				<div className="w-full pt-4 pb-12 flex flex-col items-start justify-start">
+				<div className="w-full pt-4 flex flex-col items-start justify-start">
 					<PostTable loading={loading} />
 				</div>
 			</div>

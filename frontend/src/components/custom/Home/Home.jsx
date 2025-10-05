@@ -5,10 +5,10 @@ const Home = () => {
 	return (
 		<>
 			<div className={"py-16"}>
-				<div className="">
+				<div className="px-6 md:px-12">
 					<FeaturedPost />
 				</div>
-				<div className="border-t">
+				<div className="border-t px-6 md:px-12">
 					<MultiplePost />
 				</div>
 			</div>

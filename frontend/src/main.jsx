@@ -19,6 +19,10 @@ import Profile from "@/components/custom/Profile/Profile";
 import PublicOnlyRoute from "@/components/routes/PublicOnlyRoute.jsx";
 import DashboardLayout from "@/Layout/DashboardLayout.jsx";
 import Posts from "@/components/custom/Dashboard/Posts/Posts.jsx";
+import Bookmarks from "@/components/custom/Dashboard/Bookmarks/Bookmarks.jsx";
+import Followers from "./components/custom/Dashboard/Followers/Followers.jsx";
+import Following from "./components/custom/Dashboard/Following/Following.jsx";
+import Blocked from "./components/custom/Dashboard/Blocked/Blocked.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -71,6 +75,22 @@ const router = createBrowserRouter(
 				<Route
 					path=""
 					element={<Posts />}
+				/>
+				<Route
+					path="bookmarks"
+					element={<Bookmarks />}
+				/>
+				<Route
+					path="followers"
+					element={<Followers />}
+				/>
+				<Route
+					path="following"
+					element={<Following />}
+				/>
+				<Route
+					path="blocked"
+					element={<Blocked />}
 				/>
 			</Route>
 		</Route>

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const SinglePostSkeleton = () => {
 	return (
-		<div className="h-full w-full p-6">
+		<div className="h-full w-full p-6 border rounded-xl">
 			<Skeleton className="aspect-video w-full" />
 			<Skeleton className="h-4 my-4 w-3/5 rounded-full" />
 			<Skeleton className="h-5 mb-3 w-full rounded-full" />

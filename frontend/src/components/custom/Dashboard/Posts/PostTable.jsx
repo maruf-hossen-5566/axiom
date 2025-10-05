@@ -17,10 +17,13 @@ import { useDashboardStore } from "@/store/dashboardStore";
 import { Ellipsis, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ActionDropdown from "./ActionDropdown";
-import TablePagination from "./TablePagination";
+import PaginationComp from "../Pagination/Pagination";
 
 const PostTable = ({ loading }) => {
 	const posts = useDashboardStore((state) => state?.posts);
+	const setPostPageNumber = useDashboardStore(
+		(state) => state?.setPostPageNumber
+	);
 
 	return (
 		<>
@@ -98,7 +101,12 @@ const PostTable = ({ loading }) => {
 				)}
 			</div>
 
-			<TablePagination />
+			{loading || posts?.results?.length > 0 && (
+				<PaginationComp
+					data={posts}
+					setPageNumber={setPostPageNumber}
+				/>
+			)}
 		</>
 	);
 };

@@ -17,7 +17,7 @@ import { useState } from "react";
 
 export const FeaturedPostSkeleton = () => {
 	return (
-		<div className="w-full h-full py-6 max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-transparent border-none gap-0 shadow-none pointer-events-none">
+		<div className="w-full h-full py-6 max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-transparent gap-0 shadow-none pointer-events-none border rounded-xl">
 			<div className={"col-span-3 px-6"}>
 				<Skeleton className="w-full aspect-video" />
 			</div>

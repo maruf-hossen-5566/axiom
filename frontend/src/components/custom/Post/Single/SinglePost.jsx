@@ -16,7 +16,7 @@ const SinglePost = ({ post }) => {
 	return (
 		<Card
 			className={
-				"w-full h-full col-span-1 bg-transparent hover:bg-accent dark:hover:bg-card border-none gap-0 shadow-none max-sm:rounded-none"
+				"w-full h-full col-span-1 bg-sidebar dark:bg-card gap-0"
 			}>
 			<CardHeader>
 				<Link

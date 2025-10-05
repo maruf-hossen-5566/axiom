@@ -36,11 +36,11 @@ const MoreToRead = () => {
 		posts &&
 		posts.length > 0 && (
 			<div className="w-full border-t">
-				<div className="w-full max-w-screen-md mx-auto my-16">
-					<div className="text-xl font-medium mb-8 mx-6 xs:mx-12">
+				<div className="w-full max-w-screen-md mx-auto my-16 px-6 xs:px-12">
+					<div className="text-xl font-medium mb-12 mx- xs:mx-">
 						Recommended for you
 					</div>
-					<div className="w-full grid grid-cols-1 sm:grid-cols-2 xs:px-6">
+					<div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
 						{posts?.map((post) => (
 							<SinglePost
 								post={post}
@@ -48,7 +48,7 @@ const MoreToRead = () => {
 							/>
 						))}
 					</div>
-					<div className="w-full px-6 xs:px-12 mt-12">
+					<div className="w-full mt-12">
 						<Button
 							asChild
 							variant="outline"
