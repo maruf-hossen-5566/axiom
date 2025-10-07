@@ -60,9 +60,7 @@ def get_profile(request):
         )
 
     profile = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=profile, published=True).order_by(
-        "-created_at"
-    )
+    posts = Post.objects.filter(author=profile, published=True).order_by("-created_at")
 
     is_following = False
     if request.user and request.user.is_authenticated:

@@ -14,6 +14,7 @@ import { Loader2 } from "lucide-react";
 const Followers = () => {
 	const [loading, setLoading] = useState(false);
 	const followers = useDashboardStore((state) => state?.followers);
+	const followingIds = useUserStore((state) => state?.followingIds);
 	const setFollowers = useDashboardStore((state) => state?.setFollowers);
 	const setFollowingIds = useUserStore((state) => state?.setFollowingIds);
 	const followersSearchQuery = useDashboardStore(
@@ -97,7 +98,12 @@ const Followers = () => {
 							<Follower
 								key={follower.id}
 								follower={follower}
-								handleFollow={() => handleFollow(follower?.id)}
+								buttonText={
+									followingIds?.includes(follower?.id)
+										? "Unfollow"
+										: "Follow"
+								}
+								handleAction={() => handleFollow(follower?.id)}
 							/>
 						))}
 					</div>

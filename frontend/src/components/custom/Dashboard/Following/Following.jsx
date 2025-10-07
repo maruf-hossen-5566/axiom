@@ -102,7 +102,12 @@ const Following = () => {
 							<Follower
 								key={follower.id}
 								follower={follower}
-								handleFollow={() => handleFollow(follower?.id)}
+								buttonText={
+									followingIds?.includes(follower?.id)
+										? "Unfollow"
+										: "Follow"
+								}
+								handleAction={() => handleFollow(follower?.id)}
 							/>
 						))}
 					</div>

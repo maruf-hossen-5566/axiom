@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Bookmark from "./Bookmark";
 import PaginationComp from "../Pagination/Pagination";
+import { Button } from "@/components/ui/button.jsx";
 
 const Bookmarks = () => {
 	const [loading, setLoading] = useState(false);
@@ -24,15 +25,13 @@ const Bookmarks = () => {
 		(state) => state?.setBookmarkSearchQuery
 	);
 	const fetchBookmarks = async () => {
+		setLoading(true);
 		try {
-			setLoading(true);
 			const response = await getBookmarks({
 				page: bookmarkPageNumber,
 				query: bookmarkSearchQuery.trim(),
 			});
 			setBookmarks(response.data);
-
-			setLoading(false);
 		} catch (error) {
 			console.log("Failed to fetch bookmarks: ", error);
 
@@ -40,11 +39,17 @@ const Bookmarks = () => {
 				error?.response?.data?.detail || "Failed to fetch bookmarks"
 			);
 		}
+		setLoading(false);
 	};
 
 	useEffect(() => {
 		fetchBookmarks();
-	}, [bookmarkPageNumber]);
+	}, [bookmarkPageNumber, bookmarkSearchQuery]);
+
+	const handelOnchange = (e) => {
+		setBookmarkSearchQuery(e?.target?.value?.trimStart());
+		setBookmarkPageNumber(1);
+	};
 
 	return (
 		<div className="max-w-screen-lg w-full mx-auto px-6">
@@ -54,18 +59,23 @@ const Bookmarks = () => {
 			/>
 
 			<div className="w-full mb-12 flex flex-col items-start justify-start">
-				<div className="w-full mb-12 flex items-center justify-between gap-6">
+				<div className="w-full mb-12 flex items-center justify-start gap-1">
 					<Input
 						placeholder="Search..."
 						className="max-w-md"
-						disabled={loading || bookmarks?.results?.length <= 10}
+						disabled={bookmarks?.count <= 10}
 						value={bookmarkSearchQuery}
-						onChange={(e) =>
-							setBookmarkSearchQuery(
-								e?.target?.value?.trimStart()
-							)
-						}
+						onChange={(e) => handelOnchange(e)}
 					/>
+					{bookmarkSearchQuery?.trim().length > 0 && (
+						<Button
+							variant="ghost"
+							size="sm"
+							disabled={loading}
+							onClick={() => setBookmarkSearchQuery("")}>
+							Clear
+						</Button>
+					)}
 				</div>
 
 				{bookmarks?.results?.length > 0 ? (
@@ -83,6 +93,7 @@ const Bookmarks = () => {
 					</div>
 				)}
 			</div>
+
 			{bookmarks?.results?.length > 0 && (
 				<PaginationComp
 					data={bookmarks}

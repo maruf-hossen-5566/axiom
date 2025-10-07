@@ -14,7 +14,7 @@ const PaginationComp = ({ data, setPageNumber }) => {
 		setPageNumber && (
 			<div className="w-full flex items-center justify-between mt-4">
 				<p className="pl-3 shrink-0 text-sm text-muted-foreground">
-					Page {data?.current_page_number} of {data?.total_pages}
+					Showing {data?.results?.length} of {data?.count} results
 				</p>
 
 				<Pagination className="justify-end">
@@ -33,6 +33,11 @@ const PaginationComp = ({ data, setPageNumber }) => {
 								onClick={() => setPageNumber(data?.previous)}
 							/>
 						</PaginationItem>
+
+						<p className="px-3 bg-accent py-1.5 rounded-full shrink-0 text-sm text-muted-foreground">
+							{data?.current_page_number} / {data?.total_pages}
+						</p>
+
 						<PaginationItem disabled={!data?.next}>
 							<PaginationNext
 								onClick={() => setPageNumber(data?.next)}

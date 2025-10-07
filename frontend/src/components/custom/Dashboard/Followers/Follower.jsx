@@ -5,7 +5,7 @@ import useUserStore from "@/store/userStore";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-const Follower = ({ follower, handleFollow }) => {
+const Follower = ({ follower, buttonText, handleAction }) => {
 	const followingIds = useUserStore((state) => state?.followingIds);
 
 	return (
@@ -48,10 +48,8 @@ const Follower = ({ follower, handleFollow }) => {
 						variant="outline"
 						size="sm"
 						className="rounded-full"
-						onClick={handleFollow}>
-						{followingIds && followingIds?.includes(follower?.id)
-							? "Unfollow"
-							: "Follow"}
+						onClick={handleAction}>
+						{buttonText || "Click"}
 					</Button>
 				</div>
 			</CardContent>

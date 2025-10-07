@@ -14,8 +14,10 @@ const initialStore = {
 	following: null,
 	followingSearchQuery: "",
 	followingPageNumber: 1,
-	blocked: null,
-	blockedPageNumber: 1,
+	analyticsFilter: "30days",
+	blockList: null,
+	blockListSearchQuery: "",
+	blockListPageNumber: 1,
 };
 
 export const useDashboardStore = create((set) => ({
@@ -45,6 +47,14 @@ export const useDashboardStore = create((set) => ({
 		set({
 			followersSearchQuery: data,
 		}),
+	setBookmarkSearchQuery: (data) =>
+		set({
+			bookmarkSearchQuery: data,
+		}),
+	setBookmarkPageNumber: (data) =>
+		set({
+			bookmarkPageNumber: data,
+		}),
 	setFollowingSearchQuery: (data) =>
 		set({
 			followingSearchQuery: data,
@@ -57,13 +67,21 @@ export const useDashboardStore = create((set) => ({
 		set({
 			followingPageNumber: data,
 		}),
-	setBlocked: (data) =>
+	setAnalyticsFilter: (data) =>
 		set({
-			blocked: data,
+			analyticsFilter: data,
 		}),
-	setBlockedPageNumber: (data) =>
+	setBlockList: (data) =>
 		set({
-			blockedPageNumber: data,
+			blockList: data,
+		}),
+	setBlockListSearchQuery: (data) =>
+		set({
+			blockListSearchQuery: data,
+		}),
+	setBlockListPageNumber: (data) =>
+		set({
+			blockListPageNumber: data,
 		}),
 	setBookmarks: (data) =>
 		set({

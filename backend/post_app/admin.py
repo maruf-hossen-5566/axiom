@@ -23,7 +23,8 @@ class ThumbnailAdmin(admin.ModelAdmin):
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    list_display = ("id", "user__full_name", "post__title")
+    list_display = ("id", "user__full_name", "post__title", "created_at")
+    search_fields = ("post__author__full_name",)
     ordering = ["-created_at"]
 
 

@@ -23,6 +23,7 @@ import Bookmarks from "@/components/custom/Dashboard/Bookmarks/Bookmarks.jsx";
 import Followers from "./components/custom/Dashboard/Followers/Followers.jsx";
 import Following from "./components/custom/Dashboard/Following/Following.jsx";
 import Blocked from "./components/custom/Dashboard/Blocked/Blocked.jsx";
+import AnalyticsComp from "./components/custom/Dashboard/AnalyticsComp/AnalyticsComp.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -87,6 +88,10 @@ const router = createBrowserRouter(
 				<Route
 					path="following"
 					element={<Following />}
+				/>
+				<Route
+					path="analytics"
+					element={<AnalyticsComp />}
 				/>
 				<Route
 					path="blocked"

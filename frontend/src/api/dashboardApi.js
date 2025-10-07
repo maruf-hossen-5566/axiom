@@ -1,30 +1,47 @@
 import apiClient from "@/api/apiClient.js";
 
-export const getPosts = ({
-	page = 1,
-	query = "",
-	sort = "most-engagement",
-}) => {
+export const getPosts = (data) => {
 	return apiClient.get("dashboard/posts/", {
-		params: { page: page, query: query, sort: sort },
+		params: { ...data },
 	});
 };
 
-export const getBookmarks = ({ page = 1, query = "" }) => {
+export const getBookmarks = (data) => {
 	return apiClient.get("dashboard/bookmarks/", {
-		params: { page: page, query: query },
+		params: { ...data },
 	});
 };
 
-// export const getFollowers = ({ page = 1, query = "" }) => {
 export const getFollowers = (data) => {
 	return apiClient.get("dashboard/followers/", {
 		params: { ...data },
 	});
 };
 
-export const getFollowing = ({ page = 1, query = "" }) => {
+export const getFollowing = (data) => {
 	return apiClient.get("dashboard/following/", {
-		params: { page: page, query: query },
+		params: { ...data },
+	});
+};
+
+export const getBlockList = (data) => {
+	return apiClient.get("dashboard/block-list/", {
+		params: { ...data },
+	});
+};
+
+export const getCardData = () => {
+	return apiClient.get("dashboard/card-data/");
+};
+
+export const getEngagementData = (data) => {
+	return apiClient.get("dashboard/engagement-data/", {
+		params: { ...data },
+	});
+};
+
+export const getFollowersData = (data) => {
+	return apiClient.get("dashboard/followers-data/", {
+		params: { ...data },
 	});
 };

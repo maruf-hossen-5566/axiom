@@ -6,7 +6,7 @@ from comment_app.models import Comment, CommentLike
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "author__full_name", "content", "created_at")
     readonly_fields = ("id",)
-    search_fields=("post__title",)
+    search_fields=("post__title", "post__author__full_name",)
     ordering = [
         "-created_at",
     ]
