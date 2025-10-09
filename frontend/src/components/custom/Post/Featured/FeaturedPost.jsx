@@ -59,7 +59,7 @@ const FeaturedPost = () => {
 		const fetchFeaturedPosts = async () => {
 			try {
 				const res = await getPosts();
-				setPosts(res?.data?.posts);
+				setPosts(res?.data);
 			} catch (error) {
 				console.error("Post fetch error: ", error);
 				toast.error(
@@ -71,8 +71,8 @@ const FeaturedPost = () => {
 	}, []);
 
 	useEffect(() => {
-		if (posts && posts?.length > 0) {
-			setFeatured(posts[0]);
+		if (posts && posts?.results?.length > 0) {
+			setFeatured(posts?.results[0]);
 		}
 	}, [posts]);
 
@@ -92,11 +92,14 @@ const FeaturedPost = () => {
 		</div>
 	) : (
 		<div className="w-full block mx-auto">
-			<Card className="w-full h-full max-w-screen-xl mb-16 mx-auto grid grid-cols-7 items-start justify-center bg-sidebar dark:bg-card gap-0">
-				<CardHeader className={"col-span-3"}>
+			<Card className="w-full h-full max-w-screen-xl mb-16 mx-auto max-lg:pt-0 flex flex-col lg:grid grid-cols-7 items-start justify-center bg-sidebar dark:bg-card gap-0 overflow-hidden">
+				<CardHeader
+					className={
+						"lg:col-span-3 w-full max-lg:mb-4 max-lg:px-0 flex items-center justify-center"
+					}>
 					<Link
 						to={`/${featured?.author?.username}/${featured?.slug}`}
-						className="aspect-video w-full">
+						className="w-full aspect-video ">
 						<img
 							loading="lazy"
 							src={
@@ -104,7 +107,7 @@ const FeaturedPost = () => {
 								"https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 							}
 							alt="Photo by Drew Beamer"
-							className="rounded-sm w-full h-full object-cover"
+							className="lg:rounded-sm w-full h-full object-cover"
 						/>
 					</Link>
 				</CardHeader>

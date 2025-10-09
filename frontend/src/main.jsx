@@ -20,10 +20,11 @@ import PublicOnlyRoute from "@/components/routes/PublicOnlyRoute.jsx";
 import DashboardLayout from "@/Layout/DashboardLayout.jsx";
 import Posts from "@/components/custom/Dashboard/Posts/Posts.jsx";
 import Bookmarks from "@/components/custom/Dashboard/Bookmarks/Bookmarks.jsx";
-import Followers from "./components/custom/Dashboard/Followers/Followers.jsx";
-import Following from "./components/custom/Dashboard/Following/Following.jsx";
-import Blocked from "./components/custom/Dashboard/Blocked/Blocked.jsx";
-import AnalyticsComp from "./components/custom/Dashboard/AnalyticsComp/AnalyticsComp.jsx";
+import Followers from "@/components/custom/Dashboard/Followers/Followers.jsx";
+import Following from "@/components/custom/Dashboard/Following/Following.jsx";
+import Blocked from "@/components/custom/Dashboard/Blocked/Blocked.jsx";
+import AnalyticsComp from "@/components/custom/Dashboard/AnalyticsComp/AnalyticsComp.jsx";
+import SearchPage from "@/components/custom/Search/SearchPage.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -44,6 +45,10 @@ const router = createBrowserRouter(
 				<Route
 					path=":author/:slug"
 					element={<PostDetail />}
+				/>
+				<Route
+					path="search"
+					element={<SearchPage />}
 				/>
 				<Route
 					path="login"

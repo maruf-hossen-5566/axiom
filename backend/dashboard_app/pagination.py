@@ -1,5 +1,6 @@
 from urllib.parse import parse_qs, urlparse
 from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import EmptyPage, PageNotAnInteger
 from rest_framework.response import Response
 
 
@@ -16,6 +17,19 @@ class CustomPagination(PageNumberPagination):
         if page_numbers:
             return int(page_numbers[0])
         return None
+
+    def paginate_queryset(self, queryset, request, view=None):
+        page_number = request.query_params.get(self.page_query_param, 1)
+        paginator = self.django_paginator_class(queryset, self.page_size)
+
+        try:
+            page = paginator.page(page_number)
+        except (EmptyPage, PageNotAnInteger):
+            page = paginator.page(1)
+
+        self.page = page
+        self.request = request
+        return list(page)
 
     def get_paginated_response(self, data):
         next_page_num = self._get_page_number_from_url("Next", self.get_next_link())

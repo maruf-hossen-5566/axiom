@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404, get_list_or_404
+from dashboard_app.urls import CustomPagination
 from .decorators import author_required, post_published_required
 from .models import Like, Post, Thumbnail
 from .serializers import PostSerializer, ThumbnailSerializer
@@ -15,9 +16,12 @@ from tag_app.models import Tag
 
 @api_view(["GET"])
 def get_posts(request):
+    paginator = CustomPagination()
+    paginator.page_size = 24
     posts = Post.objects.filter(published=True).order_by("-created_at")[:50]
-    serializer = PostSerializer(posts, many=True, context={"request": request})
-    return Response({"posts": serializer.data}, status=status.HTTP_200_OK)
+    result_page = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(result_page, many=True, context={"request": request})
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])

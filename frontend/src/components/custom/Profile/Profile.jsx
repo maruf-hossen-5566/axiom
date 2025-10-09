@@ -232,7 +232,7 @@ const Profile = () => {
 					<div className="border-t">
 						<div
 							className={
-								"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-3 gap-y-6 gap-x-4 items-start justify-center"
+								"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-3 gap-6 items-start justify-center"
 							}>
 							{posts?.map((post) => (
 								<SinglePost

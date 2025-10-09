@@ -97,7 +97,7 @@ const Following = () => {
 						<Loader2 className="animate-spin" />
 					</div>
 				) : following && following?.results?.length > 0 ? (
-					<div className="max-w-screen- w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-start justify-center">
+					<div className="max-w-screen- w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 items-start justify-center">
 						{following?.results?.map((follower) => (
 							<Follower
 								key={follower.id}
@@ -117,13 +117,12 @@ const Following = () => {
 					</div>
 				)}
 			</div>
-			{loading ||
-				(following?.results?.length > 0 && (
-					<PaginationComp
-						data={following}
-						setPageNumber={setFollowingPageNumber}
-					/>
-				))}
+			{following?.results?.length > 0 && (
+				<PaginationComp
+					data={following}
+					setPageNumber={setFollowingPageNumber}
+				/>
+			)}
 		</div>
 	);
 };

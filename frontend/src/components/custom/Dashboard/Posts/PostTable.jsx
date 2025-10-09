@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 import { useDashboardStore } from "@/store/dashboardStore";
 import { Ellipsis, Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ActionDropdown from "./ActionDropdown";
 import PaginationComp from "../Pagination/Pagination";
 
@@ -24,6 +24,8 @@ const PostTable = ({ loading }) => {
 	const setPostPageNumber = useDashboardStore(
 		(state) => state?.setPostPageNumber
 	);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const page = searchParams.get("page");
 
 	return (
 		<>
@@ -101,10 +103,10 @@ const PostTable = ({ loading }) => {
 				)}
 			</div>
 
-			{loading || posts?.results?.length > 0 && (
+			{posts?.results?.length > 0 && (
 				<PaginationComp
 					data={posts}
-					setPageNumber={setPostPageNumber}
+					setPageNumber={(v) => setSearchParams({ page: v })}
 				/>
 			)}
 		</>

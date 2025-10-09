@@ -74,7 +74,7 @@ const Followers = () => {
 		<div className="max-w-screen-lg w-full mx-auto px-6">
 			<PageHeader
 				title="Followers"
-				subtitle="Manage your followers."
+				subtitle="Manage the people who follow you."
 			/>
 
 			<div className="w-full mb-12 flex flex-col items-start justify-start">
@@ -93,7 +93,7 @@ const Followers = () => {
 						<Loader2 className="animate-spin" />
 					</div>
 				) : followers && followers?.results?.length > 0 ? (
-					<div className="max-w-screen- w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-start justify-center">
+					<div className="max-w-screen- w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 items-start justify-center">
 						{followers?.results?.map((follower) => (
 							<Follower
 								key={follower.id}
@@ -113,13 +113,12 @@ const Followers = () => {
 					</div>
 				)}
 			</div>
-			{loading ||
-				(followers?.results?.length > 0 && (
-					<PaginationComp
-						data={followers}
-						setPageNumber={setFollowersPageNumber}
-					/>
-				))}
+			{followers?.results?.length > 0 && (
+				<PaginationComp
+					data={followers}
+					setPageNumber={setFollowersPageNumber}
+				/>
+			)}
 		</div>
 	);
 };

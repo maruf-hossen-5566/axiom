@@ -48,9 +48,14 @@ const MySidebar = ({ label = "Posts", menuItems }) => {
 					</SidebarGroupContent>
 				</SidebarGroup>
 				<Button
+					asCHild
 					variant="outline"
 					className="mt-auto mx-4 mb-4 rounded-full">
-					Back to home
+					<Link
+						to={"/"}
+						className="w-full">
+						Back to home
+					</Link>
 				</Button>
 			</SidebarContent>
 		</Sidebar>

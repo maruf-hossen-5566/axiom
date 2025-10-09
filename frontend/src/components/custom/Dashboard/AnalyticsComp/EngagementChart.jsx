@@ -117,8 +117,7 @@ const EngagementChart = () => {
 						/>
 						<Bar
 							dataKey="comments"
-							fill="currentColor"
-							fillOpacity={0.5}
+							fill="var(--color-zinc-500)"
 							stackId="a"
 						/>
 					</BarChart>

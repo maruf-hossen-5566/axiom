@@ -1,7 +1,9 @@
 import apiClient from "@/api/apiClient.js";
 
-export const getPosts = () => {
-	return apiClient.get("posts/");
+export const getPosts = (data) => {
+	return apiClient.get("posts/", {
+		params: { ...data },
+	});
 };
 
 export const getPostDetail = (author, slug) => {

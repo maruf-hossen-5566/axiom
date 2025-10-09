@@ -13,17 +13,11 @@ const Follower = ({ follower, buttonText, handleAction }) => {
 			className={
 				"w-full h-full col-span-1 bg-sidebar dark:bg-card gap-0"
 			}>
-			<CardHeader>
-				<p className="w-full text-end text-xs text-muted-foreground">
-					Since {moment(follower?.created_at).format("MMM D, YYYY")}
-				</p>
-			</CardHeader>
-
-			<CardContent className="mt-6 w-full flex items-center justify-between gap-2">
+			<CardContent className="w-full flex items-center justify-between gap-2">
 				<Link
 					to={`/${follower?.username}`}
 					className="w-max shrink-0 flex flex-1 items-center gap-2 overflow-hidden">
-					<Avatar className="size-9">
+					<Avatar className="size-10">
 						<AvatarImage
 							src={
 								follower?.avatar ||

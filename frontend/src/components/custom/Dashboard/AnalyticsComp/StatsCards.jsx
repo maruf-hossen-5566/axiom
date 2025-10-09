@@ -49,7 +49,7 @@ const StatsCards = () => {
 				</CardHeader>
 				<CardContent>
 					{loading ? (
-						<Skeleton className="h-9 w-24 rounded-full" />
+						<Skeleton className="h-9 w-16 rounded-full" />
 					) : (
 						<h1 className="text-3xl font-bold">
 							{visitorsData || "272,345"}
@@ -65,7 +65,7 @@ const StatsCards = () => {
 				</CardHeader>
 				<CardContent>
 					{loading ? (
-						<Skeleton className="h-9 w-24 rounded-full" />
+						<Skeleton className="h-9 w-16 rounded-full" />
 					) : (
 						<h1 className="text-3xl font-bold">
 							{engagementData || "272,345"}
@@ -81,7 +81,7 @@ const StatsCards = () => {
 				</CardHeader>
 				<CardContent>
 					{loading ? (
-						<Skeleton className="h-9 w-24 rounded-full" />
+						<Skeleton className="h-9 w-16 rounded-full" />
 					) : (
 						<h1 className="text-3xl font-bold">
 							{followerData || "272,345"}

@@ -12,8 +12,8 @@ const PaginationComp = ({ data, setPageNumber }) => {
 	return (
 		data &&
 		setPageNumber && (
-			<div className="w-full flex items-center justify-between mt-4">
-				<p className="pl-3 shrink-0 text-sm text-muted-foreground">
+			<div className="w-full pl-3 pr-1.5 flex items-center justify-between mt-4">
+				<p className="shrink-0 text-sm text-muted-foreground">
 					Showing {data?.results?.length} of {data?.count} results
 				</p>
 

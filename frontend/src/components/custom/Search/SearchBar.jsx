@@ -1,37 +1,32 @@
-import { Input } from "@/components/ui/input.jsx";
-import { Hash, Loader2, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import {
-	Command,
-	CommandDialog,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-	CommandSeparator,
-	CommandShortcut,
-} from "@/components/ui/command";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
 import { search_data } from "@/api/searchApi.js";
-import { useDebounce } from "use-debounce";
 import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
 } from "@/components/ui/avatar.jsx";
-import { Image } from "@tiptap/extension-image";
+import { Button } from "@/components/ui/button";
+import {
+    CommandDialog,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input.jsx";
 import { Separator } from "@/components/ui/separator.jsx";
+import { Hash, Loader2, Search } from "lucide-react";
 import pluralize from "pluralize";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
 
 const SearchBar = () => {
 	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 	const [open, setOpen] = useState(false);
 	const [searchResult, setSearchResult] = useState(null);
-	const [searchParams, setSearchParams] = useSearchParams();
-	const searchQuery = searchParams.get("query") || "";
+	const [searchQuery, setSearchQuery] = useState("");
 	const [debouncedQuery] = useDebounce(searchQuery, 300);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
@@ -68,8 +63,7 @@ const SearchBar = () => {
 	}, [debouncedQuery]);
 
 	const updateSearchParams = (value) => {
-		searchParams.set("query", value);
-		setSearchParams(searchParams);
+		setSearchQuery(value);
 	};
 
 	return (
@@ -274,11 +268,12 @@ const SearchBar = () => {
 											<CommandItem
 												variant="outline"
 												className="border !py-2 !px-5 rounded-full"
-												onSelect={() =>
-													console.log(
-														"See more button just clicked."
-													)
-												}>
+												onSelect={() => {
+													navigate(
+														`/search${searchQuery}`
+													);
+													setOpen(false);
+												}}>
 												See all results
 											</CommandItem>
 										</CommandGroup>

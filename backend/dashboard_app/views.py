@@ -123,7 +123,7 @@ def get_block_list(request):
     users = User.objects.filter(
         Q(id__in=blocked_qs)
         & (Q(full_name__icontains=query) | Q(username__icontains=query))
-    )
+    ).annotate(at=F("blocked_by__blocked_at"))
     paginator = CustomPagination()
     result_page = paginator.paginate_queryset(users, request)
     serializer = UserSerializer(result_page, many=True, context={"request": request})

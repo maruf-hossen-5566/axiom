@@ -1,6 +1,6 @@
 import Logo from "@/components/custom/Header/Logo.jsx";
 import ThemeButton from "@/components/custom/Header/ThemeButton.jsx";
-import SearchBar from "@/components/custom/Header/SearchBar.jsx";
+import SearchBar from "@/components/custom/Search/SearchBar.jsx";
 import useUserStore from "@/store/userStore.js";
 import {
 	DropdownMenu,

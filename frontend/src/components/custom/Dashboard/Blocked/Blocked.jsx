@@ -94,7 +94,7 @@ const Blocked = () => {
 						<Loader2 className="animate-spin" />
 					</div>
 				) : blockList && blockList?.results?.length > 0 ? (
-					<div className="max-w-screen- w-full mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-start justify-center">
+					<div className="max-w-screen- w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 items-start justify-center">
 						{blockList?.results?.map((user) => (
 							<Follower
 								key={user.id}
@@ -110,13 +110,12 @@ const Blocked = () => {
 					</div>
 				)}
 			</div>
-			{loading ||
-				(blockList?.results?.length > 0 && (
-					<PaginationComp
-						data={blockList}
-						setPageNumber={setBlockListPageNumber}
-					/>
-				))}
+			{blockList?.results?.length > 0 && (
+				<PaginationComp
+					data={blockList}
+					setPageNumber={setBlockListPageNumber}
+				/>
+			)}
 		</div>
 	);
 };

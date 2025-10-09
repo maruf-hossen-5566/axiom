@@ -28,17 +28,15 @@ const Posts = () => {
 	);
 	const postSortBy = useDashboardStore((state) => state?.postSortBy);
 	const setPostSortBy = useDashboardStore((state) => state?.setPostSortBy);
-	const postPageNumber = useDashboardStore((state) => state?.postPageNumber);
-	const setPostPageNumber = useDashboardStore(
-		(state) => state?.setPostPageNumber
-	);
+	const [searchParams] = useSearchParams();
+	const page = searchParams.get("page");
 
 	useEffect(() => {
 		const fetchPosts = async () => {
 			setLoading(true);
 			try {
 				const response = await getPosts({
-					page: postPageNumber,
+					page: page,
 					query: postSearchQuery.trim(),
 					sort: postSortBy,
 				});
@@ -52,7 +50,7 @@ const Posts = () => {
 		};
 
 		fetchPosts();
-	}, [postSearchQuery, postSortBy, postPageNumber]);
+	}, [postSearchQuery, postSortBy, page]);
 
 	const handelOnchange = (e) => {
 		setPostSearchQuery(e?.target?.value?.trimStart());
@@ -68,7 +66,7 @@ const Posts = () => {
 			/>
 
 			<div className="w-full flex flex-col items-start justify-start">
-				<div className="w-full flex max-xs:!flex-col md:items-start justify-between gap-4">
+				<div className="w-full mb-12 flex max-xs:!flex-col md:items-start justify-between gap-4">
 					<div className="w-full flex items-center justify-start gap-1">
 						<Input
 							placeholder="Search..."
@@ -91,7 +89,9 @@ const Posts = () => {
 					<Select
 						value={postSortBy}
 						onValueChange={(value) => setPostSortBy(value)}>
-						<SelectTrigger className="w-full xs:w-44">
+						<SelectTrigger
+							className="w-full xs:w-44"
+							disabled={posts?.count <= 10}>
 							<SelectValue placeholder="Sort by" />
 						</SelectTrigger>
 						<SelectContent>
@@ -107,7 +107,7 @@ const Posts = () => {
 					</Select>
 				</div>
 
-				<div className="w-full pt-4 flex flex-col items-start justify-start">
+				<div className="w-full flex flex-col items-start justify-start">
 					<PostTable loading={loading} />
 				</div>
 			</div>
