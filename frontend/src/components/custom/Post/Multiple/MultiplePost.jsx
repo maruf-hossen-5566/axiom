@@ -32,7 +32,7 @@ const MultiplePost = () => {
 
 	return (
 		<div className="max-w-screen-xl w-full mt-16 mx-auto flex flex-col items-start justify-center">
-			<div className="w-full mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-6 items-start justify-center">
+			<div className="w-full mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start justify-center">
 				{!posts
 					? [...Array(12)].map((_, i) => (
 							<SinglePostSkeleton key={i} />

@@ -105,141 +105,173 @@ const Profile = () => {
 			{!profile && !posts ? (
 				<ProfileSkeleton />
 			) : (
-				<div className={"py-16"}>
+				<div className="py-16">
 					{/* <div className="w-full mb-16"> */}
-					<div className="max-w-screen-md w-full mb-16 py-8 mx-auto gap-x-4 items-start justify-center">
-						<div className="w-full mx-auto flex items-start justify-center gap-x-8">
-							<Avatar className="size-28">
-								<AvatarImage
-									src={
-										profile?.avatar ||
-										"https://github.com/shadcn.png"
-									}
-								/>
-								<AvatarFallback className={"capitalize"}>
-									{profile?.full_name[0] || "A"}
-								</AvatarFallback>
-							</Avatar>
-							<div className="w-full text-sm flex flex-col items-start justify-start">
-								<h1 className="text-xl font-semibold">
-									{profile?.full_name}
-								</h1>
-								<p className="text-muted-foreground">
-									@{profile?.username}
-								</p>
-								<div className="w-full my-3 flex items-center justify-start gap-6">
-									<p>
-										{profile?.follower_count}{" "}
-										<span className="text-muted-foreground">
-											Followers
-										</span>
-									</p>
-									<p>
-										{profile?.following_count}{" "}
-										<span className="text-muted-foreground">
-											Following
-										</span>
-									</p>
-								</div>
-								<div className="w-full flex items-center justify-start gap-4">
-									<p className="leading-normal">
-										Lorem ipsum dolor sit amet consectetur
-										adipisicing elit. Fugiat optio
-										reprehenderit consequatur qui. Nemo iure
-										quae, dolor corporis accusamus ipsum.
-									</p>
-								</div>
-								<div className="w-full mt-4 flex items-center justify-start flex-wrap gap-x-4 gap-y-2">
-									<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
-										<MapPin className="size-[1.125rem]" />
-										<p>California, USA</p>
+					<div className="w-full px-6 md:px-12">
+						<div className="max-w-screen-md w-full mb-16 py-8 mx-auto gap-x-4 items-start justify-center overflow-hidden">
+							<div className="w-full mx-auto flex flex-col items-start justify-center gap-x-8">
+								<div className="w-full flex max-sm:flex-col sm:items-center justify-between gap-4 sm:gap-6">
+									<div className="flex items-end sm:items-center justify-start gap-4">
+										<Avatar className="size-20">
+											<AvatarImage
+												src={
+													profile?.avatar ||
+													"https://github.com/shadcn.png"
+												}
+											/>
+											<AvatarFallback
+												className={"capitalize"}>
+												{profile?.full_name[0] || "A"}
+											</AvatarFallback>
+										</Avatar>
+										<div className="flex text-nowrap flex-col items-start justify-start">
+											<h1 className="text-xl font-semibold">
+												{profile?.full_name}
+											</h1>
+											<p className="text-sm text-muted-foreground">
+												@{profile?.username}
+											</p>
+										</div>
 									</div>
-									<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
-										<Link2 className="-rotate-45 size-[1.125rem]" />
-										<a
-											className="text-blue-500 hover:underline"
-											target="_blank"
-											href="https://x.com/sm_maruf_60447">
-											https://x.com/sm_maruf_60447
-										</a>
-									</div>
-									<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
-										<CalendarDays className="size-[1.125rem]" />
-										<p>
-											Joined{" "}
-											{moment(
-												profile?.date_joined
-											).format("MMMM YYYY")}
-										</p>
-									</div>
-								</div>
-							</div>
-							<div className="mt-8 flex items-center justify-center gap-2">
-								<Button
-									onClick={handleFollow}
-									className="rounded-full">
-									{user?.id === profile?.id
-										? "Edit Profile"
-										: followingIds &&
-										  followingIds?.includes(profile?.id)
-										? "Following"
-										: "Follow"}
-								</Button>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
+									<div className="w-full flex items-center justify-end gap-2">
 										<Button
-											size="icon"
-											variant="ghost"
-											className="rounded-full">
-											<Ellipsis />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent
-										className="w-56 z-[1000] font-inter"
-										align="end"
-										loop={true}>
-										<DropdownMenuItem
-											onClick={handleCopyProfile}>
-											Copy profile link
-										</DropdownMenuItem>
-										{user?.id !== profile?.id && (
-											<DropdownMenuItem
-												onClick={handleBlock}
-												variant={
-													blockedIds &&
-													profile &&
-													blockedIds?.includes(
-														profile?.id
-													)
-														? "destructive"
-														: ""
-												}>
-												{blockedIds &&
-												profile &&
-												blockedIds?.includes(
+											variant={
+												followingIds &&
+												followingIds?.includes(
 													profile?.id
 												)
-													? "Unblock"
-													: "Block"}{" "}
-												@{profile?.username}
-											</DropdownMenuItem>
-										)}
-									</DropdownMenuContent>
-								</DropdownMenu>
+													? "outline"
+													: "default"
+											}
+											onClick={handleFollow}
+											className="max-sm:w-full max-sm:shrink rounded-full">
+											{user?.id === profile?.id
+												? "Edit Profile"
+												: followingIds &&
+												  followingIds?.includes(
+														profile?.id
+												  )
+												? "Following"
+												: "Follow"}
+										</Button>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													size="icon"
+													variant="ghost"
+													className="rounded-full border">
+													<Ellipsis />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent
+												className="w-56 z-[1000] font-inter"
+												align="end"
+												loop={true}>
+												<DropdownMenuItem
+													onClick={handleCopyProfile}>
+													Copy profile link
+												</DropdownMenuItem>
+												{user?.id !== profile?.id && (
+													<DropdownMenuItem
+														onClick={handleBlock}
+														variant={
+															blockedIds &&
+															profile &&
+															blockedIds?.includes(
+																profile?.id
+															)
+																? "destructive"
+																: ""
+														}>
+														{blockedIds &&
+														profile &&
+														blockedIds?.includes(
+															profile?.id
+														)
+															? "Unblock"
+															: "Block"}{" "}
+														@{profile?.username}
+													</DropdownMenuItem>
+												)}
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</div>
+								</div>
+
+								<div className="w-full text-sm flex flex-col items-start justify-start">
+									<div className="w-full text-sm mt-4 mb-3 flex items-center justify-start gap-6">
+										<p>
+											{profile?.follower_count}{" "}
+											<span className="text-muted-foreground">
+												Followers
+											</span>
+										</p>
+										<p>
+											{profile?.following_count}{" "}
+											<span className="text-muted-foreground">
+												Following
+											</span>
+										</p>
+									</div>
+
+									<div className="w-full flex items-center justify-start gap-4">
+										<p className="w-full md:w-4/5 leading-normal">
+											Lorem ipsum dolor sit amet
+											consectetur adipisicing elit. Fugiat
+											optio reprehenderit consequatur qui.
+											Nemo iure quae, dolor corporis
+											accusamus ipsum.
+										</p>
+									</div>
+									<div className="w-full mt-4 flex items-center justify-start flex-wrap gap-x-4 gap-y-2">
+										<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
+											<MapPin className="size-[1.125rem]" />
+											<p>California, USA</p>
+										</div>
+										<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
+											<Link2 className="-rotate-45 size-[1.125rem]" />
+											<a
+												className="text-blue-500 hover:underline"
+												target="_blank"
+												href="https://x.com/sm_maruf_60447">
+												https://x.com/sm_maruf_60447
+											</a>
+										</div>
+										<div className="w-max flex items-center justify-center gap-1.5 text-muted-foreground">
+											<CalendarDays className="size-[1.125rem]" />
+											<p>
+												Joined{" "}
+												{moment(
+													profile?.date_joined
+												).format("MMMM YYYY")}
+											</p>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div className="border-t">
+					<div className="border-t px-6 md:px-12">
 						<div
 							className={
-								"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-3 gap-6 items-start justify-center"
+								"max-w-screen-xl w-full mt-16 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start justify-center"
 							}>
-							{posts?.map((post) => (
-								<SinglePost
-									key={post?.id}
-									post={post}
-								/>
-							))}
+							{posts && posts.length > 0 ? (
+								posts?.map((post) => (
+									<SinglePost
+										key={post?.id}
+										post={post}
+									/>
+								))
+							) : (
+								<div className="w-full py-32 col-span-full flex items-center justify-center border rounded-md">
+									<div className="text-center">
+										<p className="text-muted-foreground">
+											No posts found
+										</p>
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>

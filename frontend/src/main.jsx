@@ -24,7 +24,10 @@ import Followers from "@/components/custom/Dashboard/Followers/Followers.jsx";
 import Following from "@/components/custom/Dashboard/Following/Following.jsx";
 import Blocked from "@/components/custom/Dashboard/Blocked/Blocked.jsx";
 import AnalyticsComp from "@/components/custom/Dashboard/AnalyticsComp/AnalyticsComp.jsx";
-import SearchPage from "@/components/custom/Search/SearchPage.jsx";
+import PostsPage from "@/components/custom/Search/PostsPage.jsx";
+import UsersPage from "@/components/custom/Search/UsersPage.jsx";
+import TagsPage from "@/components/custom/Search/TagsPage.jsx";
+import SearchLayout from "./Layout/SearchLayout";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -45,10 +48,6 @@ const router = createBrowserRouter(
 				<Route
 					path=":author/:slug"
 					element={<PostDetail />}
-				/>
-				<Route
-					path="search"
-					element={<SearchPage />}
 				/>
 				<Route
 					path="login"
@@ -101,6 +100,26 @@ const router = createBrowserRouter(
 				<Route
 					path="blocked"
 					element={<Blocked />}
+				/>
+			</Route>
+			<Route
+				path="search"
+				element={<SearchLayout />}>
+				<Route
+					index
+					element={<PostsPage />}
+				/>
+				<Route
+					path="posts"
+					element={<PostsPage />}
+				/>
+				<Route
+					path="users"
+					element={<UsersPage />}
+				/>
+				<Route
+					path="tags"
+					element={<TagsPage />}
 				/>
 			</Route>
 		</Route>

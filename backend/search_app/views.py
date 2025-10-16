@@ -1,6 +1,7 @@
 import time
 from auth_app.serializers import UserSerializer
 from django.contrib.auth import get_user_model
+from dashboard_app.urls import CustomPagination
 from post_app.models import Post
 from post_app.serializers import PostSerializer
 from profile_app.models import Block, Follow
@@ -11,6 +12,7 @@ from tag_app.models import Tag
 from tag_app.serializers import TagSerializer
 from utils.helpers import validate_uuid
 from django.db.models import Q
+from tag_app.models import Tag
 
 User = get_user_model()
 
@@ -47,3 +49,54 @@ def search_all(request):
         data["tags"] = tags.data
 
     return Response(data, status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def search_posts(request):
+    query = request.query_params.get("query", "")
+    sort = request.query_params.get("sort", "newest")
+
+    posts = Post.objects.filter(
+        Q(title__icontains=query)
+        | Q(author__full_name__icontains=query)
+        | Q(author__username__icontains=query)
+        | Q(tags__name__icontains=query) & Q(published=True)
+    )
+
+    if sort == "oldest":
+        posts = posts.order_by("-created_at")
+    else:
+        posts = posts.order_by("created_at")
+
+    paginator = CustomPagination()
+    paginator.page_size = 15
+    result_page = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(result_page, many=True, context={"request": request})
+
+    return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(["GET"])
+def search_users(request):
+    query = request.query_params.get("query", "")
+
+    users = User.objects.filter(
+        Q(full_name__icontains=query) | Q(username__icontains=query)
+    )
+    paginator = CustomPagination()
+    paginator.page_size = 16
+    result_page = paginator.paginate_queryset(users, request)
+    serializer = UserSerializer(result_page, many=True, context={"request": request})
+    return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(["GET"])
+def search_tags(request):
+    query = request.query_params.get("query", "")
+
+    tags = Tag.objects.filter(name__icontains=query)
+    paginator = CustomPagination()
+    paginator.page_size = 16
+    result_page = paginator.paginate_queryset(tags, request)
+    serializer = TagSerializer(result_page, many=True, context={"request": request})
+    return paginator.get_paginated_response(serializer.data)

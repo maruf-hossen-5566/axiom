@@ -5,6 +5,7 @@ from django.utils.text import slugify
 
 class Tag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    logo_url = models.CharField(max_length=999, null=True, blank=True)
     slug = models.CharField(max_length=50, default="")
     name = models.CharField(max_length=25, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)

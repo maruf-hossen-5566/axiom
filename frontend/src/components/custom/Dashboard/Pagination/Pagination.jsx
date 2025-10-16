@@ -12,13 +12,13 @@ const PaginationComp = ({ data, setPageNumber }) => {
 	return (
 		data &&
 		setPageNumber && (
-			<div className="w-full pl-3 pr-1.5 flex items-center justify-between mt-4">
-				<p className="shrink-0 text-sm text-muted-foreground">
+			<div className="w-full pl-3 pr-1.5 flex items-center justify-between mt-4 overflow-hidden">
+				<p className="shrink-0 max-sm:hidden text-sm text-muted-foreground">
 					Showing {data?.results?.length} of {data?.count} results
 				</p>
 
 				<Pagination className="justify-end">
-					<PaginationContent>
+					<PaginationContent className="max-sm:w-full">
 						<PaginationItem
 							disabled={data?.current_page_number === 1}>
 							<PaginationLink
@@ -34,7 +34,7 @@ const PaginationComp = ({ data, setPageNumber }) => {
 							/>
 						</PaginationItem>
 
-						<p className="px-3 bg-accent py-1.5 rounded-full shrink-0 text-sm text-muted-foreground">
+						<p className="max-sm:!mx-auto px-3 bg-accent py-1.5 rounded-full shrink-0 text-sm text-muted-foreground">
 							{data?.current_page_number} / {data?.total_pages}
 						</p>
 
