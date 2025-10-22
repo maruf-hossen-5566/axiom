@@ -57,9 +57,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    follower_count = serializers.SerializerMethodField(method_name="get_follower_count")
+    follower_count = serializers.SerializerMethodField(
+        method_name="get_follower_count", read_only=True
+    )
     following_count = serializers.SerializerMethodField(
-        method_name="get_following_count"
+        method_name="get_following_count", read_only=True
     )
 
     class Meta:
@@ -73,6 +75,26 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
         ]
+
+        extra_kwargs={
+            "email":{
+                "error_messages":{
+                    'unique': 'This email is already registered.',
+                    'blank': 'Email must be provided.',
+                }
+            },
+            "username":{
+                "error_messages":{
+                    'unique': 'This username is already taken.',
+                    'blank': 'Username must be provided.',
+                }
+            },
+            "full_name":{
+                "error_messages":{
+                    'blank': 'Full name must be provided.',
+                }
+            },
+        }
 
     def get_follower_count(self, obj):
         return obj.followers.count()

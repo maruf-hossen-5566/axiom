@@ -13,6 +13,7 @@ from tag_app.serializers import TagSerializer
 from utils.helpers import validate_uuid
 from django.db.models import Q
 from tag_app.models import Tag
+from django.db.models import Count
 
 User = get_user_model()
 
@@ -57,11 +58,12 @@ def search_posts(request):
     sort = request.query_params.get("sort", "newest")
 
     posts = Post.objects.filter(
-        Q(title__icontains=query)
-        | Q(author__full_name__icontains=query)
-        | Q(author__username__icontains=query)
-        | Q(tags__name__icontains=query) & Q(published=True)
-    )
+        Q(title__icontains=query) |
+        Q(author__full_name__icontains=query) |
+        Q(author__username__icontains=query) |
+        Q(tags__name__icontains=query) &
+        Q(published=True)
+    ).distinct()
 
     if sort == "oldest":
         posts = posts.order_by("-created_at")
@@ -94,7 +96,11 @@ def search_users(request):
 def search_tags(request):
     query = request.query_params.get("query", "")
 
-    tags = Tag.objects.filter(name__icontains=query)
+    tags = (
+        Tag.objects.filter(name__icontains=query)
+        .annotate(post_count=Count("tags__id"))
+        .order_by("-post_count")
+    )
     paginator = CustomPagination()
     paginator.page_size = 16
     result_page = paginator.paginate_queryset(tags, request)

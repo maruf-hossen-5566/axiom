@@ -1,8 +1,8 @@
 import apiClient from "@/api/apiClient.js";
 
-export const getPosts = (data) => {
+export const getPosts = (params) => {
 	return apiClient.get("posts/", {
-		params: { ...data },
+		params: { ...params },
 	});
 };
 
@@ -28,10 +28,6 @@ export const addThumbnail = (data) => {
 
 export const deleteThumbnail = (data) => {
 	return apiClient.post("posts/delete/thumbnail/", data);
-};
-
-export const getTags = () => {
-	return apiClient.get("tag/get/");
 };
 
 export const checkLiked = (data) => {

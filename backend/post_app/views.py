@@ -10,7 +10,6 @@ from .models import Like, Post, Thumbnail
 from .serializers import PostSerializer, ThumbnailSerializer
 from utils.helpers import get_first_error
 from django.db.models import Q
-
 from tag_app.models import Tag
 
 
@@ -18,7 +17,7 @@ from tag_app.models import Tag
 def get_posts(request):
     paginator = CustomPagination()
     paginator.page_size = 24
-    posts = Post.objects.filter(published=True).order_by("-created_at")[:50]
+    posts = Post.objects.filter(published=True).order_by("?")
     result_page = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(result_page, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
@@ -51,12 +50,12 @@ def more_from_author(request):
     author_id = request.query_params.get("author_id")
     post_id = request.query_params.get("post_id")
 
-    if not (author_id or post_id):
+    if not (author_id and post_id):
         return Response(
             {"detail": "Author and Post ID not provided."}, status.HTTP_400_BAD_REQUEST
         )
 
-    posts = Post.objects.filter(Q(author__id=author_id)).exclude(Q(id=post_id))
+    posts = Post.objects.filter(author__id=author_id).exclude(id=post_id).order_by("?")[:4]
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response(serializer.data, status.HTTP_200_OK)
 
@@ -66,20 +65,30 @@ def more_to_read(request):
     author_id = request.query_params.get("author_id")
     post_id = request.query_params.get("post_id")
 
-    if not (author_id or post_id):
+    if not (author_id and post_id):
         return Response(
             {"detail": "Author and Post ID not provided."}, status.HTTP_400_BAD_REQUEST
         )
 
-    tags_id = Tag.objects.filter(tags__id=post_id).values_list("id", flat=True)
-    if tags_id and len(tags_id) > 0:
-        posts = Post.objects.filter(tags__id__in=tags_id).exclude(
-            Q(id=post_id) | Q(author__id=author_id)
-        )[:6]
-    else:
-        posts = Post.objects.exclude(Q(id=post_id) | Q(author__id=author_id)).order_by(
-            "?"
-        )[:6]
+    tag_ids = Tag.objects.filter(tags__id=post_id).values_list("id", flat=True)
+
+    posts = Post.objects.exclude(Q(id=post_id) | Q(author__id=author_id))
+
+    if tag_ids:
+        posts = posts.exclude(~Q(tags__id__in=tag_ids))
+
+    if request.user.is_authenticated:
+        posts = posts.exclude(author__id=request.user.id)
+
+    if len(posts) < 6:
+        new_posts = Post.objects.exclude(author__id=author_id).exclude(id=post_id)[:(6 - len(posts))]
+        if request.user.is_authenticated:
+            new_posts = Post.objects.exclude(author__id=author_id).exclude(author__id=request.user.id).exclude(
+                id=post_id)[:(6 - len(posts))]
+        posts = posts | new_posts
+
+    posts = posts.order_by("?")[:6]
+
     serializer = PostSerializer(posts, many=True, context={"request": request})
     return Response(serializer.data, status.HTTP_200_OK)
 

@@ -6,7 +6,7 @@ from .models import Like, Post, Thumbnail
 class PostAdmin(admin.ModelAdmin):
     list_display = ("id", "author", "title")
     prepopulated_fields = {"slug": ("title",)}
-    search_fields = ("title", "author__full_name", "author__username")
+    search_fields = ("title", "author__full_name", "author__username", "tags__name")
     ordering = [
         "-created_at",
     ]
@@ -26,12 +26,3 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = ("id", "user__full_name", "post__title", "created_at")
     search_fields = ("post__author__full_name",)
     ordering = ["-created_at"]
-
-
-# @admin.register(Tag)
-# class TagAdmin(admin.ModelAdmin):
-#     list_display = ("id", "name", "created_at")
-#     ordering = [
-#         "-created_at",
-#     ]
-#     readonly_fields = ("id",)

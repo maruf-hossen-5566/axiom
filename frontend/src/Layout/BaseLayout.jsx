@@ -28,6 +28,7 @@ const BaseLayout = () => {
 		<div className={"bg-background min-h-screen"}>
 			<Outlet />
 			<Toaster
+				expand
 				position="bottom-right"
 				closeButton={true}
 			/>

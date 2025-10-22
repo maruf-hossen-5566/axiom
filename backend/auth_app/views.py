@@ -1,15 +1,15 @@
 import time
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.decorators import api_view
-from .serializers import RegisterSerializer, UserSerializer
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.shortcuts import get_object_or_404, get_list_or_404
+
 from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404, get_list_or_404
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import RegisterSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -41,14 +41,14 @@ def login(request):
     user = authenticate(request, email=email, password=password)
     if user is not None:
         refresh = RefreshToken.for_user(user)
-        serializer = UserSerializer(user, context={"request": request})
+        user_serializer = UserSerializer(user, context={"request": request})
         following_ids = user.get_following_ids()
         blocked_ids = user.get_blocked_ids()
         bookmark_ids = user.bookmarks.values_list("post__id", flat=True)
 
         data = {
             "detail": "Log in was successful.",
-            "user": serializer.data,
+            "user": user_serializer.data,
             "following_ids": following_ids,
             "blocked_ids": blocked_ids,
             "bookmark_ids": bookmark_ids,
@@ -78,13 +78,50 @@ def get(request):
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
-def delete(request, pk):
-    user = get_object_or_404(User, id=pk)
-    if request.user == user:
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+def delete(request):
+    try:
+        time.sleep(1)
+        request.user.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+    except Exception as error:
+        return Response({"detail": error}, status.HTTP_400_BAD_REQUEST)
 
-    return Response(
-        {"detail": "You don't have permission to perform this action."},
-        status=status.HTTP_403_FORBIDDEN,
-    )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def update(request):
+    time.sleep(1)
+    user = get_object_or_404(User, id=request.user.id)
+
+    serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request})
+    if serializer.is_valid():
+        serializer.save()
+        data = {
+            "user": serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    old_pass = request.data.get("old")
+    new_pass = request.data.get("new")
+
+    valid_old_password = user.check_password(old_pass)
+
+    if not valid_old_password:
+        return Response({"detail": "Old password do not match."}, status.HTTP_400_BAD_REQUEST)
+
+    try:
+        validate_password(new_pass)
+    except ValidationError as error:
+        return Response({"detail": error}, status.HTTP_400_BAD_REQUEST)
+
+    user.set_password(new_pass)
+    user.save()
+
+    return Response({"detail": "Password has been updated. Now please login with new password."}, status.HTTP_200_OK)

@@ -21,11 +21,6 @@ import PaginationComp from "../Pagination/Pagination";
 
 const PostTable = ({ loading }) => {
 	const posts = useDashboardStore((state) => state?.posts);
-	const setPostPageNumber = useDashboardStore(
-		(state) => state?.setPostPageNumber
-	);
-	const [searchParams, setSearchParams] = useSearchParams();
-	const page = searchParams.get("page");
 
 	return (
 		<>
@@ -103,12 +98,7 @@ const PostTable = ({ loading }) => {
 				)}
 			</div>
 
-			{posts?.results?.length > 0 && (
-				<PaginationComp
-					data={posts}
-					setPageNumber={(v) => setSearchParams({ page: v })}
-				/>
-			)}
+			{posts?.results?.length > 0 && <PaginationComp data={posts} />}
 		</>
 	);
 };

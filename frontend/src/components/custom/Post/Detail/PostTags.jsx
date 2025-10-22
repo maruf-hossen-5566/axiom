@@ -8,7 +8,7 @@ const PostTags = () => {
     return post && post?.tags?.length > 0 && (
         <div className="w-full py-12 flex items-start justify-start flex-wrap gap-3">
             {post?.tags?.map((tag) => (<Link
-                to={`/`}
+                to={`/tag/${tag?.slug}`}
                 key={tag?.id}
             >
                 <Button className="rounded-full">{tag?.name}</Button>

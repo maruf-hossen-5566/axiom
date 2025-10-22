@@ -7,6 +7,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user_model
 from auth_app.serializers import UserSerializer
+from dashboard_app.pagination import CustomPagination
 from utils.helpers import validate_uuid
 from post_app.serializers import PostSerializer
 from post_app.models import Post
@@ -50,10 +51,8 @@ def follow(request):
     return Response(data, status.HTTP_200_OK)
 
 
-@api_view(["POST"])
-def get_profile(request):
-    username = request.data.get("username")
-
+@api_view(["GET"])
+def get_profile(request, username):
     if not (username and username.strip()):
         return Response(
             {"detail": "Username not provided."}, status.HTTP_400_BAD_REQUEST
@@ -62,6 +61,12 @@ def get_profile(request):
     profile = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=profile, published=True).order_by("-created_at")
 
+    paginator = CustomPagination()
+    paginator.page_size = 12
+    result_page = paginator.paginate_queryset(posts, request)
+    post_serializer = PostSerializer(result_page, many=True, context={"request": request})
+    paginated_response = paginator.get_paginated_response(post_serializer.data)
+
     is_following = False
     if request.user and request.user.is_authenticated:
         is_following = Follow.objects.filter(author=profile, user=request.user).exists()
@@ -69,7 +74,7 @@ def get_profile(request):
     data = {
         "profile": UserSerializer(profile, context={"request": request}).data,
         "is_following": is_following,
-        "posts": PostSerializer(posts, many=True, context={"request": request}).data,
+        "posts": paginated_response.data,
     }
     return Response(data, status.HTTP_200_OK)
 

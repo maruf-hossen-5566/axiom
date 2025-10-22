@@ -57,7 +57,7 @@ const PostCard = ({ post }) => {
 						</CardTitle>
 					</Link>
 					<Link
-						to={`${post?.author?.username}`}
+						to={`/${post?.author?.username}`}
 						className="w-max mt-4 flex items-center gap-2">
 						<Avatar className={"size-5"}>
 							<AvatarImage

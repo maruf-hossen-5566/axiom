@@ -24,7 +24,7 @@ import {
 import { removeTokens } from "@/utils/token.js";
 import { useEditorStore } from "@/store/editorStore.js";
 import { usePostStore } from "@/store/postStore.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeButton from "./ThemeButton";
 
 const ProfileDropdown = () => {
@@ -34,11 +34,13 @@ const ProfileDropdown = () => {
 	const clearPostStore = usePostStore((state) => state?.clearPostStore);
 	const isDarkMode = useThemeStore((state) => state.isDarkMode);
 	const setIsDarkMode = useThemeStore((state) => state.setIsDarkMode);
+	const navigate = useNavigate();
 
 	const handleLogout = () => {
 		if (!confirm("Do you really want to log out?")) {
 			return;
 		}
+		navigate("/");
 
 		logout();
 
@@ -98,11 +100,11 @@ const ProfileDropdown = () => {
 						Create Post
 					</Link>
 				</DropdownMenuItem>
-				<DropdownMenuItem>
-					<>
+				<DropdownMenuItem asChild>
+					<Link to="/dashboard/bookmarks">
 						<Bookmark />
 						Bookmarks
-					</>
+					</Link>
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
@@ -113,11 +115,11 @@ const ProfileDropdown = () => {
 						Dashboard
 					</Link>
 				</DropdownMenuItem>
-				<DropdownMenuItem>
-					<>
+				<DropdownMenuItem asChild>
+					<Link to="/account">
 						<Settings />
-						Settings
-					</>
+						Account Settings
+					</Link>
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />

@@ -40,6 +40,8 @@ const Thumbnail = () => {
 				form.append("prev_id", thumbnail?.id);
 			}
 
+			console.log("Form Data: ", form)
+
 			const res = await addThumbnail(form);
 			setThumbnail(res?.data);
 		} catch (error) {

@@ -9,7 +9,7 @@ const TagCard = ({ tag }) => {
 			<Card className="w-full h-full max-w-screen-xl mx-auto flex flex-col items-start bg-sidebar dark:bg-card gap-0">
 				<CardHeader
 					className={"w-full flex items-center justify-start gap-2"}>
-					<Link>
+					<Link to={`/tag/${tag?.slug}`}>
 						<div
 							className={
 								"size-10 p-1.5 bg-accent flex items-center justify-center rounded-md"
@@ -25,7 +25,9 @@ const TagCard = ({ tag }) => {
 							)}
 						</div>
 					</Link>
-					<Link className="flex flex-col justify-center group overflow-hidden">
+					<Link
+						to={`/tag/${tag?.slug}`}
+						className="flex flex-col justify-center group overflow-hidden">
 						<p className="group-hover:underline whitespace-nowrap">{`${tag?.name}`}</p>
 						<p className="text-sm -mt-1 text-muted-foreground group-hover:underline whitespace-nowrap">
 							#{`${tag?.slug}`}

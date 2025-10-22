@@ -2,6 +2,7 @@ import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { all } from "axios";
 
 // https://vite.dev/config/
 export default defineConfig({

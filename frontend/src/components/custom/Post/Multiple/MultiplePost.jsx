@@ -45,10 +45,7 @@ const MultiplePost = () => {
 					  ))}
 			</div>
 
-			<PaginationComp
-				data={posts}
-				setPageNumber={(v) => setSearchParams({ page: v })}
-			/>
+			<PaginationComp data={posts} />
 		</div>
 	);
 };

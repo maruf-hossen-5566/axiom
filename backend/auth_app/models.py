@@ -35,6 +35,8 @@ class User(AbstractUser):
     )
     email = models.EmailField("email address", unique=True)
     full_name = models.CharField("full name", max_length=99)
+    location = models.CharField("location", max_length=99, blank=True)
+    website = models.URLField("website url", max_length=99, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "full_name"]
@@ -49,7 +51,7 @@ class User(AbstractUser):
 
     def get_following_ids(self):
         return self.following.values_list("author__id", flat=True)
-    
+
     def get_blocked_ids(self):
         return self.blocking.values_list("blocked__id", flat=True)
 

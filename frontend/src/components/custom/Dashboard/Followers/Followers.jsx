@@ -9,7 +9,8 @@ import PaginationComp from "../Pagination/Pagination";
 import { getFollowers } from "@/api/dashboardApi";
 import Follower from "./Follower";
 import { follow } from "@/api/profileApi";
-import { Loader2 } from "lucide-react";
+import {Check, Loader2} from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 const Followers = () => {
 	const [loading, setLoading] = useState(false);
@@ -23,19 +24,15 @@ const Followers = () => {
 	const setFollowersSearchQuery = useDashboardStore(
 		(state) => state?.setFollowersSearchQuery
 	);
-	const followersPageNumber = useDashboardStore(
-		(state) => state?.followersPageNumber
-	);
-	const setFollowersPageNumber = useDashboardStore(
-		(state) => state?.setFollowersPageNumber
-	);
+	const [searchParams] = useSearchParams();
+	const page = searchParams.get("page");
 
 	useEffect(() => {
 		const fetchFollowers = async () => {
 			setLoading(true);
 			try {
 				const res = await getFollowers({
-					page: followersPageNumber,
+					page: page,
 					query: followersSearchQuery.trim(),
 				});
 				setFollowers(res.data);
@@ -49,7 +46,7 @@ const Followers = () => {
 		};
 
 		fetchFollowers();
-	}, [followersSearchQuery, followersPageNumber]);
+	}, [followersSearchQuery, page]);
 
 	const handleFollow = async (followingId) => {
 		try {
@@ -67,7 +64,6 @@ const Followers = () => {
 
 	const handelOnchange = (e) => {
 		setFollowersSearchQuery(e?.target?.value?.trimStart());
-		setFollowersPageNumber(1);
 	};
 
 	return (
@@ -100,7 +96,7 @@ const Followers = () => {
 								follower={follower}
 								buttonText={
 									followingIds?.includes(follower?.id)
-										? "Unfollow"
+										? <>{<Check/>}Following</>
 										: "Follow"
 								}
 								handleAction={() => handleFollow(follower?.id)}
@@ -114,10 +110,7 @@ const Followers = () => {
 				)}
 			</div>
 			{followers?.results?.length > 0 && (
-				<PaginationComp
-					data={followers}
-					setPageNumber={setFollowersPageNumber}
-				/>
+				<PaginationComp data={followers} />
 			)}
 		</div>
 	);

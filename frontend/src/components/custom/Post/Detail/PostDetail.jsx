@@ -40,16 +40,8 @@ const PostDetail = () => {
 	}, [author, slug]);
 
 	return (
-		<div className={"min-h-screen w-full mx-auto"}>
+		<div className={"min-h-screen w-full mx-auto pt-8"}>
 			<>
-				<div className="max-w-screen-md w-full mx-auto pt-12 pb-4 px-6 xs:px-10">
-					<BackButton
-						title="Home"
-						to="/"
-						loading={!post}
-					/>
-				</div>
-
 				<UnpublishedAlert />
 
 				<Thumbnail />

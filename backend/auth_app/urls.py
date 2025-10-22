@@ -7,5 +7,7 @@ urlpatterns = [
     path("login/", login, name="login_user"),
     path("get/", get, name="get_users"),
     path("get/", get, name="get_user"),
-    path("delete/<uuid:pk>/", delete, name="delete_user"),
+    path("delete/", delete, name="delete_user"),
+    path("update/", update, name="update_user"),
+    path("change-password/", change_password, name="change_password"),
 ]

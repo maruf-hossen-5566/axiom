@@ -7,28 +7,26 @@ import { toast } from "sonner";
 import Bookmark from "./Bookmark";
 import PaginationComp from "../Pagination/Pagination";
 import { Button } from "@/components/ui/button.jsx";
+import { useSearchParams } from "react-router-dom";
 
 const Bookmarks = () => {
 	const [loading, setLoading] = useState(false);
 	const bookmarks = useDashboardStore((state) => state?.bookmarks);
 	const setBookmarks = useDashboardStore((state) => state?.setBookmarks);
-	const setBookmarkPageNumber = useDashboardStore(
-		(state) => state?.setBookmarkPageNumber
-	);
-	const bookmarkPageNumber = useDashboardStore(
-		(state) => state?.bookmarkPageNumber
-	);
 	const bookmarkSearchQuery = useDashboardStore(
 		(state) => state?.bookmarkSearchQuery
 	);
 	const setBookmarkSearchQuery = useDashboardStore(
 		(state) => state?.setBookmarkSearchQuery
 	);
+	const [searchParams] = useSearchParams();
+	const page = searchParams.get("page");
+
 	const fetchBookmarks = async () => {
 		setLoading(true);
 		try {
 			const response = await getBookmarks({
-				page: bookmarkPageNumber,
+				page: page,
 				query: bookmarkSearchQuery.trim(),
 			});
 			setBookmarks(response.data);
@@ -44,11 +42,10 @@ const Bookmarks = () => {
 
 	useEffect(() => {
 		fetchBookmarks();
-	}, [bookmarkPageNumber, bookmarkSearchQuery]);
+	}, [page, bookmarkSearchQuery]);
 
 	const handelOnchange = (e) => {
 		setBookmarkSearchQuery(e?.target?.value?.trimStart());
-		setBookmarkPageNumber(1);
 	};
 
 	return (
@@ -95,10 +92,7 @@ const Bookmarks = () => {
 			</div>
 
 			{bookmarks?.results?.length > 0 && (
-				<PaginationComp
-					data={bookmarks}
-					setPageNumber={setBookmarkPageNumber}
-				/>
+				<PaginationComp data={bookmarks} />
 			)}
 		</div>
 	);

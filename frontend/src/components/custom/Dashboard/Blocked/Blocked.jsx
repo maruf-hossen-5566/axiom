@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import PaginationComp from "../Pagination/Pagination";
 import Follower from "../Followers/Follower";
 import { Loader2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 const Blocked = () => {
 	const [loading, setLoading] = useState(false);
@@ -22,19 +23,15 @@ const Blocked = () => {
 	const setBlockListSearchQuery = useDashboardStore(
 		(state) => state?.setBlockListSearchQuery
 	);
-	const blockListPageNumber = useDashboardStore(
-		(state) => state?.blockListPageNumber
-	);
-	const setBlockListPageNumber = useDashboardStore(
-		(state) => state?.setBlockListPageNumber
-	);
+    const [searchParams] = useSearchParams();
+	const page = searchParams.get("page");
 
 	useEffect(() => {
 		const fetchBlockList = async () => {
 			setLoading(true);
 			try {
 				const res = await getBlockList({
-					page: blockListPageNumber,
+					page: page,
 					query: blockListSearchQuery.trim(),
 				});
 				setBlockList(res.data);
@@ -48,7 +45,7 @@ const Blocked = () => {
 		};
 
 		fetchBlockList();
-	}, [blockListSearchQuery, blockListPageNumber]);
+	}, [blockListSearchQuery, page]);
 
 	const handleUnblock = async (userId) => {
 		try {
@@ -68,7 +65,6 @@ const Blocked = () => {
 
 	const handelOnchange = (e) => {
 		setBlockListSearchQuery(e?.target?.value?.trimStart());
-		setBlockListPageNumber(1);
 	};
 
 	return (
@@ -113,7 +109,6 @@ const Blocked = () => {
 			{blockList?.results?.length > 0 && (
 				<PaginationComp
 					data={blockList}
-					setPageNumber={setBlockListPageNumber}
 				/>
 			)}
 		</div>

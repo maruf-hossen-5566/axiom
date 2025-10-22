@@ -9,6 +9,7 @@ import { getFollowing } from "@/api/dashboardApi";
 import Follower from "../Followers/Follower";
 import useUserStore from "@/store/userStore";
 import { Loader2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 const Following = () => {
 	const [loading, setLoading] = useState(false);
@@ -20,21 +21,17 @@ const Following = () => {
 	const setFollowingSearchQuery = useDashboardStore(
 		(state) => state?.setFollowingSearchQuery
 	);
-	const followingPageNumber = useDashboardStore(
-		(state) => state?.followingPageNumber
-	);
-	const setFollowingPageNumber = useDashboardStore(
-		(state) => state?.setFollowingPageNumber
-	);
 	const setFollowingIds = useUserStore((state) => state?.setFollowingIds);
 	const followingIds = useUserStore((state) => state?.followingIds);
+	const [searchParams] = useSearchParams();
+	const page = searchParams.get("page");
 
 	useEffect(() => {
 		const fetchFollowing = async () => {
 			setLoading(true);
 			try {
 				const res = await getFollowing({
-					page: followingPageNumber,
+					page: page,
 					query: followingSearchQuery.trim(),
 				});
 				setFollowing(res.data);
@@ -48,11 +45,10 @@ const Following = () => {
 		};
 
 		fetchFollowing();
-	}, [followingPageNumber, followingSearchQuery]);
+	}, [page, followingSearchQuery]);
 
 	const handelOnchange = (e) => {
 		setFollowingSearchQuery(e?.target?.value?.trimStart());
-		setFollowingPageNumber(1);
 	};
 
 	const handleFollow = async (followingId) => {
@@ -118,10 +114,7 @@ const Following = () => {
 				)}
 			</div>
 			{following?.results?.length > 0 && (
-				<PaginationComp
-					data={following}
-					setPageNumber={setFollowingPageNumber}
-				/>
+				<PaginationComp data={following} />
 			)}
 		</div>
 	);

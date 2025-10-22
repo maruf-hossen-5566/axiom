@@ -133,10 +133,14 @@ def get_block_list(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_card_data(request):
+    like_count = Like.objects.filter(post__author=request.user).count()
+    comment_count = Comment.objects.filter(post__author=request.user).count()
+    engagement_count = like_count | comment_count
+
     return Response(
         {
             "visitors": request.user.posts.count(),
-            "engagement": request.user.likes.count() + request.user.comments.count(),
+            "engagement": engagement_count,
             "follower": request.user.followers.count(),
         },
         status.HTTP_200_OK,
@@ -146,10 +150,10 @@ def get_card_data(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_engagement_data(request):
-    filter = request.query_params.get("filter") or "30days"
-    if filter == "7days":
+    filter_by = request.query_params.get("filter") or "30days"
+    if filter_by == "7days":
         days = 7
-    elif filter == "3months":
+    elif filter_by == "3months":
         days = 90
     else:
         days = 30
