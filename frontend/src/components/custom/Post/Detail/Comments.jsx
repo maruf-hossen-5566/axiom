@@ -10,6 +10,7 @@ import {addComment, getComments} from "@/api/commentApi";
 import {toast} from "sonner";
 import {MessageCircleDashed, MessageCircleOff} from "lucide-react";
 import SingleCommentSkeleton from "@/components/custom/Skeleton/SingleCommentSkeleton.jsx";
+import {useSearchParams} from "react-router-dom";
 
 const Comments = () => {
     const [commentText, setCommentText] = useState("");
@@ -21,6 +22,17 @@ const Comments = () => {
     const commentSortBy = usePostStore((state) => state?.commentSortBy);
     const setCommentSortBy = usePostStore((state) => state?.setCommentSortBy);
     const [loading, setLoading] = useState(false);
+    const [searchParams] = useSearchParams()
+    const id = searchParams.get("id")
+
+    useEffect(() => {
+        const commentDiv = document?.getElementById(id)
+        commentDiv?.scrollIntoView({behavior: 'smooth'})
+        setTimeout(() => {
+            searchParams.delete("id")
+        }, 1000)
+    }, [id, comments])
+
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -38,6 +50,7 @@ const Comments = () => {
 
         fetchComments();
     }, [commentSortBy]);
+
 
     const handleAdd = async (e) => {
         e.preventDefault();

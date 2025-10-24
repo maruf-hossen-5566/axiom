@@ -132,11 +132,11 @@ const ProfileDropdown = () => {
 					)}{" "}
 					Theme
 				</DropdownMenuItem>
-				<DropdownMenuItem>
-					<>
+				<DropdownMenuItem asChild>
+					<Link to="/notification">
 						<Bell />
 						Notifications
-					</>
+					</Link>
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />

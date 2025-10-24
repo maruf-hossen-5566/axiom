@@ -18,9 +18,10 @@ import {Sheet, SheetTrigger} from "@/components/ui/sheet";
 import {usePostStore} from "@/store/postStore.js";
 import useUserStore from "@/store/userStore.js";
 import {Bookmark, Ellipsis, Heart, MessageCircle, Share} from "lucide-react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {toast} from "sonner";
 import Comments from "./Comments";
+import {useState} from "react";
 
 const Engagement = () => {
     const user = useUserStore((state) => state?.user);
@@ -31,6 +32,9 @@ const Engagement = () => {
     const setPost = usePostStore((state) => state?.setPost);
     const clearPostStore = usePostStore((state) => state?.clearPostStore);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams()
+    const showComments = searchParams.get("show-comments")
+    const [showCommentSheet, setShowCommentSheet] = useState(showComments || false)
 
     const handleLike = async () => {
         try {
@@ -157,7 +161,10 @@ const Engagement = () => {
                         )}
                     </>
                 </Button>
-                <Sheet>
+                <Sheet
+                    open={showCommentSheet}
+                    onOpenChange={setShowCommentSheet}
+                >
                     <SheetTrigger asChild>
                         <Button
                             variant="outline"

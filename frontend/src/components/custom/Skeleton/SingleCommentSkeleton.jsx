@@ -3,7 +3,7 @@ import {Skeleton} from "@/components/ui/skeleton.jsx";
 function SingleCommentSkeleton() {
     return (<div className="w-full pt-5 pb-5 flex items-start gap-2">
             <div className="w-full">
-                <div className="w-full flex items-center justify-between gap-4">
+                <div className="w-full flex items-center justify-between gap-2">
                     <Skeleton className="size-8 shrink-0 rounded-full"/>
 
                     <div className="w-full flex flex-col gap-1">

@@ -18,7 +18,6 @@ User = get_user_model()
 
 @api_view(["POST"])
 def get(request):
-    time.sleep(1)
     sort = request.data.get("sort", None)
     post_id = request.data.get("post")
 

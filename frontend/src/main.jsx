@@ -35,7 +35,7 @@ import AccountLayout from "./Layout/AccountLayout";
 import {Profile as ProfilePage} from "./components/custom/Account/Profile";
 import Notification from "@/components/custom/Account/Notification.jsx";
 import Security from "@/components/custom/Account/Security.jsx";
-import NotificationPage from "@/components/custom/Notification/Notification.jsx";
+import NotificationPage from "@/components/custom/Notification/NotificationPage.jsx";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -173,7 +173,7 @@ const router = createBrowserRouter(
                 element={<Layout/>}
             >
                 <Route
-                    index
+                    path=""
                     element={<NotificationPage/>}
                 />
             </Route>
